@@ -1,0 +1,50 @@
+﻿<UserControl xmlns:UserControls="clr-namespace:AudioView.UserControls"  x:Class="AudioView.UserControls.MeasurementControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:audioView="clr-namespace:AudioView"
+             xmlns:userControls="clr-namespace:AudioView.UserControls"
+             xmlns:CountDown="clr-namespace:AudioView.UserControls.CountDown"
+             mc:Ignorable="d" 
+             MinHeight="400" MinWidth="600"
+             d:DesignHeight="600" d:DesignWidth="600">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+
+        <TextBlock Grid.Column="0" Grid.Row="0" Foreground="{Binding TextColor}" FontSize="32" Text="Minor interval"  HorizontalAlignment="Stretch" TextAlignment="Center">
+            <TextBlock.LayoutTransform>
+                <RotateTransform Angle="-90" />
+            </TextBlock.LayoutTransform>
+        </TextBlock>
+        <userControls:AudioViewGraph Grid.Column="1" x:Name="AudioViewGraphMinor" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinHeight="100" MinWidth="100" DataContext="{Binding MinorGraph}"/>
+        <CountDown:AudioViewCountDown 
+             Grid.Column="2"
+            MinHeight="100"
+            HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+            DataContext="{Binding MinorClock}"
+            Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}"/>
+
+        <TextBlock Grid.Column="0" Grid.Row="2" Foreground="{Binding TextColor}" FontSize="32" Text="Major interval" HorizontalAlignment="Stretch" TextAlignment="Center" >
+            <TextBlock.LayoutTransform>
+                <RotateTransform Angle="-90" />
+            </TextBlock.LayoutTransform>
+        </TextBlock>
+        <userControls:AudioViewGraph Grid.Row="2" Grid.Column="1" x:Name="AudioViewGraphMajor" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinHeight="100" MinWidth="100" DataContext="{Binding MajorGraph}"/>
+        <CountDown:AudioViewCountDown 
+            Grid.Row="2" Grid.Column="2"
+            MinHeight="100"
+            HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+            DataContext="{Binding MajorClock}"
+            Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}"/>
+    </Grid>
+</UserControl>

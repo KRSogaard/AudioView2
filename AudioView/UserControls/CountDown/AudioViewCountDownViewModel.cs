@@ -1,0 +1,172 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
+using AudioView.Annotations;
+using AudioView.Common;
+using AudioView.Common.Engine;
+using AudioView.ViewModels;
+
+namespace AudioView.UserControls.CountDown
+{
+    public class AudioViewCountDownViewModel : INotifyPropertyChanged, IMeterListener
+    {
+        private bool isMajor;
+        private int mainItem;
+        private int secondItem;
+        private int limitDb;
+
+        public AudioViewCountDownViewModel(bool isMajor, TimeSpan interval, int limitDb, int mainItem, int secondItem)
+        {
+            Interval = interval;
+            this.isMajor = isMajor;
+            this.limitDb = limitDb;
+            this.mainItem = mainItem;
+            this.secondItem = secondItem;
+        }
+        
+        public TimeSpan Interval { get; set; }
+        public DateTime NextReadingTime { get; set; }
+        public DateTime LastReadingTime { get; set; }
+        public double LastReading { get; set; }
+        public double LastInterval { get; set; }
+
+        private double _angle;
+        public double Angle
+        {
+            get { return 360 - _angle; }
+            set {
+                _angle = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(MainItemText));
+                OnPropertyChanged(nameof(SecondItemText));
+                OnPropertyChanged(nameof(TextColor));
+            }
+        }
+
+        private int _arcThickness;
+        public int ArcThickness
+        {
+            get
+            {
+                return _arcThickness;
+            }
+             set
+            {
+                _arcThickness = value; OnPropertyChanged();
+            }
+        }
+
+        private bool _isEnabled;
+        public bool IsEnabled
+        {
+            get { return _isEnabled; }
+            set { _isEnabled = value; OnPropertyChanged(); }
+        }
+
+        public string MainItemText
+        {
+            get { return GetDisplayText(mainItem); }
+        }
+
+        public string SecondItemText
+        {
+            get { return GetDisplayText(secondItem); }
+        }
+
+        private string GetDisplayText(int displayId)
+        {
+            switch (displayId)
+            {
+                case 1: // Latests interval
+                    return ((int)LastInterval).ToString();
+                case 2: // Time to next interval
+                    return (NextReadingTime - DateTime.Now).ToString(@"mm\:ss\.f", null);
+                case 0: // Lastest reading (live data)
+                default:
+                    return ((int)LastReading).ToString();
+            }
+        }
+
+        public Brush TextColor
+        {
+            get
+            {
+                return new SolidColorBrush(LastReading >= limitDb ? ColorSettings.BarColorOverLimit : ColorSettings.BarColorUnderLimit);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            var handler = PropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void OnNext(DateTime time)
+        {
+            if (NextReadingTime == new DateTime())
+            {
+                NextReadingTime = time.AddMilliseconds(-Interval.TotalMilliseconds);
+            }
+            LastReadingTime = NextReadingTime;
+            NextReadingTime = time;
+        }
+
+        #region IMeterListener
+        public Task OnMinor(DateTime time, ReadingData data)
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                if (!isMajor)
+                    LastInterval = data.LAeq;
+            });
+        }
+
+        public Task OnMajor(DateTime time, ReadingData data)
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                if (isMajor)
+                    LastInterval = data.LAeq;
+            });
+        }
+
+
+        public Task OnSecond(DateTime time, ReadingData data)
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                if (!isMajor)
+                    LastReading = data.LAeq;
+            });
+        }
+
+        public Task NextMinor(DateTime time)
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                if(!isMajor)
+                    OnNext(time);
+            });
+        }
+
+        public Task NextMajor(DateTime time)
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                if (isMajor)
+                    OnNext(time);
+            });
+        }
+        #endregion
+    }
+}
