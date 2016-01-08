@@ -69,41 +69,7 @@ namespace AudioView.ViewModels
                 return new RelayCommand(() =>
                 {
                     ShowNewFlow = true;
-                    NewViewModel = new NewMeasurementViewModel();
-                });
-            }
-        }
-
-        public ICommand StartMeasurement
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    ShowNewFlow = false;
-                    var id = Guid.NewGuid();
-                    //var newModel = new MeasurementViewModel(id, NewViewModel.GetSettings());
-                    var newModel = new MeasurementViewModel(Guid.NewGuid(), new MeasurementSettings()
-                    {
-                        DBLimit = 90,
-                        GraphLowerBound = 60,
-                        GraphUpperBound = 150,
-                        MajorClockMainItemId = 1,
-                        MajorClockSecondaryItemId = 2,
-                        MinorClockMainItemId = 0,
-                        MinorClockSecondaryItemId = 1,
-                        MinorInterval = new TimeSpan(0, 1, 0),
-                        MajorInterval = new TimeSpan(0, 15, 0)
-                    })
-                    {
-                        IsEnabled = true
-                    };
-                    Measurements.Add(newModel);
-                    if (SelectedMeasurement == null)
-                    {
-                        SelectedMeasurement = newModel;
-                    }
-                    NewViewModel = null;
+                    NewViewModel = new NewMeasurementViewModel(this);
                 });
             }
         }
@@ -163,34 +129,5 @@ namespace AudioView.ViewModels
             var handler = PropertyChanged;
             if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
-    }
-
-    public class StartMeasurementCommand : ICommand
-    {
-        private MainViewModel model;
-
-        public StartMeasurementCommand(MainViewModel model)
-        {
-            this.model = model;
-        }
-        public bool CanExecute(object parameter)
-        {
-            return true;
-        }
-
-        public void Execute(object parameter)
-        {
-            this.model.ShowNewFlow = false;
-            var id = Guid.NewGuid();
-            var newModel = new MeasurementViewModel(id, null);// NewViewModel);
-            this.model.Measurements.Add(newModel);
-            if (this.model.SelectedMeasurement == null)
-            {
-                this.model.SelectedMeasurement = newModel;
-            }
-            this.model.NewViewModel = null;
-        }
-
-        public event EventHandler CanExecuteChanged;
     }
 }

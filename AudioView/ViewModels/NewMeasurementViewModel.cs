@@ -16,10 +16,12 @@ namespace AudioView.ViewModels
 {
     public class NewMeasurementViewModel : INotifyPropertyChanged
     {
-        private bool isRemoteTested;
+        private bool isRemoteTested { get; set; }
+        private MainViewModel MainViewModel { get; set; }
 
-        public NewMeasurementViewModel()
+        public NewMeasurementViewModel(MainViewModel mainViewModel)
         {
+            MainViewModel = mainViewModel;
             ProjectName = "Untitled - " + DateTime.Now.ToString("yyyy-mm-dd hh-mm-ss");
             UseLocal = true;
             IsLoading = true;
@@ -58,7 +60,7 @@ namespace AudioView.ViewModels
                 }
             };
         }
-        
+
         public IList<ClockItem> ClockItems { get; set; }
 
         private ClockItem _minorClockMainItem;
@@ -325,7 +327,27 @@ namespace AudioView.ViewModels
                 });
             }
         }
-        
+
+        public ICommand StartMeasurement
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    MainViewModel.ShowNewFlow = false;
+                    var newModel = new MeasurementViewModel(Guid.NewGuid(), GetSettings())
+                    {
+                        IsEnabled = true
+                    };
+                    MainViewModel.Measurements.Add(newModel);
+                    if (MainViewModel.SelectedMeasurement == null)
+                    {
+                        MainViewModel.SelectedMeasurement = newModel;
+                    }
+                });
+            }
+        }
+
         private void GotTest(bool result)
         {
             IsTesting = false;

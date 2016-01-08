@@ -28,7 +28,6 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
-                        <!--<RowDefinition Height="Auto" />-->
                     </Grid.RowDefinitions>
 
                     <Menu Grid.Row="0"
@@ -36,7 +35,7 @@
                       VerticalAlignment="Stretch"
                       HorizontalAlignment="Left">
                         <MenuItem Header="Test" Click="MenuItem_OnClick" />
-                        <MenuItem Header="New measurement" Command="{Binding StartMeasurement}" />
+                        <MenuItem Header="New measurement" Command="{Binding NewMeasurementCommand}" />
                         <MenuItem Header="Pop-Outs" IsEnabled="{Binding MeasurementSelected}">
                             <MenuItem Header="Live Readings" Command="{Binding NewLiveReadingsPopUp}" />
                         </MenuItem>

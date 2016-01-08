@@ -8,105 +8,107 @@
              mc:Ignorable="d" 
              d:DesignHeight="900" d:DesignWidth="300">
     <Grid>
-        <StackPanel Margin="5,0">
-            <Label Content="Project Name:" />
-            <TextBox Text="{Binding ProjectName}" Margin="0,0,0,5" />
+        <ScrollViewer VerticalScrollBarVisibility="Visible">
+            <StackPanel Margin="5,0">
+                <Label Content="Project Name:" />
+                <TextBox Text="{Binding ProjectName}" Margin="0,0,0,5" />
 
-            <Label Content="Minor Interval:" />
-            <Grid Margin="0,0,0,5">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                
-                <TextBox Grid.Column="0" Text="{Binding MinorIntervalHours}" />
-                <Label Grid.Column="1" Content=":" />
-                <TextBox Grid.Column="2" Text="{Binding MinorIntervalMinutes}" />
-                <Label Grid.Column="3" Content=":" />
-                <TextBox Grid.Column="4" Text="{Binding MinorIntervalSeconds}" />
-            </Grid>
+                <Label Content="Minor Interval:" />
+                <Grid Margin="0,0,0,5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
 
-            <Label Content="MaJor Interval:" />
-            <Grid Margin="0,0,0,5">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0" Text="{Binding MinorIntervalHours}" />
+                    <Label Grid.Column="1" Content=":" />
+                    <TextBox Grid.Column="2" Text="{Binding MinorIntervalMinutes}" />
+                    <Label Grid.Column="3" Content=":" />
+                    <TextBox Grid.Column="4" Text="{Binding MinorIntervalSeconds}" />
+                </Grid>
 
-                <TextBox Grid.Column="0" Text="{Binding MajorIntervalHours}" />
-                <Label Grid.Column="1" Content=":" />
-                <TextBox Grid.Column="2" Text="{Binding MajorIntervalMinutes}" />
-                <Label Grid.Column="3" Content=":" />
-                <TextBox Grid.Column="4" Text="{Binding MajorIntervalSeconds}" />
-            </Grid>
+                <Label Content="MaJor Interval:" />
+                <Grid Margin="0,0,0,5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
 
-            <Label Content="dB Limit:" />
-            <TextBox Text="{Binding DBLimit}" Margin="0,0,0,5" />
+                    <TextBox Grid.Column="0" Text="{Binding MajorIntervalHours}" />
+                    <Label Grid.Column="1" Content=":" />
+                    <TextBox Grid.Column="2" Text="{Binding MajorIntervalMinutes}" />
+                    <Label Grid.Column="3" Content=":" />
+                    <TextBox Grid.Column="4" Text="{Binding MajorIntervalSeconds}" />
+                </Grid>
+
+                <Label Content="dB Limit:" />
+                <TextBox Text="{Binding DBLimit}" Margin="0,0,0,5" />
 
 
-            <Expander Header="Display Settings" Margin="0" IsExpanded="True">
-                <StackPanel Margin="5,0">
+                <Expander Header="Display Settings" Margin="0" IsExpanded="True">
+                    <StackPanel Margin="5,0">
 
-                    <Label Content="Graph Bounds:" />
-                    <Grid Margin="0,0,0,5">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
+                        <Label Content="Graph Bounds:" />
+                        <Grid Margin="0,0,0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
 
-                        <TextBox Grid.Column="0" Text="{Binding GraphBoundLower}" />
-                        <Label Grid.Column="1" Content="to" />
-                        <TextBox Grid.Column="2" Text="{Binding GraphBoundUpper}" />
+                            <TextBox Grid.Column="0" Text="{Binding GraphBoundLower}" />
+                            <Label Grid.Column="1" Content="to" />
+                            <TextBox Grid.Column="2" Text="{Binding GraphBoundUpper}" />
+                        </Grid>
+
+                        <Label Content="Minor interval main item:" />
+                        <ComboBox  Margin="0,0,0,5" ItemsSource="{Binding ClockItems}" SelectedItem="{Binding MinorClockMainItem}"></ComboBox>
+
+                        <Label Content="Minor interval secondary item:" />
+                        <ComboBox  Margin="0,0,0,5" ItemsSource="{Binding ClockItems}" SelectedItem="{Binding MinorClockSecondaryItem}"></ComboBox>
+
+                        <Label Content="Major interval main item:" />
+                        <ComboBox  Margin="0,0,0,5" ItemsSource="{Binding ClockItems}" SelectedItem="{Binding MajorClockMainItem}"></ComboBox>
+
+                        <Label Content="Major interval secondary item:" />
+                        <ComboBox  Margin="0,0,0,5" ItemsSource="{Binding ClockItems}" SelectedItem="{Binding MajorClockSecondaryItem}"></ComboBox>
+
+                    </StackPanel>
+                </Expander>
+
+                <Expander Header="Local Unit" Margin="0" IsExpanded="{Binding UseLocal}">
+                    <Grid>
+                        <StackPanel>
+                            <Label Content="Port:" />
+                            <ListBox x:Name="listBox" Height="100" ItemsSource="{Binding DevicePortList}" />
+                        </StackPanel>
+                        <Border Background="Black" Opacity="0.50" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
+                            <Controls:ProgressRing Width="90" Height="90" IsActive="True" />
+                        </Border>
                     </Grid>
-
-                    <Label Content="Minor interval main item:" />
-                    <ComboBox  Margin="0,0,0,5" ItemsSource="{Binding ClockItems}" SelectedItem="{Binding MinorClockMainItem}"></ComboBox>
-
-                    <Label Content="Minor interval secondary item:" />
-                    <ComboBox  Margin="0,0,0,5" ItemsSource="{Binding ClockItems}" SelectedItem="{Binding MinorClockSecondaryItem}"></ComboBox>
-
-                    <Label Content="Major interval main item:" />
-                    <ComboBox  Margin="0,0,0,5" ItemsSource="{Binding ClockItems}" SelectedItem="{Binding MajorClockMainItem}"></ComboBox>
-
-                    <Label Content="Major interval secondary item:" />
-                    <ComboBox  Margin="0,0,0,5" ItemsSource="{Binding ClockItems}" SelectedItem="{Binding MajorClockSecondaryItem}"></ComboBox>
-
-                </StackPanel>
-            </Expander>
-            
-            <Expander Header="Local Unit" Margin="0" IsExpanded="{Binding UseLocal}">
-                <Grid>
-                    <StackPanel>
-                        <Label Content="Port:" />
-                        <ListBox x:Name="listBox" Height="100" ItemsSource="{Binding DevicePortList}" />
-                    </StackPanel>
-                    <Border Background="Black" Opacity="0.50" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
-                        <Controls:ProgressRing Width="90" Height="90" IsActive="True" />
-                    </Border>
-                </Grid>
-            </Expander>
-            <Expander Header="Remote Unit" Margin="0" IsExpanded="{Binding UseRemote}">
-                <Grid>
-                <StackPanel>
-                    <Label Content="Ip Adress:" />
-                    <TextBox Text="{Binding RemoteIpAddress}" Margin="0,0,0,5" />
-                    <Label Content="Port:" />
-                    <TextBox Text="{Binding RemotePort}" Margin="0,0,0,5" />
-                    <Button Content="Test Connection" IsEnabled="{Binding CanTest}" Command="{Binding StartTest}" Margin="0,5" />
-                    </StackPanel>
-                    <Border Background="Black" Opacity="0.50" Visibility="{Binding IsTesting, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
-                        <Controls:ProgressRing Width="90" Height="90" IsActive="True" />
-                    </Border>
-                </Grid>
-            </Expander>
-            <Button Content="Start" IsEnabled="{Binding CanStart}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.StartMeasurement}" Margin="0,5" />
-        </StackPanel>
+                </Expander>
+                <Expander Header="Remote Unit" Margin="0" IsExpanded="{Binding UseRemote}">
+                    <Grid>
+                        <StackPanel>
+                            <Label Content="Ip Adress:" />
+                            <TextBox Text="{Binding RemoteIpAddress}" Margin="0,0,0,5" />
+                            <Label Content="Port:" />
+                            <TextBox Text="{Binding RemotePort}" Margin="0,0,0,5" />
+                            <Button Content="Test Connection" IsEnabled="{Binding CanTest}" Command="{Binding StartTest}" Margin="0,5" />
+                        </StackPanel>
+                        <Border Background="Black" Opacity="0.50" Visibility="{Binding IsTesting, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
+                            <Controls:ProgressRing Width="90" Height="90" IsActive="True" />
+                        </Border>
+                    </Grid>
+                </Expander>
+                <Button Content="Start" IsEnabled="{Binding CanStart}" Command="{Binding StartMeasurement}" Margin="0,5" />
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </UserControl>
