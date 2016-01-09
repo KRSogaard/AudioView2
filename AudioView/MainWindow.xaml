@@ -21,6 +21,10 @@
     </Controls:MetroWindow.Flyouts>
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="30" />
+        </Grid.RowDefinitions>
         <TabControl TabStripPlacement="Left"
                 Margin="10">
             <TabItem Header="Measurements">
@@ -34,7 +38,6 @@
                       Margin="5"
                       VerticalAlignment="Stretch"
                       HorizontalAlignment="Left">
-                        <MenuItem Header="Test" Click="MenuItem_OnClick" />
                         <MenuItem Header="New measurement" Command="{Binding NewMeasurementCommand}" />
                         <MenuItem Header="Pop-Outs" IsEnabled="{Binding MeasurementSelected}">
                             <MenuItem Header="Live Readings" Command="{Binding NewLiveReadingsPopUp}" />
@@ -43,8 +46,8 @@
                     </Menu>
 
                     <TabControl Grid.Row="1" 
-                ItemsSource="{Binding Measurements}"
-                SelectedItem="{Binding SelectedMeasurementy}"
+                        ItemsSource="{Binding Measurements}"
+                        SelectedItem="{Binding SelectedMeasurement}"
                         >
                         <TabControl.ItemTemplate>
                             <DataTemplate>
@@ -58,9 +61,10 @@
                             </DataTemplate>
                         </TabControl.ContentTemplate>
                     </TabControl>
-
-                    <!--<ProgressBar Grid.Row="2" HorizontalAlignment="Stretch" Minimum="0" Maximum="100" Value="{Binding LagTest}"/>-->
                 </Grid>
+            </TabItem>
+            <TabItem Header="New (Temp)">
+                <UserControls:NewMeasurementControl DataContext="{Binding NewViewModel}" />
             </TabItem>
             <TabItem Header="History">
             </TabItem>
@@ -68,5 +72,6 @@
             </TabItem>
         </TabControl>
 
+        <ProgressBar Grid.Row="1" Minimum="0" Maximum="1000" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Value="{Binding LagTest}" />
     </Grid>
 </Controls:MetroWindow>

@@ -298,6 +298,7 @@ namespace AudioView.ViewModels
         {
             return new MeasurementSettings()
             {
+                ProjectName = ProjectName,
                 BarsDisplayed = 15,
                 DBLimit = _dBLimit,
                 GraphLowerBound = _graphBoundLower,
@@ -334,16 +335,7 @@ namespace AudioView.ViewModels
             {
                 return new RelayCommand(() =>
                 {
-                    MainViewModel.ShowNewFlow = false;
-                    var newModel = new MeasurementViewModel(Guid.NewGuid(), GetSettings())
-                    {
-                        IsEnabled = true
-                    };
-                    MainViewModel.Measurements.Add(newModel);
-                    if (MainViewModel.SelectedMeasurement == null)
-                    {
-                        MainViewModel.SelectedMeasurement = newModel;
-                    }
+                    MainViewModel.AddNewMeasurement();
                 });
             }
         }

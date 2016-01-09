@@ -9,7 +9,7 @@
              mc:Ignorable="d" 
              MinHeight="400" MinWidth="600"
              d:DesignHeight="600" d:DesignWidth="600">
-    <Grid>
+    <!--<Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
@@ -46,5 +46,5 @@
             HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
             DataContext="{Binding MajorClock}"
             Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}"/>
-    </Grid>
+    </Grid>-->
 </UserControl>

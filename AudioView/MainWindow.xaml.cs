@@ -56,25 +56,5 @@ namespace AudioView
             //    start = start.Add(interval);
             //}
         }
-
-        private void MenuItem_OnClick(object sender, RoutedEventArgs e)
-        {
-            var model = (MainViewModel) this.DataContext;
-            model.Measurements.Add(new MeasurementViewModel(Guid.NewGuid(), new MeasurementSettings()
-            {
-                DBLimit = 90,
-                GraphLowerBound = 60,
-                GraphUpperBound = 150,
-                MajorClockMainItemId = 1,
-                MajorClockSecondaryItemId = 2,
-                MinorClockMainItemId = 0,
-                MinorClockSecondaryItemId = 1,
-                MinorInterval = new TimeSpan(0, 1, 0),
-                MajorInterval = new TimeSpan(0, 15, 0)
-            })
-            {
-                IsEnabled = true
-            });
-        }
     }
 }

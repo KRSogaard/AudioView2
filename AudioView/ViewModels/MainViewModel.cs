@@ -18,21 +18,25 @@ namespace AudioView.ViewModels
         public MainViewModel()
         {
             Measurements = new ObservableCollection<MeasurementViewModel>();
-            var model = new MeasurementViewModel(Guid.NewGuid(), new MeasurementSettings()
+            SelectedMeasurement = null;
+            NewViewModel = new NewMeasurementViewModel(this);
+            PropertyChanged += OnPropertyChanged;
+
+            DispatcherTimer timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromMilliseconds(15);
+            timer.IsEnabled = true;
+            timer.Tick += (sender, args) =>
             {
-                DBLimit = 90,
-                GraphLowerBound = 60,
-                GraphUpperBound = 150,
-                MajorClockMainItemId = 1,
-                MajorClockSecondaryItemId = 2,
-                MinorClockMainItemId = 0,
-                MinorClockSecondaryItemId = 1,
-                MinorInterval = new TimeSpan(0, 1, 0),
-                MajorInterval = new TimeSpan(0, 15, 0)
-            });
-            model.IsEnabled = true;
-            Measurements.Add(model);
-            SelectedMeasurement = Measurements.FirstOrDefault();
+                var newValue = LagTest + 1;
+                if (newValue > 1000)
+                {
+                    LagTest = 0;
+                }
+                else
+                {
+                    LagTest = newValue;
+                }
+            };
         }
 
         private ObservableCollection<MeasurementViewModel> measurements;
@@ -110,10 +114,22 @@ namespace AudioView.ViewModels
             get { return _lagTest; }
             set { _lagTest = value; OnPropertyChanged(); }
         }
-
+        
         public bool MeasurementSelected
         {
             get { return SelectedMeasurement != null; }
+        }
+
+        public void AddNewMeasurement()
+        {
+            ShowNewFlow = false;
+            var newModel = new MeasurementViewModel(Guid.NewGuid(), NewViewModel.GetSettings());
+            Measurements.Add(newModel);
+            if (SelectedMeasurement == null)
+            {
+                SelectedMeasurement = newModel;
+                SelectedMeasurement.IsEnabled = true;
+            }
         }
 
         public NewMeasurementViewModel _newViewModel;
@@ -121,6 +137,20 @@ namespace AudioView.ViewModels
         {
             get { return _newViewModel; }
             set { _newViewModel = value; OnPropertyChanged(); }
+        }
+        
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            switch (propertyChangedEventArgs.PropertyName)
+            {
+                case "SelectedMeasurement":
+                    foreach (var measurementViewModel in Measurements)
+                    {
+                        measurementViewModel.IsEnabled = false;
+                    }
+                    SelectedMeasurement.IsEnabled = true;
+                    break;
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

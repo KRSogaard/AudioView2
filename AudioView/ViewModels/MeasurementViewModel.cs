@@ -28,6 +28,7 @@ namespace AudioView.ViewModels
         public int MinorClockSecondaryItemId { get; set; }
         public int MajorClockMainItemId { get; set; }
         public int MajorClockSecondaryItemId { get; set; }
+        public string ProjectName { get; set; }
 
         public void MeasurementViewModel()
         {
@@ -43,43 +44,42 @@ namespace AudioView.ViewModels
 
         public MeasurementViewModel(Guid id, MeasurementSettings settings)
         {
-            popOutWindows = new List<Window>();
-            var reader = new MockMeterReader();
-            this.engine = new AudioViewEngine(settings.MinorInterval, settings.MajorInterval, reader);
-            this.settings = settings;
+            //popOutWindows = new List<Window>();
+            //var reader = new MockMeterReader();
+            //this.engine = new AudioViewEngine(settings.MinorInterval, settings.MajorInterval, reader);
+            //this.settings = settings;
 
-            MinorClock = new AudioViewCountDownViewModel(false,
-                    settings.MinorInterval,
-                    settings.DBLimit,
-                    settings.MinorClockMainItemId,
-                    settings.MinorClockSecondaryItemId);
-            MajorClock = new AudioViewCountDownViewModel(true,
-                    settings.MajorInterval,
-                    settings.DBLimit,
-                    settings.MajorClockMainItemId,
-                    settings.MajorClockSecondaryItemId);
-            MinorGraph = new AudioViewGraphViewModel(false,
-                    settings.BarsDisplayed,
-                    settings.DBLimit,
-                    settings.MinorInterval,
-                    settings.GraphLowerBound,
-                    settings.GraphUpperBound);
-            MajorGraph = new AudioViewGraphViewModel(false,
-                    settings.BarsDisplayed,
-                    settings.DBLimit,
-                    settings.MajorInterval,
-                    settings.GraphLowerBound,
-                    settings.GraphUpperBound);
+            //MinorClock = new AudioViewCountDownViewModel(false,
+            //        settings.MinorInterval,
+            //        settings.DBLimit,
+            //        settings.MinorClockMainItemId,
+            //        settings.MinorClockSecondaryItemId);
+            //MajorClock = new AudioViewCountDownViewModel(true,
+            //        settings.MajorInterval,
+            //        settings.DBLimit,
+            //        settings.MajorClockMainItemId,
+            //        settings.MajorClockSecondaryItemId);
+            //MinorGraph = new AudioViewGraphViewModel(false,
+            //        settings.BarsDisplayed,
+            //        settings.DBLimit,
+            //        settings.MinorInterval,
+            //        settings.GraphLowerBound,
+            //        settings.GraphUpperBound);
+            //MajorGraph = new AudioViewGraphViewModel(true,
+            //        settings.BarsDisplayed,
+            //        settings.DBLimit,
+            //        settings.MajorInterval,
+            //        settings.GraphLowerBound,
+            //        settings.GraphUpperBound);
 
-            this.engine.RegisterListener(MinorGraph);
-            this.engine.RegisterListener(MajorGraph);
-            this.engine.RegisterListener(MinorClock);
-            this.engine.RegisterListener(MajorClock);
-            this.engine.Start();
+            //this.engine.RegisterListener(MinorGraph);
+            //this.engine.RegisterListener(MajorGraph);
+            //this.engine.RegisterListener(MinorClock);
+            //this.engine.RegisterListener(MajorClock);
+            //this.engine.Start();
 
-            //Title = newViewModel.ProjectName;
-            Title = "Test Reading";
-            // More here
+            Title = settings.ProjectName;
+
         }
 
         private string title;
@@ -176,10 +176,10 @@ namespace AudioView.ViewModels
             set {
                 _isEnabled = value;
                 OnPropertyChanged();
-                MinorClock.IsEnabled = value;
-                MajorClock.IsEnabled = value;
-                MinorGraph.IsEnabled = value;
-                MajorGraph.IsEnabled = value;
+                //MinorClock.IsEnabled = value;
+                //MajorClock.IsEnabled = value;
+                //MinorGraph.IsEnabled = value;
+                //MajorGraph.IsEnabled = value;
             }
         }
 

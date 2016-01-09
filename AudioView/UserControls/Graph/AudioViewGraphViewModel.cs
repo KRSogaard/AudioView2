@@ -88,6 +88,27 @@ namespace AudioView.UserControls.Graph
             set { _maxHeight = value; OnPropertyChanged(); }
         }
 
+        public bool _isCustomSpan;
+        public bool IsCustomSpan
+        {
+            get { return _isCustomSpan; }
+            set { _isCustomSpan = value; OnPropertyChanged(); }
+        }
+
+        public DateTime _leftDate;
+        public DateTime LeftDate
+        {
+            get { return _leftDate; }
+            set { _leftDate = value; OnPropertyChanged(); }
+        }
+
+        public DateTime _rightDate;
+        public DateTime RightDate
+        {
+            get { return _rightDate; }
+            set { _rightDate = value; OnPropertyChanged(); }
+        }
+
         #region IMeterListener Members
         public Task OnMinor(DateTime time, ReadingData data)
         {
