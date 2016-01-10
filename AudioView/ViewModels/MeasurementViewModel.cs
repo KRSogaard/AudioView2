@@ -2,6 +2,8 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Net;
+using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,73 +12,61 @@ using System.Windows.Input;
 using System.Windows.Media;
 using AudioView.Common;
 using AudioView.Common.Engine;
+using AudioView.Common.Listeners;
 using AudioView.UserControls.CountDown;
 using AudioView.UserControls.Graph;
 using GalaSoft.MvvmLight.CommandWpf;
 
 namespace AudioView.ViewModels
 {
-    public class MeasurementSettings
-    {
-        public TimeSpan MinorInterval { get; set; }
-        public TimeSpan MajorInterval { get; set; }
-        public int BarsDisplayed { get; set; }
-        public int DBLimit { get; set; }
-        public int GraphUpperBound { get; set; }
-        public int GraphLowerBound { get; set; }
-        public int MinorClockMainItemId { get; set; }
-        public int MinorClockSecondaryItemId { get; set; }
-        public int MajorClockMainItemId { get; set; }
-        public int MajorClockSecondaryItemId { get; set; }
-        public string ProjectName { get; set; }
-
-        public void MeasurementViewModel()
-        {
-            BarsDisplayed = 15;
-        }
-    }
-
     public class MeasurementViewModel : INotifyPropertyChanged
     {
         private List<Window> popOutWindows;
         public AudioViewEngine engine { get; set; }
         private MeasurementSettings settings;
+        private DataStorageMeterListener dataStorage;
+        private DateTime started;
 
         public MeasurementViewModel(Guid id, MeasurementSettings settings)
         {
-            //popOutWindows = new List<Window>();
-            //var reader = new MockMeterReader();
-            //this.engine = new AudioViewEngine(settings.MinorInterval, settings.MajorInterval, reader);
-            //this.settings = settings;
+            started = DateTime.Now;
+            popOutWindows = new List<Window>();
+            var reader = new MockMeterReader();
+            this.engine = new AudioViewEngine(settings.MinorInterval, settings.MajorInterval, reader);
+            this.settings = settings;
 
-            //MinorClock = new AudioViewCountDownViewModel(false,
-            //        settings.MinorInterval,
-            //        settings.DBLimit,
-            //        settings.MinorClockMainItemId,
-            //        settings.MinorClockSecondaryItemId);
-            //MajorClock = new AudioViewCountDownViewModel(true,
-            //        settings.MajorInterval,
-            //        settings.DBLimit,
-            //        settings.MajorClockMainItemId,
-            //        settings.MajorClockSecondaryItemId);
-            //MinorGraph = new AudioViewGraphViewModel(false,
-            //        settings.BarsDisplayed,
-            //        settings.DBLimit,
-            //        settings.MinorInterval,
-            //        settings.GraphLowerBound,
-            //        settings.GraphUpperBound);
-            //MajorGraph = new AudioViewGraphViewModel(true,
-            //        settings.BarsDisplayed,
-            //        settings.DBLimit,
-            //        settings.MajorInterval,
-            //        settings.GraphLowerBound,
-            //        settings.GraphUpperBound);
+            MinorClock = new AudioViewCountDownViewModel(false,
+                    settings.MinorInterval,
+                    settings.DBLimit,
+                    settings.MinorClockMainItemId,
+                    settings.MinorClockSecondaryItemId);
+            MajorClock = new AudioViewCountDownViewModel(true,
+                    settings.MajorInterval,
+                    settings.DBLimit,
+                    settings.MajorClockMainItemId,
+                    settings.MajorClockSecondaryItemId);
+            MinorGraph = new AudioViewGraphViewModel(false,
+                    settings.BarsDisplayed,
+                    settings.DBLimit,
+                    settings.MinorInterval,
+                    settings.GraphLowerBound,
+                    settings.GraphUpperBound);
+            MajorGraph = new AudioViewGraphViewModel(true,
+                    settings.BarsDisplayed,
+                    settings.DBLimit,
+                    settings.MajorInterval,
+                    settings.GraphLowerBound,
+                    settings.GraphUpperBound);
 
-            //this.engine.RegisterListener(MinorGraph);
-            //this.engine.RegisterListener(MajorGraph);
-            //this.engine.RegisterListener(MinorClock);
-            //this.engine.RegisterListener(MajorClock);
-            //this.engine.Start();
+            this.engine.RegisterListener(MinorGraph);
+            this.engine.RegisterListener(MajorGraph);
+            this.engine.RegisterListener(MinorClock);
+            this.engine.RegisterListener(MajorClock);
+
+            dataStorage = new DataStorageMeterListener(id, settings);
+            this.engine.RegisterListener(dataStorage);
+
+            this.engine.Start();
 
             Title = settings.ProjectName;
 
@@ -94,6 +84,49 @@ namespace AudioView.ViewModels
             get
             {
                 return new SolidColorBrush(ColorSettings.AxisColor);
+            }
+        }
+
+        public MeasurementSettings Settings
+        {
+            get { return settings; }
+        }
+
+        public string DBLimit
+        {
+            get { return settings.DBLimit + "dB."; }
+        }
+        public string MinorInterval
+        {
+            get { return settings.MinorInterval.ToString(); }
+        }
+        public string MajorInterval
+        {
+            get { return settings.MajorInterval.ToString(); }
+        }
+        public string Port
+        {
+            get { return settings.Port.ToString(); }
+        }
+
+        public string Started
+        {
+            get { return started.ToString("g"); }
+        }
+
+        public string MyIp
+        {
+            get
+            {
+                var host = Dns.GetHostEntry(Dns.GetHostName());
+                foreach (var ip in host.AddressList)
+                {
+                    if (ip.AddressFamily == AddressFamily.InterNetwork)
+                    {
+                        return ip.ToString();
+                    }
+                }
+                return "Unknown";
             }
         }
 
@@ -176,10 +209,10 @@ namespace AudioView.ViewModels
             set {
                 _isEnabled = value;
                 OnPropertyChanged();
-                //MinorClock.IsEnabled = value;
-                //MajorClock.IsEnabled = value;
-                //MinorGraph.IsEnabled = value;
-                //MajorGraph.IsEnabled = value;
+                MinorClock.IsEnabled = value;
+                MajorClock.IsEnabled = value;
+                MinorGraph.IsEnabled = value;
+                MajorGraph.IsEnabled = value;
             }
         }
 

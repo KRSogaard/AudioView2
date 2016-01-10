@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Concurrent;
+using System.Threading.Tasks;
 using System.Windows.Threading;
 using AudioView.Common;
 using AudioView.Common.Engine;
@@ -22,8 +23,8 @@ namespace AudioView.UserControls.Graph
         private bool isMajor;
         public AudioViewGraphViewModel(bool isMajor, int intervalsShown, int limitDb, TimeSpan interval, int minHeight, int maxHeight)
         {
-            SecondReadings = new List<Tuple<DateTime, double>>();
-            Readings = new LinkedList<Tuple<DateTime, double>>();
+            SecondReadings = new ConcurrentQueue<Tuple<DateTime, double>>();
+            Readings = new ConcurrentQueue<Tuple<DateTime, double>>();
             IntervalsShown = intervalsShown;
             Interval = interval;
             LimitDb = limitDb;
@@ -32,15 +33,15 @@ namespace AudioView.UserControls.Graph
             this.MaxHeight = maxHeight;
         }
 
-        private List<Tuple<DateTime, double>> _secondReadings;
-        public List<Tuple<DateTime, double>> SecondReadings
+        private ConcurrentQueue<Tuple<DateTime, double>> _secondReadings;
+        public ConcurrentQueue<Tuple<DateTime, double>> SecondReadings
         {
             get { return _secondReadings; }
             set { _secondReadings = value; OnPropertyChanged(); }
         }
 
-        private LinkedList<Tuple<DateTime, double>> _readings;
-        public LinkedList<Tuple<DateTime, double>> Readings
+        private ConcurrentQueue<Tuple<DateTime, double>> _readings;
+        public ConcurrentQueue<Tuple<DateTime, double>> Readings
         {
             get { return _readings; }
             set { _readings = value; OnPropertyChanged(); }
@@ -134,10 +135,11 @@ namespace AudioView.UserControls.Graph
 
         private void AddReading(DateTime time, ReadingData data)
         {
-            Readings.AddLast(new Tuple<DateTime, double>(time, data.LAeq));
-            if (Readings.Count >= this.IntervalsShown * 2)
+            Readings.Enqueue(new Tuple<DateTime, double>(time, data.LAeq));
+            while (Readings.Count >= this.IntervalsShown * 2)
             {
-                Readings.RemoveFirst();
+                Tuple<DateTime, double> dequeue;
+                Readings.TryDequeue(out dequeue);
             }
         }
 
@@ -148,7 +150,7 @@ namespace AudioView.UserControls.Graph
 
             return Task.Factory.StartNew(() =>
             {
-                SecondReadings.Add(new Tuple<DateTime, double>(time, data.LAeq));
+                SecondReadings.Enqueue(new Tuple<DateTime, double>(time, data.LAeq));
             });
         }
 

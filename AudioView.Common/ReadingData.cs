@@ -9,5 +9,10 @@ namespace AudioView.Common
     public class ReadingData
     {
         public double LAeq { get; set; }
+
+        public string SerializeToOneLine(string splitter)
+        {
+            return LAeq.ToString();
+        }
     }
 }

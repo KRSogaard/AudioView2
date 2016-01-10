@@ -85,6 +85,9 @@
                 <Expander Header="Local Unit" Margin="0" IsExpanded="{Binding UseLocal}">
                     <Grid>
                         <StackPanel>
+                            <Label Content="Listen Port: (For remote connections)" />
+                            <TextBox Text="{Binding ListenPort}" />
+                            
                             <Label Content="Port:" />
                             <ListBox x:Name="listBox" Height="100" ItemsSource="{Binding DevicePortList}" />
                         </StackPanel>

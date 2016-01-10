@@ -25,16 +25,22 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="30" />
         </Grid.RowDefinitions>
-        <TabControl TabStripPlacement="Left"
+        
+        <TabControl TabStripPlacement="Top"
                 Margin="10">
             <TabItem Header="Measurements">
                 <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" MinWidth="200" />
+                        <ColumnDefinition Width="6*" />
+                    </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
                     <Menu Grid.Row="0"
+                          Grid.ColumnSpan="2"
                       Margin="5"
                       VerticalAlignment="Stretch"
                       HorizontalAlignment="Left">
@@ -45,7 +51,35 @@
                         <MenuItem Header="Close measurement" IsEnabled="{Binding MeasurementSelected}" Command="{Binding CloseMeasurementCommand}"/>
                     </Menu>
 
-                    <TabControl Grid.Row="1" 
+                    <StackPanel Grid.Row="1" VerticalAlignment="Bottom" DataContext="{Binding SelectedMeasurement}" Visibility="{Binding ShowDetails, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
+                        <Label FontSize="24" FontWeight="ExtraBold" Content="{Binding Title}" />
+                        <StackPanel Orientation="Horizontal">
+                            <Label FontWeight="Bold" Content="dB Limit:" />
+                            <Label Margin="5,0,0,0" Content="{Binding DBLimit}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label FontWeight="Bold" Content="Minor Interval:" />
+                            <Label Margin="5,0,0,0" Content="{Binding MinorInterval}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label FontWeight="Bold" Content="Major Interval:" />
+                            <Label Margin="5,0,0,0" Content="{Binding MajorInterval}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label FontWeight="Bold" Content="Started:" />
+                            <Label Margin="5,0,0,0" Content="{Binding Started}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label FontWeight="Bold" Content="Ip:" />
+                            <Label Margin="5,0,0,0" Content="{Binding MyIp}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label FontWeight="Bold" Content="Port:" />
+                            <Label Margin="5,0,0,0" Content="{Binding Port}" />
+                        </StackPanel>
+                    </StackPanel>
+                    
+                    <TabControl Grid.Row="1" Grid.Column="1"
                         ItemsSource="{Binding Measurements}"
                         SelectedItem="{Binding SelectedMeasurement}"
                         >

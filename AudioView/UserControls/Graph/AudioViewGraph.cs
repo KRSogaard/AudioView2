@@ -56,7 +56,7 @@ namespace AudioView.UserControls
             Content = b;
 
             this.timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(100); // 5 fps
+            timer.Interval = TimeSpan.FromMilliseconds(41); // 5 fps
             timer.Tick += Tick;
             timer.Start();
 
@@ -157,6 +157,10 @@ namespace AudioView.UserControls
             else
             {
                 this.latestReading = getLastestReading();
+                if (this.latestReading + this.interval >= DateTime.Now)
+                {
+                    this.latestReading = DateTime.Now;
+                }
                 this.leftDateTime = calculateLeftDateTime();
             }
             this.graphTimeSpan = (latestReading - leftDateTime).TotalMilliseconds; // We need this value many times, so no need to recalculate everytime
@@ -176,8 +180,13 @@ namespace AudioView.UserControls
 
                 this.labelsCanvas = new Canvas()
                 {
-                    RenderTransform = new TranslateTransform(0, 0)
+                    RenderTransform = new TranslateTransform(0, 0),
+                    Height = Math.Max(this.bottomMargin, this.ActualHeight),
+                    Width = Math.Max(this.leftMargin, this.ActualWidth - leftMargin),
+                    ClipToBounds = true
                 };
+                Canvas.SetTop(labelsCanvas, 0);
+                Canvas.SetLeft(labelsCanvas, leftMargin);
                 this.canvas.Children.Add(labelsCanvas);
 
                 // Create the inner canvas
@@ -204,7 +213,7 @@ namespace AudioView.UserControls
             DateTime end = DateTime.Now;
             var label = new Label()
             {
-                Content = "Render time: " + (end - start).TotalMilliseconds + " ms."
+                Content = "x: " + xPixelValue + " p/ms. - y: " + yPixelValue + " p/ms. - Left: " + this.leftDateTime.ToString("hh:mm:ss.fff") + " Right: " + this.latestReading.ToString("hh:mm:ss.fff") + " - Diff: " + (latestReading - leftDateTime).TotalMilliseconds + " ms - Render time: " + (end - start).TotalMilliseconds + " ms. "
             };
             Canvas.SetLeft(label, 10);
             Canvas.SetTop(label, 10);
@@ -235,14 +244,25 @@ namespace AudioView.UserControls
                 Canvas.SetLeft(bar, x - (int)Math.Ceiling((double)barWidth / 2.0));
                 this.innerCanvas.Children.Add(bar);
 
+
+                var labelValue = new Label()
+                {
+                    Content = (int)Math.Ceiling(reading.Item2),
+                    FontWeight = FontWeights.Bold
+                };
+                this.innerCanvas.Children.Add(labelValue);
+                var size = GetLabelSize(labelValue);
+                Canvas.SetTop(labelValue, y);
+                Canvas.SetLeft(labelValue, x - (int)Math.Ceiling((double)size.Width / 2.0));
+
                 var label = new Label()
                 {
                     Content = reading.Item1.ToString("HH:mm")
                 };
                 this.labelsCanvas.Children.Add(label);
-                var size = GetLabelSize(label);
+                size = GetLabelSize(label);
                 Canvas.SetTop(label, this.ActualHeight - bottomMargin + (int)Math.Ceiling((bottomMargin / 2.0) - (size.Height / 2)));
-                Canvas.SetLeft(label, leftMargin + x - (int)Math.Ceiling((double)size.Width / 2));
+                Canvas.SetLeft(label, x - (int)Math.Ceiling((double)size.Width / 2));
             }
         }
 
@@ -329,13 +349,11 @@ namespace AudioView.UserControls
 
         private double calculateYPixelValue()
         {
-            return ((double)this.ActualHeight - (double)this.bottomMargin) / (maxHeight - minHeight);
+            return Math.Ceiling((((double)this.ActualHeight - (double)this.bottomMargin) / (maxHeight - minHeight)) * 100000) / 100000;
         }
         private double calculateXPixelValue()
         {
-            double workingWidth = this.ActualWidth - leftMargin;
-            var test = (workingWidth / graphTimeSpan);
-            return test;
+            return Math.Ceiling(((this.ActualWidth - leftMargin) / graphTimeSpan) * 100000) / 100000;
         }
 
         private int ConvertValueToGraph(double value)
@@ -350,7 +368,7 @@ namespace AudioView.UserControls
 
         private int CalculateBarWidth()
         {
-            return (int)Math.Ceiling(xPixelValue * new TimeSpan(0,1,0).TotalMilliseconds * 0.5);
+            return (int)Math.Ceiling(xPixelValue * this.interval.TotalMilliseconds * 0.5);
         }
 
         private DateTime calculateLeftDateTime()

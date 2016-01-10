@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using AudioView.Annotations;
+using AudioView.Common;
 using AudioView.UserControls.CountDown;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
@@ -16,6 +17,7 @@ namespace AudioView.ViewModels
 {
     public class NewMeasurementViewModel : INotifyPropertyChanged
     {
+        private int DefaultPort = 13674;
         private bool isRemoteTested { get; set; }
         private MainViewModel MainViewModel { get; set; }
 
@@ -45,6 +47,13 @@ namespace AudioView.ViewModels
             MinorClockSecondaryItem = ClockItems.FirstOrDefault(x => x.Id == 0);
             MajorClockMainItem = ClockItems.FirstOrDefault(x => x.Id == 1);
             MajorClockSecondaryItem = ClockItems.FirstOrDefault(x => x.Id == 2);
+
+            // Find an avalible port
+            while (mainViewModel.Measurements.Any(x => x.Settings.Port == DefaultPort))
+            {
+                DefaultPort++;
+            }
+            ListenPort = DefaultPort.ToString();
 
             GetConnectedDevices().ContinueWith(result =>
             {
@@ -86,6 +95,20 @@ namespace AudioView.ViewModels
         {
             get { return _majorClockSecondaryItem; }
             set { _majorClockSecondaryItem = value; }
+        }
+
+        private int _listenPort;
+        public string ListenPort
+        {
+            get { return _listenPort.ToString(); }
+            set
+            {
+                int tryParse;
+                if (int.TryParse(value, out tryParse) && tryParse >= 0)
+                {
+                    _listenPort = tryParse;
+                }
+                OnPropertyChanged(); }
         }
 
         private string _projectName;
@@ -308,7 +331,8 @@ namespace AudioView.ViewModels
                 MinorClockMainItemId = MinorClockMainItem.Id,
                 MinorClockSecondaryItemId = MinorClockSecondaryItem.Id,
                 MajorInterval = new TimeSpan(_majorIntervalHours, _majorIntervalMinutes, _majorIntervalSeconds),
-                MinorInterval = new TimeSpan(_minorIntervalHours, _minorIntervalMinutes, _minorIntervalSeconds)
+                MinorInterval = new TimeSpan(_minorIntervalHours, _minorIntervalMinutes, _minorIntervalSeconds),
+                Port = int.Parse(ListenPort)
             };
         }
 

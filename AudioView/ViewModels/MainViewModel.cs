@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
+using AudioView.Common.Listeners;
 using GalaSoft.MvvmLight.CommandWpf;
 
 namespace AudioView.ViewModels
@@ -21,6 +22,9 @@ namespace AudioView.ViewModels
             SelectedMeasurement = null;
             NewViewModel = new NewMeasurementViewModel(this);
             PropertyChanged += OnPropertyChanged;
+
+            // Load offline files
+            DataStorageMeterListener.UploadLocalFiles();
 
             DispatcherTimer timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromMilliseconds(15);
@@ -108,6 +112,12 @@ namespace AudioView.ViewModels
             set { _showNewFlow = value; OnPropertyChanged(); }
         }
 
+        private bool _showDetails;
+        public bool ShowDetails
+        {
+            get { return SelectedMeasurement != null; }
+        }
+
         private int _lagTest;
         public int LagTest
         {
@@ -149,6 +159,7 @@ namespace AudioView.ViewModels
                         measurementViewModel.IsEnabled = false;
                     }
                     SelectedMeasurement.IsEnabled = true;
+                    OnPropertyChanged("ShowDetails");
                     break;
             }
         }
