@@ -26,12 +26,13 @@ namespace AudioView.Common.Listeners
         private MeasurementSettings Settings { get; set; }
         private object initalCreateLock = new object();
         private Task initalCreate;
+        private DateTime created;
 
-        public DataStorageMeterListener(Guid id, MeasurementSettings settings)
+        public DataStorageMeterListener(Guid id, DateTime started, MeasurementSettings settings)
         {
             Id = id;
             Settings = settings;
-            ;
+            created = started;
 
             initalCreate = Task.Factory.StartNew(async () =>
             {
@@ -44,6 +45,7 @@ namespace AudioView.Common.Listeners
                             audioViewEntities.Projects.Add(new Project()
                             {
                                 Id = id,
+                                Created = started,
                                 DBLimit = settings.DBLimit,
                                 MajorInterval = settings.MajorInterval.Ticks,
                                 MinorInterval = settings.MinorInterval.Ticks,
@@ -166,6 +168,7 @@ namespace AudioView.Common.Listeners
                     File.WriteAllLines(file.FullName, new[]{ JsonConvert.SerializeObject(new MeasurementSettingsDataStorageWarpper()
                     {
                         Id = Id,
+                        Created = created,
                         MeasurementSettings = Settings
                     })});
                 }
@@ -215,6 +218,7 @@ namespace AudioView.Common.Listeners
                                     audioViewEntities.Projects.Add(new Project()
                                     {
                                         Id = settings.Id,
+                                        Created = settings.Created,
                                         DBLimit = settings.MeasurementSettings.DBLimit,
                                         MajorInterval = settings.MeasurementSettings.MajorInterval.Ticks,
                                         MinorInterval = settings.MeasurementSettings.MinorInterval.Ticks,
@@ -279,6 +283,7 @@ namespace AudioView.Common.Listeners
     public class MeasurementSettingsDataStorageWarpper
     {
         public Guid Id { get; set; }
+        public DateTime Created { get; set; }
         public MeasurementSettings MeasurementSettings { get; set; }
     }
 }

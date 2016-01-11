@@ -16,10 +16,11 @@ using AudioView.Common.Listeners;
 using AudioView.UserControls.CountDown;
 using AudioView.UserControls.Graph;
 using GalaSoft.MvvmLight.CommandWpf;
+using Prism.Mvvm;
 
 namespace AudioView.ViewModels
 {
-    public class MeasurementViewModel : INotifyPropertyChanged
+    public class MeasurementViewModel : BindableBase
     {
         private List<Window> popOutWindows;
         public AudioViewEngine engine { get; set; }
@@ -63,7 +64,7 @@ namespace AudioView.ViewModels
             this.engine.RegisterListener(MinorClock);
             this.engine.RegisterListener(MajorClock);
 
-            dataStorage = new DataStorageMeterListener(id, settings);
+            dataStorage = new DataStorageMeterListener(id, DateTime.Now, settings);
             this.engine.RegisterListener(dataStorage);
 
             this.engine.Start();
@@ -134,28 +135,28 @@ namespace AudioView.ViewModels
         public AudioViewCountDownViewModel MinorClock
         {
             get { return minorClockViewModel; }
-            set { minorClockViewModel = value; OnPropertyChanged(); }
+            set { SetProperty(ref minorClockViewModel, value); }
         }
 
         private AudioViewCountDownViewModel majorClockViewModel;
         public AudioViewCountDownViewModel MajorClock
         {
             get { return majorClockViewModel; }
-            set { majorClockViewModel = value; OnPropertyChanged(); }
+            set { SetProperty(ref majorClockViewModel, value); }
         }
 
         private AudioViewGraphViewModel minorGraph;
         public AudioViewGraphViewModel MinorGraph
         {
             get { return minorGraph; }
-            set { minorGraph = value; OnPropertyChanged(); }
+            set { SetProperty(ref minorGraph, value); }
         }
 
         private AudioViewGraphViewModel majorGraph;
         public AudioViewGraphViewModel MajorGraph
         {
             get { return majorGraph; }
-            set { majorGraph = value; OnPropertyChanged(); }
+            set { SetProperty(ref majorGraph, value); }
         }
 
         public ICommand NewLiveReadingsPopUp
@@ -214,13 +215,6 @@ namespace AudioView.ViewModels
                 MinorGraph.IsEnabled = value;
                 MajorGraph.IsEnabled = value;
             }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            var handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

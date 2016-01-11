@@ -10,6 +10,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Created" Type="datetime" Nullable="false" />
           <Property Name="MinorInterval" Type="bigint" Nullable="false" />
           <Property Name="MajorInterval" Type="bigint" Nullable="false" />
           <Property Name="DBLimit" Type="int" Nullable="false" />
@@ -69,6 +70,7 @@
           <Property Name="DBLimit" Type="Int32" Nullable="false" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Readings" Relationship="AudioViewModel.FK_Readings_Projects" FromRole="Project" ToRole="Reading" />
+          <Property Name="Created" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
         <EntityType Name="Reading">
           <Key>
@@ -104,6 +106,7 @@
           <EntitySetMapping Name="Projects">
             <EntityTypeMapping TypeName="AudioViewModel.Project">
               <MappingFragment StoreEntitySet="Projects">
+                <ScalarProperty Name="Created" ColumnName="Created" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="DBLimit" ColumnName="DBLimit" />
                 <ScalarProperty Name="MajorInterval" ColumnName="MajorInterval" />

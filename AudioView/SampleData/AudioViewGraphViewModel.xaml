@@ -1,4 +1,0 @@
-﻿<graph:AudioViewGraphViewModel
-  xmlns:vm="clr-namespace:AudioView.ViewModels"
-  xmlns:graph="clr-namespace:AudioView.UserControls.Graph">
-</graph:AudioViewGraphViewModel>

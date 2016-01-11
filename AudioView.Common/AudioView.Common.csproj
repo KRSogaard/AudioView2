@@ -79,6 +79,9 @@
     <Compile Include="DataAccess\Reading.cs">
       <DependentUpon>DatabaseModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Data\ConverterHelepr.cs" />
+    <Compile Include="Data\Project.cs" />
+    <Compile Include="Data\Reading.cs" />
     <Compile Include="Listeners\DataStorageMeterListener.cs" />
     <Compile Include="Engine\AudioViewEngine.cs" />
     <Compile Include="Engine\IMeterListener.cs" />
@@ -89,6 +92,8 @@
     <Compile Include="Meter\MeterReading.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadingData.cs" />
+    <Compile Include="Services\DatabaseService.cs" />
+    <Compile Include="Services\IDatabaseService.cs" />
     <Compile Include="TaskHelper.cs" />
   </ItemGroup>
   <ItemGroup>

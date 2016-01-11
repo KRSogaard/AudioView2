@@ -71,6 +71,14 @@
       <HintPath>packages\NLog.4.2.3\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Prism, Version=6.1.0.0, Culture=neutral, PublicKeyToken=91a96d2a154366d8, processorArchitecture=MSIL">
+      <HintPath>packages\Prism.Core.6.1.0\lib\net45\Prism.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Prism.Wpf, Version=6.1.0.0, Culture=neutral, PublicKeyToken=91a96d2a154366d8, processorArchitecture=MSIL">
+      <HintPath>packages\Prism.Wpf.6.1.0\lib\net45\Prism.Wpf.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
@@ -108,13 +116,18 @@
     <Compile Include="Properties\Annotations1.cs" />
     <Compile Include="SizeObserver.cs" />
     <Compile Include="UserControls\Graph\AudioViewGraphViewModel.cs" />
+    <Compile Include="UserControls\HistoryControl.xaml.cs">
+      <DependentUpon>HistoryControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\MeasurementControl.xaml.cs">
       <DependentUpon>MeasurementControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\NewMeasurementControl.xaml.cs">
       <DependentUpon>NewMeasurementControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\ColorSettings.cs" />
+    <Compile Include="ViewModels\HistoryViewModel.cs" />
     <Compile Include="ViewModels\LiveReadingViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\MeasurementViewModel.cs" />
@@ -140,6 +153,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="UserControls\CountDown\AudioViewCountDown.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\HistoryControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -184,11 +201,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <DesignData Include="SampleData\AudioViewGraphViewModel.xaml">
-      <SubType>Designer</SubType>
-    </DesignData>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AudioView.Common\AudioView.Common.csproj">

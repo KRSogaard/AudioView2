@@ -12,14 +12,16 @@ using AudioView.Common;
 using AudioView.UserControls.CountDown;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
+using Prism.Mvvm;
 
 namespace AudioView.ViewModels
 {
-    public class NewMeasurementViewModel : INotifyPropertyChanged
+    public class NewMeasurementViewModel : BindableBase
     {
         private int DefaultPort = 13674;
         private bool isRemoteTested { get; set; }
         private MainViewModel MainViewModel { get; set; }
+        private MainViewModel mainViewModel;
 
         public NewMeasurementViewModel(MainViewModel mainViewModel)
         {
@@ -76,25 +78,25 @@ namespace AudioView.ViewModels
         public ClockItem MinorClockMainItem
         {
             get { return _minorClockMainItem; }
-            set { _minorClockMainItem = value; }
+            set { SetProperty(ref _minorClockMainItem, value); }
         }
         private ClockItem _minorClockSecondaryItem;
         public ClockItem MinorClockSecondaryItem
         {
             get { return _minorClockSecondaryItem; }
-            set { _minorClockSecondaryItem = value; }
+            set { SetProperty(ref _minorClockSecondaryItem, value); }
         }
         private ClockItem _majorClockMainItem;
         public ClockItem MajorClockMainItem
         {
             get { return _majorClockMainItem; }
-            set { _majorClockMainItem = value; }
+            set { SetProperty(ref _majorClockMainItem, value); }
         }
         private ClockItem _majorClockSecondaryItem;
         public ClockItem MajorClockSecondaryItem
         {
             get { return _majorClockSecondaryItem; }
-            set { _majorClockSecondaryItem = value; }
+            set { SetProperty(ref _majorClockSecondaryItem, value); }
         }
 
         private int _listenPort;
@@ -106,7 +108,7 @@ namespace AudioView.ViewModels
                 int tryParse;
                 if (int.TryParse(value, out tryParse) && tryParse >= 0)
                 {
-                    _listenPort = tryParse;
+                    SetProperty(ref _listenPort, tryParse);
                 }
                 OnPropertyChanged(); }
         }
@@ -115,21 +117,21 @@ namespace AudioView.ViewModels
         public string ProjectName
         {
             get { return _projectName; }
-            set { _projectName = value; OnPropertyChanged(); }
+            set { SetProperty(ref _projectName, value); }
         }
 
         private string _remoteIpAddress;
         public string RemoteIpAddress
         {
             get { return _remoteIpAddress; }
-            set { _remoteIpAddress = value; OnPropertyChanged(); }
+            set { SetProperty(ref _remoteIpAddress, value); }
         }
 
         private string _remotePort;
         public string RemotePort
         {
             get { return _remotePort; }
-            set { _remotePort = value; OnPropertyChanged(); }
+            set { SetProperty(ref _remotePort, value); }
         }
 
         private bool _useLocal;
@@ -162,21 +164,21 @@ namespace AudioView.ViewModels
         public bool IsLoading
         {
             get { return _isLoading; }
-            set { _isLoading = value; OnPropertyChanged(); }
+            set { SetProperty(ref _isLoading, value); }
         }
 
         private bool _isTesting;
         public bool IsTesting
         {
             get { return _isTesting; }
-            set { _isTesting = value; OnPropertyChanged(); }
+            set { SetProperty(ref _isTesting, value); }
         }
 
         private bool _canTest;
         public bool CanTest
         {
             get { return _canTest; }
-            set { _canTest = value; OnPropertyChanged(); }
+            set { SetProperty(ref _canTest, value); }
         }
 
         private int _minorIntervalSeconds;
@@ -188,7 +190,7 @@ namespace AudioView.ViewModels
                 int tryParse;
                 if (int.TryParse(value, out tryParse) && tryParse >= 0)
                 {
-                    _minorIntervalSeconds = tryParse;
+                    SetProperty(ref _minorIntervalSeconds, tryParse);
                 }
                 OnPropertyChanged();
             }
@@ -203,7 +205,7 @@ namespace AudioView.ViewModels
                 int tryParse;
                 if (int.TryParse(value, out tryParse) && tryParse >= 0)
                 {
-                    _majorIntervalSeconds = tryParse;
+                    SetProperty(ref _majorIntervalSeconds, tryParse);
                 }
                 OnPropertyChanged();
             }
@@ -218,7 +220,7 @@ namespace AudioView.ViewModels
                 int tryParse;
                 if (int.TryParse(value, out tryParse) && tryParse >= 0)
                 {
-                    _minorIntervalMinutes = tryParse;
+                    SetProperty(ref _minorIntervalMinutes, tryParse);
                 }
                 OnPropertyChanged();
             }
@@ -233,7 +235,7 @@ namespace AudioView.ViewModels
                 int tryParse;
                 if (int.TryParse(value, out tryParse) && tryParse >= 0)
                 {
-                    _majorIntervalMinutes = tryParse;
+                    SetProperty(ref _majorIntervalMinutes, tryParse);
                 }
                 OnPropertyChanged();
             }
@@ -248,7 +250,7 @@ namespace AudioView.ViewModels
                 int tryParse;
                 if (int.TryParse(value, out tryParse) && tryParse >= 0)
                 {
-                    _minorIntervalHours = tryParse;
+                    SetProperty(ref _minorIntervalHours, tryParse);
                 }
                 OnPropertyChanged();
             }
@@ -263,7 +265,7 @@ namespace AudioView.ViewModels
                 int tryParse;
                 if (int.TryParse(value, out tryParse) && tryParse >= 0)
                 {
-                    _majorIntervalHours = tryParse;
+                    SetProperty(ref _majorIntervalHours, tryParse);
                 }
                 OnPropertyChanged();
             }
@@ -278,7 +280,7 @@ namespace AudioView.ViewModels
                 int tryParse;
                 if (int.TryParse(value, out tryParse) && tryParse < _graphBoundUpper)
                 {
-                    _graphBoundLower = tryParse;
+                    SetProperty(ref _graphBoundLower, tryParse);
                 }
                 DBLimit = DBLimit;
                 OnPropertyChanged();
@@ -294,10 +296,9 @@ namespace AudioView.ViewModels
                 int tryParse;
                 if (int.TryParse(value, out tryParse) && tryParse > _graphBoundLower)
                 {
-                    _graphBoundUpper = tryParse;
+                    SetProperty(ref _graphBoundUpper, tryParse);
                 }
                 DBLimit = DBLimit;
-                OnPropertyChanged();
             }
         }
 
@@ -310,10 +311,8 @@ namespace AudioView.ViewModels
                 int tryParse;
                 if(int.TryParse(value, out tryParse) && tryParse >= 10)
                 {
-
-                    _dBLimit = Math.Max(_graphBoundLower, Math.Min(_graphBoundUpper, tryParse));
+                    SetProperty(ref _dBLimit, Math.Max(_graphBoundLower, Math.Min(_graphBoundUpper, tryParse)));
                 }
-                OnPropertyChanged();
             }
         }
 
@@ -376,16 +375,15 @@ namespace AudioView.ViewModels
         public ObservableCollection<string> LocalDevices
         {
             get { return _localDevices; }
-            set { _localDevices = value; OnPropertyChanged(); }
+            set { SetProperty(ref _localDevices, value); }
         }
 
         private string _selectedLocalDevice;
-        private MainViewModel mainViewModel;
 
         public string SelectedLocalDevice
         {
             get { return _selectedLocalDevice; }
-            set { _selectedLocalDevice = value; OnPropertyChanged(); }
+            set { SetProperty(ref _selectedLocalDevice, value); }
         }
 
         private Task<List<string>> GetConnectedDevices()
@@ -434,13 +432,6 @@ namespace AudioView.ViewModels
                     return false;
                 return true;
             }
-        }
-        
-        public event PropertyChangedEventHandler PropertyChanged;
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

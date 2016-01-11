@@ -1,0 +1,69 @@
+﻿<UserControl x:Class="AudioView.UserControls.HistoryControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AudioView.UserControls"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="600">
+    <Grid>
+        <TabControl>
+            <TabItem Header="Selection">
+                <StackPanel>
+                    <Expander Header="Search">
+                        <StackPanel>
+                        <Label Content="Recording Date:" />
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Between" />
+                                <DatePicker 
+                                    Margin="0, 0, 0, 0"
+                                    Width="150"
+                                    SelectedDate="{Binding SearchLeftDate}"
+                                    controls:TextBoxHelper.Watermark="Select a date" />
+                                <Label Content=" and " />
+                                <DatePicker 
+                                    Margin="0, 0, 0, 0"
+                                    Width="150"
+                                    SelectedDate="{Binding SearchRightDate}"
+                                    controls:TextBoxHelper.Watermark="Select a date" />
+                            </StackPanel>
+                            <Label Content="Project Name:" />
+                            <TextBox controls:TextBoxHelper.Watermark="Enter project name..." Text="{Binding SearchName}" />
+                            <Button Margin="0,5,0,0" Content="Search" />
+                        </StackPanel>
+                    </Expander>
+                    <DataGrid
+                        RenderOptions.ClearTypeHint="Enabled"
+                        TextOptions.TextFormattingMode="Display"
+                        Margin="0,5,0,0"
+                        ItemsSource="{Binding SearchResult}"
+                        SelectedItem="{Binding SelectedSearch}"
+                        Style="{DynamicResource AzureDataGrid}"
+                        AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Name"
+                                    Binding="{Binding ProjectName}" />
+                            <DataGridTextColumn Header="Date"
+                                    Binding="{Binding Date}" />
+                            <DataGridTextColumn Header="dB limit"
+                                    Binding="{Binding DBLimit}" />
+                            <DataGridTextColumn Header="Minor Interval"
+                                    Binding="{Binding MinorInterval}" />
+                            <DataGridTextColumn Header="Major Interval"
+                                    Binding="{Binding MajorInterval}" />
+                            <DataGridTextColumn Header="Measurements"
+                                    Binding="{Binding MeasurementsCount}" />
+                            </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Data">
+
+            </TabItem>
+            <TabItem Header="Graph">
+
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>

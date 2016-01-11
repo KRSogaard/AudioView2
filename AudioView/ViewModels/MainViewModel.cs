@@ -10,10 +10,11 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using AudioView.Common.Listeners;
 using GalaSoft.MvvmLight.CommandWpf;
+using Prism.Mvvm;
 
 namespace AudioView.ViewModels
 {
-    public class MainViewModel : INotifyPropertyChanged
+    public class MainViewModel : BindableBase
     {
         private DispatcherTimer timer;
         public MainViewModel()
@@ -25,6 +26,9 @@ namespace AudioView.ViewModels
 
             // Load offline files
             DataStorageMeterListener.UploadLocalFiles();
+
+            HistoryViewModel = new HistoryViewModel();
+            OnPropertyChanged("HistoryViewModel");
 
             DispatcherTimer timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromMilliseconds(15);
@@ -70,6 +74,8 @@ namespace AudioView.ViewModels
             }
         }
 
+        public HistoryViewModel HistoryViewModel { get; set; }
+
         public ICommand NewMeasurementCommand
         {
             get
@@ -109,7 +115,7 @@ namespace AudioView.ViewModels
         public bool ShowNewFlow
         {
             get { return _showNewFlow; }
-            set { _showNewFlow = value; OnPropertyChanged(); }
+            set { SetProperty(ref _showNewFlow, value); }
         }
 
         private bool _showDetails;
@@ -122,7 +128,7 @@ namespace AudioView.ViewModels
         public int LagTest
         {
             get { return _lagTest; }
-            set { _lagTest = value; OnPropertyChanged(); }
+            set { SetProperty(ref _lagTest, value); }
         }
         
         public bool MeasurementSelected
@@ -146,7 +152,7 @@ namespace AudioView.ViewModels
         public NewMeasurementViewModel NewViewModel
         {
             get { return _newViewModel; }
-            set { _newViewModel = value; OnPropertyChanged(); }
+            set { SetProperty(ref _newViewModel, value); }
         }
         
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
@@ -162,13 +168,6 @@ namespace AudioView.ViewModels
                     OnPropertyChanged("ShowDetails");
                     break;
             }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            var handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
