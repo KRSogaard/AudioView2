@@ -46,7 +46,7 @@
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <userControls:AudioViewGraph HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
                                      MinHeight="100" MinWidth="100" 
-                                     DataContext="{Binding MajorGraph}"
+                                     DataContext="{Binding}"
                                      LimitColor="{StaticResource ControlsValidationBrush}"
                                      BarWarrningColor="{StaticResource ValidationSummaryColor5}"
                                      AxisColor="{StaticResource SeperatorBrush}"

@@ -199,8 +199,8 @@ namespace AudioView.ViewModels
                     settings.BarsDisplayed,
                     settings.DBLimit,
                     isMajor ? settings.MajorInterval : settings.MinorInterval,
-                    settings.MajorClockMainItemId,
-                    settings.MajorClockSecondaryItemId);
+                    settings.GraphLowerBound,
+                    settings.GraphUpperBound);
             model.Title = Title;
             this.engine.RegisterListener(model);
             window.DataContext = model;

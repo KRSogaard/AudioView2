@@ -342,6 +342,7 @@ namespace AudioView.UserControls
                     {
                         Content = (int)Math.Ceiling(reading.Item2),
                         FontWeight = FontWeights.Bold,
+                        FontSize = 16,
                         Width = Math.Max(0, barWidth),
                         HorizontalContentAlignment = HorizontalAlignment.Center
                     };
@@ -422,7 +423,7 @@ namespace AudioView.UserControls
         private void DrawAxis()
         {
             int labelRightMargin = 4;
-            int axisInterval = (int)Math.Round(((maxHeight - minHeight) / 10) / 5.0) * 5;
+            int axisInterval = Math.Max(1, (int)Math.Round(((maxHeight - minHeight) / 10) / 5.0) * 5);
             for (int i = (int)Math.Ceiling(minHeight); i < maxHeight; i = i + axisInterval)
             {
                 var y = ConvertValueToGraph(i);
@@ -441,7 +442,8 @@ namespace AudioView.UserControls
                 {
                     Content = i,
                     Width = leftMargin - labelRightMargin,
-                    HorizontalContentAlignment = HorizontalAlignment.Right
+                    HorizontalContentAlignment = HorizontalAlignment.Right,
+                    FontSize = 16
                 };
                 this.canvas.Children.Add(label);
                 var size = GetLabelSize(label);

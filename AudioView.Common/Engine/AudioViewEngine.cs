@@ -52,6 +52,8 @@ namespace AudioView.Common.Engine
 
         public void RegisterListener(IMeterListener listener)
         {
+            if(listener == null)
+                return;
             logger.Debug("Registering new meter listener {0}.", listener);
             lock (this.listeners)
             {
@@ -63,6 +65,9 @@ namespace AudioView.Common.Engine
 
         public void UnRegisterListener(IMeterListener listener)
         {
+            if (listener == null)
+                return;
+
             logger.Debug("Removing meter listener {0}.", listener);
             lock (this.listeners)
             {
