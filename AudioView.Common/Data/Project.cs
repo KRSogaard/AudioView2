@@ -10,8 +10,8 @@ namespace AudioView.Common.Data
     public class Project
     {
         public Guid Id { get; set; }
-        public long MinorInterval { get; set; }
-        public long MajorInterval { get; set; }
+        public TimeSpan MinorInterval { get; set; }
+        public TimeSpan MajorInterval { get; set; }
         public int DBLimit { get; set; }
         public string Name { get; set; }
         public DateTime Created { get; set; }

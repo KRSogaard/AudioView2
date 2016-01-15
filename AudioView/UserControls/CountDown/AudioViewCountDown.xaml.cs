@@ -27,10 +27,15 @@ namespace AudioView.UserControls.CountDown
     public partial class AudioViewCountDown : UserControl
     {
         private DispatcherTimer timer;
+        
+        public SolidColorBrush BarBrush { get; set; }
+        public SolidColorBrush BarOverBrush { get; set; }
 
         public AudioViewCountDown()
         {
             InitializeComponent();
+
+            Draw();
 
             this.timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromMilliseconds(41); // 25 fps
@@ -45,6 +50,7 @@ namespace AudioView.UserControls.CountDown
 
         private void Draw()
         {
+            DateTime start = DateTime.Now;
             var model = (AudioViewCountDownViewModel)this.DataContext;
             if (model == null || !model.IsEnabled)
                 return;
@@ -54,15 +60,18 @@ namespace AudioView.UserControls.CountDown
 
             TimeSpan totalSpan = nextReading - lastReading;
             TimeSpan currentSpan = DateTime.Now - lastReading;
-
-            var radius = Math.Ceiling(this.ActualWidth / 2);
-
+            
             var msValue = 360.0 / totalSpan.TotalMilliseconds;
             // Rotate -90 degres to get start at top
             var angle = currentSpan.TotalMilliseconds * msValue;
 
             model.Angle = angle;
             model.ArcThickness = (int)Math.Max(20, this.ActualWidth * 0.1);
+
+            model.BarBrush = BarBrush;
+            model.BarOverBrush = BarOverBrush;
+            var end = DateTime.Now;
+            model.RenderTime = "Render time: " + (start - end).TotalMilliseconds + " ms. Inteval: " + model.LastInterval + " reading: " + model.LastReading;
         }
     }
 }

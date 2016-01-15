@@ -5,7 +5,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:AudioView.ViewModels"
         mc:Ignorable="d" 
         x:Class="AudioView.MainWindow"
         Title="AudioView" 
@@ -23,8 +24,18 @@
             <Controls:Flyout Header="New Measurement" Position="Right" Width="450" IsOpen="{Binding ShowNewFlow}">
                 <UserControls:NewMeasurementControl DataContext="{Binding NewViewModel}" />
             </Controls:Flyout>
+            <Controls:Flyout Header="Settings" Position="Right" Width="450" IsOpen="{Binding ShowSettings}">
+                <UserControls:SettingsView DataContext="{Binding SettingsViewModel}" />
+            </Controls:Flyout>
         </Controls:FlyoutsControl>
     </Controls:MetroWindow.Flyouts>
+    <Controls:MetroWindow.RightWindowCommands>
+        <Controls:WindowCommands ShowLastSeparator="False">
+            <Button Command="{Binding ShowSettingsCommand}"
+                    ToolTip="Open settings window"
+                    Content="Settings" />
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -50,10 +61,18 @@
 						Margin="5"
 						VerticalAlignment="Stretch"
 						HorizontalAlignment="Left">
-                        <MenuItem Header="New measurement" Command="{Binding NewMeasurementCommand}" IsEnabled="False" />
+                        <MenuItem Header="New measurement" Command="{Binding NewMeasurementCommand}" />
                         <MenuItem Header="Pop-Outs" IsEnabled="{Binding MeasurementSelected}">
-                            <MenuItem Header="Live Readings" Command="{Binding NewLiveReadingsPopUp}" />
-                        </MenuItem>
+                            <MenuItem Header="Readings">
+                                <MenuItem Header="Live"  Command="{Binding ReadingsPopUpLive}" />
+                                <MenuItem Header="Latest Major"  Command="{Binding ReadingsPopUpLatestMajor}" />
+                                <MenuItem Header="Latest Minor"  Command="{Binding ReadingsPopUpLatestMinor}" />
+                            </MenuItem>
+                            <MenuItem Header="Graph">
+                                <MenuItem Header="Major"  Command="{Binding GraphPopUpMajor}" />
+                                <MenuItem Header="Minor"  Command="{Binding GraphPopUpMinor}" />
+                            </MenuItem>
+                            </MenuItem>
                         <MenuItem Header="Close measurement" IsEnabled="{Binding MeasurementSelected}" Command="{Binding CloseMeasurementCommand}"/>
                     </Menu>
 
@@ -116,9 +135,12 @@
             <TabItem Header="History">
                 <UserControls:HistoryControl DataContext="{Binding HistoryViewModel}" />
             </TabItem>
-            <TabItem Header="Settings"/>
+            <TabItem Header="Settings">
+                <UserControls:SettingsView DataContext="{Binding SettingsViewModel}" />
+            </TabItem>
         </TabControl>
 
         <ProgressBar Grid.Row="1" Minimum="0" Maximum="1000" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Value="{Binding LagTest}" />
     </Grid>
 </Controls:MetroWindow>
+

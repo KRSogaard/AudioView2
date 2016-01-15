@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using AudioView.Common.Data;
 using AudioView.Common.DataAccess;
 using Project = AudioView.Common.Data.Project;
+using Reading = AudioView.Common.Data.Reading;
 
 namespace AudioView.Common.Services
 {
@@ -46,6 +47,53 @@ namespace AudioView.Common.Services
                     }
                 }
                 return projects;
+            });
+        }
+
+        public Task<IList<Reading>> GetReading(Guid projectId)
+        {
+            return Task.Factory.StartNew(() => {
+                IList<Reading> readings = new List<Reading>();
+                using (var audioViewEntities = new AudioViewEntities())
+                {
+                    var results = audioViewEntities.Readings
+                                    .Where(x => x.Project == projectId)
+                                    .ToListAsync().Result
+                                    .Select(x=>x.ToInternal());
+                    foreach (var reading in results)
+                    {
+                        readings.Add(reading);
+                    }
+                }
+                return readings;
+            });
+        }
+
+        public Task DeleteProject(Guid projectId)
+        {
+            return Task.Factory.StartNew(() => {
+                using (var audioViewEntities = new AudioViewEntities())
+                {
+                    var project = audioViewEntities.Projects.Where(x => x.Id == projectId).FirstOrDefaultAsync().Result;
+                    if (project == null)
+                        return;
+                    audioViewEntities.Projects.Remove(project);
+                    audioViewEntities.SaveChanges();
+                }
+            });
+        }
+
+        public Task DeleteReading(Guid readingId)
+        {
+            return Task.Factory.StartNew(() => {
+                using (var audioViewEntities = new AudioViewEntities())
+                {
+                    var reading = audioViewEntities.Readings.Where(x => x.Id == readingId).FirstOrDefaultAsync().Result;
+                    if (reading == null)
+                        return;
+                    audioViewEntities.Readings.Remove(reading);
+                    audioViewEntities.SaveChanges();
+                }
             });
         }
     }

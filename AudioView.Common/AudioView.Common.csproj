@@ -91,7 +91,7 @@
     <Compile Include="Meter\NetworkMeterClient.cs" />
     <Compile Include="Meter\MeterReading.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReadingData.cs" />
+    <Compile Include="Data\ReadingData.cs" />
     <Compile Include="Services\DatabaseService.cs" />
     <Compile Include="Services\IDatabaseService.cs" />
     <Compile Include="TaskHelper.cs" />

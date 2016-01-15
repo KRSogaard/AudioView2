@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using AudioView.Common;
+using AudioView.Common.Data;
 using AudioView.Common.Engine;
 
 namespace AudioView.UserControls.Graph
@@ -96,18 +97,25 @@ namespace AudioView.UserControls.Graph
             set { _isCustomSpan = value; OnPropertyChanged(); }
         }
 
+        public bool BlockUpdates { get; set; }
+
         public DateTime _leftDate;
         public DateTime LeftDate
         {
             get { return _leftDate; }
-            set { _leftDate = value; OnPropertyChanged(); }
+            set { _leftDate = value;
+                if(!BlockUpdates)
+                    OnPropertyChanged();
+            }
         }
 
         public DateTime _rightDate;
         public DateTime RightDate
         {
             get { return _rightDate; }
-            set { _rightDate = value; OnPropertyChanged(); }
+            set { _rightDate = value;
+                if (!BlockUpdates)
+                    OnPropertyChanged(); }
         }
 
         #region IMeterListener Members

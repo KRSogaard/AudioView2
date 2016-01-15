@@ -10,12 +10,23 @@ namespace AudioView.Common.Data
             return new Project()
             {
                 Id = p.Id,
-                MinorInterval = p.MinorInterval,
-                MajorInterval = p.MajorInterval,
+                MinorInterval = TimeSpan.FromTicks(p.MinorInterval),
+                MajorInterval = TimeSpan.FromTicks(p.MajorInterval),
                 DBLimit = p.DBLimit,
                 Name = p.Name,
                 Created = p.Created,
                 Readings = readings
+            };
+        }
+
+        public static Reading ToInternal(this DataAccess.Reading r)
+        {
+            return new Reading()
+            {
+                Id = r.Id,
+                Time = r.Time,
+                Major = r.Major == 1,
+                LAeq = r.LAeq
             };
         }
     }

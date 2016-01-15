@@ -1,0 +1,77 @@
+﻿<UserControl x:Class="AudioView.UserControls.HistoryGraphView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AudioView.UserControls"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Column="0" Grid.Row="0" Foreground="{StaticResource GrayBrush3}" FontSize="{StaticResource HeaderFontSize}" Text="Minor interval"  HorizontalAlignment="Stretch" TextAlignment="Center">
+            <TextBlock.LayoutTransform>
+                <RotateTransform Angle="-90" />
+            </TextBlock.LayoutTransform>
+        </TextBlock>
+        <local:AudioViewGraph Grid.Row="0" Grid.Column="1" 
+                              HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                              MinHeight="100" MinWidth="100" 
+                              DataContext="{Binding MinorGraph}"
+                              LimitColor="{StaticResource ControlsValidationBrush}"
+                              BarWarrningColor="{StaticResource ValidationSummaryColor5}"
+                              AxisColor="{StaticResource SeperatorBrush}"
+                              LineColor="{StaticResource HighlightBrush}"/>
+        
+
+        <TextBlock Grid.Column="0" Grid.Row="1" Foreground="{StaticResource GrayBrush3}" FontSize="{StaticResource HeaderFontSize}" Text="Major interval"  HorizontalAlignment="Stretch" TextAlignment="Center">
+            <TextBlock.LayoutTransform>
+                <RotateTransform Angle="-90" />
+            </TextBlock.LayoutTransform>
+        </TextBlock>
+        <local:AudioViewGraph Grid.Row="1" Grid.Column="1" 
+                              HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                              MinHeight="100" MinWidth="100" 
+                              DataContext="{Binding MajorGraph}"
+                              LimitColor="{StaticResource ControlsValidationBrush}"
+                              BarWarrningColor="{StaticResource ValidationSummaryColor5}"
+                              AxisColor="{StaticResource SeperatorBrush}"
+                              LineColor="{StaticResource HighlightBrush}"/>
+
+
+        <Grid Grid.Row="2" Grid.ColumnSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            
+            <controls:RangeSlider 
+                Grid.ColumnSpan="2"
+                Height="20"
+                IsEnabled="True"
+                LowerValue="{Binding LeftBound}"
+                UpperValue="{Binding RightBound}"
+                Minimum="0"
+                Maximum="1000"/>
+            <Label Margin="5" Grid.Row="1" HorizontalContentAlignment="Left" Grid.Column="0" Content="{Binding LeftBoundText}"/>
+            <Label Margin="5" Grid.Row="1" HorizontalContentAlignment="Right" Grid.Column="1" Content="{Binding RightBoundText}"/>
+        </Grid>
+        
+        <Border Grid.RowSpan="3" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{StaticResource ControlBackgroundBrush}" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}" Opacity="0.75">
+            <controls:ProgressRing Width="90" Height="90" IsActive="True" />
+        </Border>
+    </Grid>
+</UserControl>

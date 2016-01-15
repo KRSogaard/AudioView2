@@ -159,38 +159,59 @@ namespace AudioView.ViewModels
             set { SetProperty(ref majorGraph, value); }
         }
 
-        public ICommand NewLiveReadingsPopUp
+        public void NewLiveReadingsPopUp(bool isMajor, int mainClockItemId, int secondayClockItemId)
         {
-            get
+            var window = new LiveReadingWindow()
             {
-                return new RelayCommand(() =>
-                {
-                    var window = new LiveReadingWindow()
-                    {
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                        BorderThickness = new Thickness(1)
-                    };
-                    popOutWindows.Add(window);
-                    var model = new LiveReadingViewModel(false,
-                        settings.MinorInterval,
-                        settings.DBLimit,
-                        settings.MinorClockMainItemId,
-                        settings.MinorClockSecondaryItemId);
-                    model.Title = Title;
-                    this.engine.RegisterListener(model);
-                    model.NextReadingTime = MinorClock.NextReadingTime;
-                    model.LastReadingTime = MinorClock.LastReadingTime;
-                    window.DataContext = model;
-                    window.Closed += (sender, args) =>
-                    {
-                        this.engine.UnRegisterListener(model);
-                        window.DataContext = null;
-                        popOutWindows.Remove(window);
-                        window = null;
-                    };
-                    window.Show();
-                });
-            }
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                BorderThickness = new Thickness(1)
+            };
+            popOutWindows.Add(window);
+            var model = new LiveReadingViewModel(isMajor,
+                settings.MinorInterval,
+                settings.DBLimit,
+                mainClockItemId,
+                secondayClockItemId);
+            model.Title = Title;
+            this.engine.RegisterListener(model);
+            model.NextReadingTime = MinorClock.NextReadingTime;
+            model.LastReadingTime = MinorClock.LastReadingTime;
+            window.DataContext = model;
+            window.Closed += (sender, args) =>
+            {
+                this.engine.UnRegisterListener(model);
+                window.DataContext = null;
+                popOutWindows.Remove(window);
+                window = null;
+            };
+            window.Show();
+        }
+
+        public void NewGraphReadingsPopUp(bool isMajor)
+        {
+            var window = new GraphWindow()
+            {
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                BorderThickness = new Thickness(1)
+            };
+            popOutWindows.Add(window);
+            var model = new GraphReadingViewModel(isMajor,
+                    settings.BarsDisplayed,
+                    settings.DBLimit,
+                    isMajor ? settings.MajorInterval : settings.MinorInterval,
+                    settings.MajorClockMainItemId,
+                    settings.MajorClockSecondaryItemId);
+            model.Title = Title;
+            this.engine.RegisterListener(model);
+            window.DataContext = model;
+            window.Closed += (sender, args) =>
+            {
+                this.engine.UnRegisterListener(model);
+                window.DataContext = null;
+                popOutWindows.Remove(window);
+                window = null;
+            };
+            window.Show();
         }
 
         public void Close()

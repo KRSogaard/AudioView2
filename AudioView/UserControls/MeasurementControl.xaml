@@ -26,25 +26,43 @@
                 <RotateTransform Angle="-90" />
             </TextBlock.LayoutTransform>
         </TextBlock>
-        <userControls:AudioViewGraph Grid.Column="1" x:Name="AudioViewGraphMinor" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinHeight="100" MinWidth="100" DataContext="{Binding MinorGraph}"/>
+        <userControls:AudioViewGraph Grid.Column="1"
+                                     HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                                     MinHeight="100" MinWidth="100" 
+                                     DataContext="{Binding MinorGraph}"
+                                     LimitColor="{StaticResource ControlsValidationBrush}"
+                                     BarWarrningColor="{StaticResource ValidationSummaryColor5}"
+                                     AxisColor="{StaticResource SeperatorBrush}"
+                                     LineColor="{StaticResource HighlightBrush}"/>
         <CountDown:AudioViewCountDown 
              Grid.Column="2"
             MinHeight="100"
             HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
             DataContext="{Binding MinorClock}"
-            Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}"/>
+            Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}"
+            BarBrush="{StaticResource LabelTextBrush}"
+            BarOverBrush="{StaticResource ValidationSummaryColor5}" />
 
         <TextBlock Grid.Column="0" Grid.Row="2" Foreground="{Binding TextColor}" FontSize="32" Text="Major interval" HorizontalAlignment="Stretch" TextAlignment="Center" >
             <TextBlock.LayoutTransform>
                 <RotateTransform Angle="-90" />
             </TextBlock.LayoutTransform>
         </TextBlock>
-        <userControls:AudioViewGraph Grid.Row="2" Grid.Column="1" x:Name="AudioViewGraphMajor" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinHeight="100" MinWidth="100" DataContext="{Binding MajorGraph}"/>
+        <userControls:AudioViewGraph Grid.Row="2" Grid.Column="1" 
+                                     HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                                     MinHeight="100" MinWidth="100" 
+                                     DataContext="{Binding MajorGraph}"
+                                     LimitColor="{StaticResource ControlsValidationBrush}"
+                                     BarWarrningColor="{StaticResource ValidationSummaryColor5}"
+                                     AxisColor="{StaticResource SeperatorBrush}"
+                                     LineColor="{StaticResource HighlightBrush}"/>
         <CountDown:AudioViewCountDown 
             Grid.Row="2" Grid.Column="2"
             MinHeight="100"
             HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
             DataContext="{Binding MajorClock}"
-            Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}"/>
+            Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}"
+            BarBrush="{StaticResource LabelTextBrush}"
+            BarOverBrush="{StaticResource ValidationSummaryColor5}" />
     </Grid>
 </UserControl>

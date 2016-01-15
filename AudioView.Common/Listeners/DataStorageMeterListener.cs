@@ -5,10 +5,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AudioView.Common.Data;
 using AudioView.Common.DataAccess;
 using AudioView.Common.Engine;
 using Newtonsoft.Json;
 using NLog;
+using Project = AudioView.Common.DataAccess.Project;
+using Reading = AudioView.Common.DataAccess.Reading;
 
 namespace AudioView.Common.Listeners
 {

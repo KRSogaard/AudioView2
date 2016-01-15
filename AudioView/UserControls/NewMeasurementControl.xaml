@@ -91,7 +91,7 @@
                             <Label Content="Port:" />
                             <ListBox x:Name="listBox" Height="100" ItemsSource="{Binding DevicePortList}" />
                         </StackPanel>
-                        <Border Background="Black" Opacity="0.50" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
+                        <Border Background="{StaticResource ControlBackgroundBrush}" Opacity="0.50" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
                             <Controls:ProgressRing Width="90" Height="90" IsActive="True" />
                         </Border>
                     </Grid>
@@ -105,7 +105,7 @@
                             <TextBox Text="{Binding RemotePort}" Margin="0,0,0,5" />
                             <Button Content="Test Connection" IsEnabled="{Binding CanTest}" Command="{Binding StartTest}" Margin="0,5" />
                         </StackPanel>
-                        <Border Background="Black" Opacity="0.50" Visibility="{Binding IsTesting, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
+                        <Border Background="{StaticResource ControlBackgroundBrush}" Opacity="0.50" Visibility="{Binding IsTesting, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
                             <Controls:ProgressRing Width="90" Height="90" IsActive="True" />
                         </Border>
                     </Grid>

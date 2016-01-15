@@ -9,19 +9,27 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
 using AudioView.Common.Listeners;
+using AudioView.UserControls.CountDown;
 using GalaSoft.MvvmLight.CommandWpf;
+using NLog;
+using Prism.Commands;
 using Prism.Mvvm;
 
 namespace AudioView.ViewModels
 {
     public class MainViewModel : BindableBase
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         private DispatcherTimer timer;
         public MainViewModel()
         {
+            logger.Info("Audio View started at {0}", DateTime.Now);
+
             Measurements = new ObservableCollection<MeasurementViewModel>();
             SelectedMeasurement = null;
             NewViewModel = new NewMeasurementViewModel(this);
+            SettingsViewModel = new SettingsViewModel();
             PropertyChanged += OnPropertyChanged;
 
             // Load offline files
@@ -75,39 +83,151 @@ namespace AudioView.ViewModels
         }
 
         public HistoryViewModel HistoryViewModel { get; set; }
+        public SettingsViewModel SettingsViewModel { get; set; }
 
+        private ICommand _showSettingsCommand;
+        public ICommand ShowSettingsCommand
+        {
+            get
+            {
+                if (_showSettingsCommand == null)
+                {
+                    _showSettingsCommand = new RelayCommand(() =>
+                    {
+                        ShowSettings = true;
+                    });
+                }
+                return _showSettingsCommand;
+            }
+        }
+
+        private ICommand _newMeasurementCommand;
         public ICommand NewMeasurementCommand
         {
             get
             {
-                return new RelayCommand(() =>
+                if (_newMeasurementCommand == null)
                 {
-                    ShowNewFlow = true;
-                    NewViewModel = new NewMeasurementViewModel(this);
-                });
+                    _newMeasurementCommand = new RelayCommand(() =>
+                    {
+                        ShowNewFlow = true;
+                        NewViewModel = new NewMeasurementViewModel(this);
+                    });
+                }
+                return _newMeasurementCommand;
             }
         }
 
-        public ICommand NewLiveReadingsPopUp
+        private ICommand _readingsPopUpLive;
+        public ICommand ReadingsPopUpLive
         {
             get
             {
-                if (SelectedMeasurement == null)
-                    return null;
-                return SelectedMeasurement.NewLiveReadingsPopUp;
+                if (_readingsPopUpLive == null)
+                {
+                    _readingsPopUpLive = new DelegateCommand(() =>
+                    {
+                        SelectedMeasurement.NewLiveReadingsPopUp(false, 0, 2);
+                    }, () =>
+                    {
+                        return SelectedMeasurement != null;
+                    }).ObservesProperty(() => SelectedMeasurement);
+                }
+                return _readingsPopUpLive;
             }
         }
 
+        private ICommand _readingsPopUpLatestMajor;
+        public ICommand ReadingsPopUpLatestMajor
+        {
+            get
+            {
+                if (_readingsPopUpLatestMajor == null)
+                {
+                    _readingsPopUpLatestMajor = new DelegateCommand(() =>
+                    {
+                        SelectedMeasurement.NewLiveReadingsPopUp(true, 1, 2);
+                    }, () =>
+                    {
+                        return SelectedMeasurement != null;
+                    }).ObservesProperty(() => SelectedMeasurement);
+                }
+                return _readingsPopUpLatestMajor;
+            }
+        }
+
+        private ICommand _readingsPopUpLatestMinor;
+        public ICommand ReadingsPopUpLatestMinor
+        {
+            get
+            {
+                if (_readingsPopUpLatestMajor == null)
+                {
+                    _readingsPopUpLatestMajor = new DelegateCommand(() =>
+                    {
+                        SelectedMeasurement.NewLiveReadingsPopUp(false, 1, 2);
+                    }, () =>
+                    {
+                        return SelectedMeasurement != null;
+                    }).ObservesProperty(() => SelectedMeasurement);
+                }
+                return _readingsPopUpLatestMajor;
+            }
+        }
+
+        private ICommand _graphPopUpMajor;
+        public ICommand GraphPopUpMajor
+        {
+            get
+            {
+                if (_graphPopUpMajor == null)
+                {
+                    _graphPopUpMajor = new DelegateCommand(() =>
+                    {
+                        SelectedMeasurement.NewGraphReadingsPopUp(true);
+                    }, () =>
+                    {
+                        return SelectedMeasurement != null;
+                    }).ObservesProperty(() => SelectedMeasurement);
+                }
+                return _graphPopUpMajor;
+            }
+        }
+
+        private ICommand _graphPopUpMinor;
+        public ICommand GraphPopUpMinor
+        {
+            get
+            {
+                if (_graphPopUpMinor == null)
+                {
+                    _graphPopUpMinor = new DelegateCommand(() =>
+                    {
+                        SelectedMeasurement.NewGraphReadingsPopUp(false);
+                    }, () =>
+                    {
+                        return SelectedMeasurement != null;
+                    }).ObservesProperty(() => SelectedMeasurement);
+                }
+                return _graphPopUpMinor;
+            }
+        }
+
+        private ICommand _closeMeasurementCommand;
         public ICommand CloseMeasurementCommand
         {
             get
             {
-                return new RelayCommand(() =>
+                if (_closeMeasurementCommand == null)
                 {
-                    SelectedMeasurement.Close();
-                    Measurements.Remove(SelectedMeasurement);
-                    SelectedMeasurement = Measurements.FirstOrDefault();
-                });
+                    _closeMeasurementCommand = new RelayCommand(() =>
+                    {
+                        SelectedMeasurement.Close();
+                        Measurements.Remove(SelectedMeasurement);
+                        SelectedMeasurement = Measurements.FirstOrDefault();
+                    });
+                }
+                return _closeMeasurementCommand;
             }
         }
 
@@ -118,6 +238,13 @@ namespace AudioView.ViewModels
             set { SetProperty(ref _showNewFlow, value); }
         }
 
+        private bool _showSettings;
+        public bool ShowSettings
+        {
+            get { return _showSettings; }
+            set { SetProperty(ref _showSettings, value); }
+        }
+        
         private bool _showDetails;
         public bool ShowDetails
         {
@@ -160,6 +287,10 @@ namespace AudioView.ViewModels
             switch (propertyChangedEventArgs.PropertyName)
             {
                 case "SelectedMeasurement":
+                    if (SelectedMeasurement == null)
+                    {
+                        return;
+                    }
                     foreach (var measurementViewModel in Measurements)
                     {
                         measurementViewModel.IsEnabled = false;

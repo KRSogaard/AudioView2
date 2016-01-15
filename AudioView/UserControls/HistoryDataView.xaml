@@ -1,0 +1,84 @@
+﻿<UserControl x:Class="AudioView.UserControls.HistoryDataView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AudioView.UserControls"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="600">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Column="0" Grid.Row="0" Foreground="{StaticResource GrayBrush3}" FontSize="{StaticResource HeaderFontSize}" Text="Minor interval"  HorizontalAlignment="Stretch" TextAlignment="Center">
+            <TextBlock.LayoutTransform>
+                <RotateTransform Angle="-90" />
+            </TextBlock.LayoutTransform>
+        </TextBlock>
+
+        <TextBlock Grid.Column="0" Grid.Row="1" Foreground="{StaticResource GrayBrush3}" FontSize="{StaticResource HeaderFontSize}" Text="Major interval"  HorizontalAlignment="Stretch" TextAlignment="Center">
+            <TextBlock.LayoutTransform>
+                <RotateTransform Angle="-90" />
+            </TextBlock.LayoutTransform>
+        </TextBlock>
+
+        <DataGrid Grid.Row="0" Grid.Column="1"
+                            HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                            RenderOptions.ClearTypeHint="Enabled"
+                            TextOptions.TextFormattingMode="Display"
+                            Margin="0,5,0,0"
+                            ItemsSource="{Binding ReadingsMinor}"
+                            Style="{DynamicResource AzureDataGrid}"
+                            AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Time"
+                                        Binding="{Binding Reading.Time}" />
+                <DataGridTextColumn Header="LAeq"
+                                        Binding="{Binding Reading.LAeq}" />
+                
+                <DataGridTemplateColumn Header="Delete">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Command="{Binding DeleteReading}">Delete</Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <DataGrid Grid.Row="1" Grid.Column="1"
+                            HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                            RenderOptions.ClearTypeHint="Enabled"
+                            TextOptions.TextFormattingMode="Display"
+                            Margin="0,5,0,0"
+                            ItemsSource="{Binding ReadingsMajor}"
+                            Style="{DynamicResource AzureDataGrid}"
+                            AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Time"
+                                        Binding="{Binding Reading.Time}" />
+                <DataGridTextColumn Header="LAeq"
+                                        Binding="{Binding Reading.LAeq}" />
+
+                <DataGridTemplateColumn Header="Delete">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Command="{Binding DeleteReading}">Delete</Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Border Grid.RowSpan="2" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{StaticResource ControlBackgroundBrush}" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}" Opacity="0.75">
+            <controls:ProgressRing Width="90" Height="90" IsActive="True" />
+        </Border>
+    </Grid>
+</UserControl>

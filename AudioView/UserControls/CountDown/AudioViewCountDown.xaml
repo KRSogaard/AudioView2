@@ -6,7 +6,8 @@
              xmlns:local="clr-namespace:AudioView.UserControls.CountDown"
              xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300"
+             >
     <Grid Margin="10,10,10,10">
         <ed:Arc 
             ArcThickness="99999" 
@@ -15,7 +16,7 @@
             EndAngle="360" 
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch" 
-            Fill="#CC5B5B5B" 
+            Fill="{StaticResource AccentColorBrush4}" 
             Stretch="None" />
         <ed:Arc 
             ArcThickness="{Binding ArcThickness}" 
@@ -24,7 +25,7 @@
             EndAngle="{Binding Angle}" 
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch" 
-            Fill="#CCFEDE06" 
+            Fill="{StaticResource AccentColorBrush}" 
             Stretch="None" />
 
         <Grid Margin="20,20,20,20">
@@ -37,28 +38,23 @@
                 <TextBlock 
                     VerticalAlignment="Center"
                     TextAlignment="Center"
+                    FontSize="60"
                     HorizontalAlignment="Stretch"
                     Text="{Binding MainItemText}"
-                    Foreground="{Binding TextColor}">
-                    <TextBlock.Effect>
-                        <DropShadowEffect ShadowDepth="0" BlurRadius="10" Opacity="100" Color="#FF470F0F" />
-                    </TextBlock.Effect>
-                </TextBlock>
+                    Foreground="{Binding TextColor}" />
             </Viewbox>
             
             <Viewbox Grid.Row="1">
-                <TextBlock 
-                    Margin="10,10,10,10"
-                    VerticalAlignment="Center"
+                <TextBlock
+                    Margin="10"
+                    VerticalAlignment="Top"
                     TextAlignment="Center"
+                    FontSize="60"
                     HorizontalAlignment="Stretch"
                     Text="{Binding SecondItemText}"
-                    Foreground="{Binding TextColor}">
-                    <TextBlock.Effect>
-                        <DropShadowEffect ShadowDepth="0" BlurRadius="10" Opacity="100" Color="#FF470F0F" />
-                    </TextBlock.Effect>
-                </TextBlock>
+                    Foreground="{Binding TextColor}" />
             </Viewbox>
         </Grid>
+        <Label x:Name="debugLabel" Content="{Binding RenderTime}"></Label>
     </Grid>
 </UserControl>

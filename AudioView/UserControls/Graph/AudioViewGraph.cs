@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,8 +41,90 @@ namespace AudioView.UserControls
         private double lastMaxHeight;
         private double lastActualWidth;
         private double lastActualHeight;
-        public DispatcherTimer timer { get; set; }
+        private DispatcherTimer timer { get; set; }
         private Canvas canvas;
+
+        // Color settings
+        private SolidColorBrush _limitColor;
+        public SolidColorBrush LimitColor
+        {
+            get
+            {
+                if (_limitColor == null)
+                {
+                    _limitColor = new SolidColorBrush(ColorSettings.LimitColor);
+                }
+                return _limitColor; }
+            set { _limitColor = value; }
+        }
+        private SolidColorBrush _barColor;
+        public SolidColorBrush BarColor
+        {
+            get
+            {
+                if (_barColor == null)
+                {
+                    _barColor = new SolidColorBrush(ColorSettings.BarColorUnderLimit);
+                }
+                return _barColor;
+            }
+            set { _barColor = value; }
+        }
+        private SolidColorBrush _barWarrningColor;
+        public SolidColorBrush BarWarrningColor
+        {
+            get
+            {
+                if (_barWarrningColor == null)
+                {
+                    _barWarrningColor = new SolidColorBrush(ColorSettings.BarColorOverLimit);
+                }
+                return _barWarrningColor;
+            }
+            set { _barWarrningColor = value; }
+        }
+        private SolidColorBrush _axisColor;
+        public SolidColorBrush AxisColor
+        {
+            get
+            {
+                if (_axisColor == null)
+                {
+                    _axisColor = new SolidColorBrush(ColorSettings.AxisColor);
+                }
+                return _axisColor;
+            }
+            set { _axisColor = value; }
+        }
+        private SolidColorBrush _lineColor;
+        public SolidColorBrush LineColor
+        {
+            get
+            {
+                if (_lineColor == null)
+                {
+                    _lineColor = new SolidColorBrush(ColorSettings.LineColor);
+                }
+                return _lineColor;
+            }
+            set { _lineColor = value; }
+        }
+
+        private Brush BarBorderColor
+        {
+            get
+            {
+                return new SolidColorBrush(GetColorDarker(BarColor.Color, 0.8));
+            }
+        }
+
+        private Brush BarWarrningBorderColor
+        {
+            get
+            {
+                return new SolidColorBrush(GetColorDarker(BarWarrningColor.Color, 0.8));
+            }
+        }
 
         public AudioViewGraph()
         {
@@ -56,7 +139,7 @@ namespace AudioView.UserControls
             Content = b;
 
             this.timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(41); // 5 fps
+            timer.Interval = TimeSpan.FromMilliseconds(1000); // 5 fps
             timer.Tick += Tick;
             timer.Start();
 
@@ -111,7 +194,7 @@ namespace AudioView.UserControls
             }
         }
 
-        private void Draw()
+        public void Draw()
         {
             DateTime start = DateTime.Now;
 
@@ -131,9 +214,27 @@ namespace AudioView.UserControls
                 sizeMapCreated = DateTime.Now;
             }
 
+            if (model.IsCustomSpan)
+            {
+                this.latestReading = model.RightDate;
+                this.leftDateTime = model.LeftDate;
+
+                // Close the ticker as we do not need it
+                timer.IsEnabled = false;
+            }
+            else
+            {
+                this.latestReading = getLastestReading();
+                if (this.latestReading + TimeSpan.FromTicks((long)(this.interval.Ticks * 1.5)) >= DateTime.Now)
+                {
+                    this.latestReading = DateTime.Now;
+                }
+                this.leftDateTime = calculateLeftDateTime();
+            }
+
             // Copy over so we don't have thread problems
-            this.secondsReading = model.SecondReadings.ToList();
-            this.intervalReadings = model.Readings.ToList();
+            this.secondsReading = model.SecondReadings.Where(x=>x.Item1 >= leftDateTime && x.Item1 <= latestReading).ToList();
+            this.intervalReadings = model.Readings.Where(x => x.Item1 >= leftDateTime && x.Item1 <= latestReading).ToList();
             this.limit = model.LimitDb;
             this.intervalsShown = model.IntervalsShown;
             this.interval = model.Interval;
@@ -145,24 +246,6 @@ namespace AudioView.UserControls
 
             this.leftMargin = 40;
             this.bottomMargin = 40;
-
-            if (model.IsCustomSpan)
-            {
-                this.latestReading = model.LeftDate;
-                this.leftDateTime = model.RightDate;
-
-                // Close the ticker as we do not need it
-                timer.IsEnabled = false;
-            }
-            else
-            {
-                this.latestReading = getLastestReading();
-                if (this.latestReading + this.interval >= DateTime.Now)
-                {
-                    this.latestReading = DateTime.Now;
-                }
-                this.leftDateTime = calculateLeftDateTime();
-            }
             this.graphTimeSpan = (latestReading - leftDateTime).TotalMilliseconds; // We need this value many times, so no need to recalculate everytime
             this.yPixelValue = calculateYPixelValue();
             this.xPixelValue = calculateXPixelValue();
@@ -211,13 +294,16 @@ namespace AudioView.UserControls
             DrawSeconds();
 
             DateTime end = DateTime.Now;
+            var totalMs = (end - start).TotalMilliseconds;
+#if DEBUG
             var label = new Label()
             {
-                Content = "x: " + xPixelValue + " p/ms. - y: " + yPixelValue + " p/ms. - Left: " + this.leftDateTime.ToString("hh:mm:ss.fff") + " Right: " + this.latestReading.ToString("hh:mm:ss.fff") + " - Diff: " + (latestReading - leftDateTime).TotalMilliseconds + " ms - Render time: " + (end - start).TotalMilliseconds + " ms. "
+                Content = "x: " + xPixelValue + " p/ms. - y: " + yPixelValue + " p/ms. - Left: " + this.leftDateTime.ToString("hh:mm:ss.fff") + " Right: " + this.latestReading.ToString("hh:mm:ss.fff") + " - Diff: " + (latestReading - leftDateTime).TotalMilliseconds + " ms - Render time: " + totalMs + " ms. Interval: " + timer.Interval.TotalMilliseconds
             };
             Canvas.SetLeft(label, 10);
             Canvas.SetTop(label, 10);
             this.innerCanvas.Children.Add(label);
+#endif
             this.lastActualWidth = this.ActualWidth;
             this.lastActualHeight = this.ActualHeight;
         }
@@ -225,7 +311,12 @@ namespace AudioView.UserControls
         private void DrawBars()
         {
             var barWidth = CalculateBarWidth();
-            // Calculate the intervals
+
+            int interval = 1;
+            if (this.intervalReadings.Count >= 15)
+                interval = (int)Math.Ceiling(this.intervalReadings.Count / 30.0);
+
+            int i = 0;
             foreach (var reading in this.intervalReadings)
             {
                 int x = ConvertTimeToGraph(reading.Item1);
@@ -235,34 +326,44 @@ namespace AudioView.UserControls
                 {
                     Width = Math.Max(0, barWidth),
                     Height = Math.Max(0, this.ActualHeight - this.bottomMargin - y),
-                    Fill = new SolidColorBrush(over ? ColorSettings.BarColorOverLimit : ColorSettings.BarColorUnderLimit),
-                    Stroke = new SolidColorBrush(over ? ColorSettings.BarColorOverLimitStroke : ColorSettings.BarColorUnderLimitStroke),
+                    Fill = over ? BarWarrningColor : BarColor,
+                    Stroke = over ? BarWarrningBorderColor : BarBorderColor,
                     StrokeThickness = 2,
                     Opacity = 0.75
                 };
+                var offsetedX = x - (int) Math.Ceiling((double) barWidth/2.0);
                 Canvas.SetTop(bar, y);
-                Canvas.SetLeft(bar, x - (int)Math.Ceiling((double)barWidth / 2.0));
+                Canvas.SetLeft(bar, offsetedX);
                 this.innerCanvas.Children.Add(bar);
-
-
-                var labelValue = new Label()
+                
+                if (this.intervalReadings.Count <= 25)
                 {
-                    Content = (int)Math.Ceiling(reading.Item2),
-                    FontWeight = FontWeights.Bold
-                };
-                this.innerCanvas.Children.Add(labelValue);
-                var size = GetLabelSize(labelValue);
-                Canvas.SetTop(labelValue, y);
-                Canvas.SetLeft(labelValue, x - (int)Math.Ceiling((double)size.Width / 2.0));
+                    var labelValue = new Label()
+                    {
+                        Content = (int)Math.Ceiling(reading.Item2),
+                        FontWeight = FontWeights.Bold,
+                        Width = Math.Max(0, barWidth),
+                        HorizontalContentAlignment = HorizontalAlignment.Center
+                    };
+                    Canvas.SetTop(labelValue, y);
+                    Canvas.SetLeft(labelValue, offsetedX);
+                    this.innerCanvas.Children.Add(labelValue);
+                }
 
-                var label = new Label()
+                if (i % interval == 0)
                 {
-                    Content = reading.Item1.ToString("HH:mm")
-                };
-                this.labelsCanvas.Children.Add(label);
-                size = GetLabelSize(label);
-                Canvas.SetTop(label, this.ActualHeight - bottomMargin + (int)Math.Ceiling((bottomMargin / 2.0) - (size.Height / 2)));
-                Canvas.SetLeft(label, x - (int)Math.Ceiling((double)size.Width / 2));
+                    var label = new Label()
+                    {
+                        Content = reading.Item1.ToString("HH:mm"),
+                        Width = Math.Max(40, barWidth),
+                        HorizontalContentAlignment = HorizontalAlignment.Center
+                    };
+                    Canvas.SetTop(label, this.ActualHeight - bottomMargin + (int)Math.Ceiling((bottomMargin / 2.0)));
+                    Canvas.SetLeft(label, offsetedX);
+                    this.labelsCanvas.Children.Add(label);
+                }
+
+                i++;
             }
         }
 
@@ -271,6 +372,7 @@ namespace AudioView.UserControls
             // Calculate seconds
             LineSegment first = null;
             LinkedList<LineSegment> list = new LinkedList<LineSegment>();
+            
             for (int _i = 0; _i < secondsReading.Count; _i++)
             {
                 int x = ConvertTimeToGraph(secondsReading[_i].Item1);
@@ -296,7 +398,7 @@ namespace AudioView.UserControls
             var path = new Path()
             {
                 Data = patGeoh,
-                Stroke = new SolidColorBrush(ColorSettings.LineColor),
+                Stroke = LineColor,
                 StrokeThickness = 1
             };
             this.innerCanvas.Children.Add(path);
@@ -311,8 +413,8 @@ namespace AudioView.UserControls
                 Y1 = y,
                 X2 = this.ActualWidth,
                 Y2 = y,
-                Stroke = new SolidColorBrush(ColorSettings.LimitColor),
-                StrokeThickness = 2,
+                Stroke = LimitColor,
+                StrokeThickness = 4,
                 StrokeDashArray = new DoubleCollection(new[] { 2.0, 2.0 })
             });
         }
@@ -321,7 +423,6 @@ namespace AudioView.UserControls
         {
             int labelRightMargin = 4;
             int axisInterval = (int)Math.Round(((maxHeight - minHeight) / 10) / 5.0) * 5;
-            List<Tuple<Label, Point>> labels = new List<Tuple<Label, Point>>();
             for (int i = (int)Math.Ceiling(minHeight); i < maxHeight; i = i + axisInterval)
             {
                 var y = ConvertValueToGraph(i);
@@ -331,14 +432,16 @@ namespace AudioView.UserControls
                     Y1 = y,
                     X2 = this.ActualWidth,
                     Y2 = y,
-                    Stroke = new SolidColorBrush(ColorSettings.AxisColor),
+                    Stroke = AxisColor,
                     StrokeThickness = 0.5,
                     StrokeDashArray = new DoubleCollection(new[] { 5.0, 5.0 })
                 });
-
+                
                 var label = new Label()
                 {
-                    Content = i
+                    Content = i,
+                    Width = leftMargin - labelRightMargin,
+                    HorizontalContentAlignment = HorizontalAlignment.Right
                 };
                 this.canvas.Children.Add(label);
                 var size = GetLabelSize(label);
@@ -378,6 +481,9 @@ namespace AudioView.UserControls
 
         private DateTime getLastestReading()
         {
+            if (this.secondsReading == null)
+                return DateTime.Now;
+
             var last = this.secondsReading.LastOrDefault();
             DateTime lastReading;
             if (last == null)
@@ -396,6 +502,19 @@ namespace AudioView.UserControls
                 sizeMap.TryAdd(c, l.DesiredSize);
             }
             return sizeMap[c];
+        }
+
+        private Color GetColorDarker(Color color, double factor)
+        {
+            // The factor value value cannot be greater than 1 or smaller than 0.
+            // Otherwise return the original colour
+            if (factor < 0 || factor > 1)
+                return color;
+
+            byte r = (byte)(factor * color.R);
+            byte g = (byte)(factor * color.G);
+            byte b = (byte)(factor * color.B);
+            return Color.FromArgb(color.A, r, g, b);
         }
     }
 }

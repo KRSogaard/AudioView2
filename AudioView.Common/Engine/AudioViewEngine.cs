@@ -2,11 +2,14 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Timers;
+using NLog;
 
 namespace AudioView.Common.Engine
 {
     public class AudioViewEngine
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         private Timer secondTimer;
         private Timer minorTimer;
         private Timer majorTimer;
@@ -23,6 +26,8 @@ namespace AudioView.Common.Engine
         }
         public AudioViewEngine(TimeSpan minorInterval, TimeSpan majorInterval, IMeterReader reader)
         {
+            logger.Info("Started engine with major: {0} minor: {1}", majorInterval, minorInterval);
+
             this.listeners = new List<IMeterListener>();
             this.reader = reader;
             this.minorInterval = minorInterval;
@@ -47,6 +52,7 @@ namespace AudioView.Common.Engine
 
         public void RegisterListener(IMeterListener listener)
         {
+            logger.Debug("Registering new meter listener {0}.", listener);
             lock (this.listeners)
             {
                 listener.NextMajor(nextMajor);
@@ -57,6 +63,7 @@ namespace AudioView.Common.Engine
 
         public void UnRegisterListener(IMeterListener listener)
         {
+            logger.Debug("Removing meter listener {0}.", listener);
             lock (this.listeners)
             {
                 this.listeners.Remove(listener);
@@ -65,6 +72,7 @@ namespace AudioView.Common.Engine
 
         public void Start()
         {
+            logger.Debug("Staring the engine.");
             this.secondTimer.Enabled = true;
             this.minorTimer.Enabled = true;
             this.majorTimer.Enabled = true;
@@ -72,6 +80,7 @@ namespace AudioView.Common.Engine
 
         public void Stop()
         {
+            logger.Debug("Stopping the engine.");
             this.secondTimer.Enabled = false;
             this.minorTimer.Enabled = false;
             this.majorTimer.Enabled = false;
@@ -84,7 +93,11 @@ namespace AudioView.Common.Engine
         {
             DateTime time = e.SignalTime;
             nextMajor = e.SignalTime + TimeSpan.FromMilliseconds(((Timer)sender).Interval);
+            logger.Trace("Fetching major reading, next fetch is at {0}.", nextMajor);
+            DateTime start = DateTime.Now;
             var reading = await this.reader.GetMajorReading();
+            DateTime end = DateTime.Now;
+            logger.Trace("Got major reading \"{0}\" in {1} ms.", reading.LAeq, (end - start).TotalMilliseconds);
 
             lock (this.listeners)
             {
@@ -100,7 +113,11 @@ namespace AudioView.Common.Engine
         {
             DateTime time = e.SignalTime;
             nextMinor = e.SignalTime + TimeSpan.FromMilliseconds(((Timer)sender).Interval);
+            logger.Trace("Fetching minor reading, next fetch is at {0}.", nextMinor);
+            DateTime start = DateTime.Now;
             var reading = await this.reader.GetMinorReading();
+            DateTime end = DateTime.Now;
+            logger.Trace("Got minor reading \"{0}\" in {1} ms.", reading.LAeq, (end - start).TotalMilliseconds);
 
             lock (this.listeners)
             {
@@ -115,7 +132,11 @@ namespace AudioView.Common.Engine
         private async void OnSecond(object sender, ElapsedEventArgs elapsedEventArgs)
         {
             DateTime time = DateTime.Now;
+            logger.Trace("Fetching second reading.");
+            DateTime start = DateTime.Now;
             var reading = await this.reader.GetSecondReading();
+            DateTime end = DateTime.Now;
+            logger.Trace("Got second reading \"{0}\" in {1} ms.", reading.LAeq, (end - start).TotalMilliseconds);
 
             lock (this.listeners)
             {

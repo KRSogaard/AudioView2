@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Media;
 using AudioView.Annotations;
 using AudioView.Common;
+using AudioView.Common.Data;
 using AudioView.Common.Engine;
 using AudioView.ViewModels;
 
@@ -36,6 +37,10 @@ namespace AudioView.UserControls.CountDown
         public DateTime LastReadingTime { get; set; }
         public double LastReading { get; set; }
         public double LastInterval { get; set; }
+        public string RenderTime { get; set; }
+
+        public SolidColorBrush BarBrush { get; set; }
+        public SolidColorBrush BarOverBrush { get; set; }
 
         private double _angle;
         public double Angle
@@ -47,6 +52,7 @@ namespace AudioView.UserControls.CountDown
                 OnPropertyChanged(nameof(MainItemText));
                 OnPropertyChanged(nameof(SecondItemText));
                 OnPropertyChanged(nameof(TextColor));
+                OnPropertyChanged(nameof(RenderTime));
             }
         }
 
@@ -85,12 +91,12 @@ namespace AudioView.UserControls.CountDown
             switch (displayId)
             {
                 case 1: // Latests interval
-                    return ((int)LastInterval).ToString();
+                    return ((int)Math.Ceiling(LastInterval)).ToString();
                 case 2: // Time to next interval
                     return (NextReadingTime - DateTime.Now).ToString(@"mm\:ss\.f", null);
                 case 0: // Lastest reading (live data)
                 default:
-                    return ((int)LastReading).ToString();
+                    return ((int)Math.Ceiling(LastReading)).ToString();
             }
         }
 
@@ -98,7 +104,7 @@ namespace AudioView.UserControls.CountDown
         {
             get
             {
-                return new SolidColorBrush(LastReading >= limitDb ? ColorSettings.BarColorOverLimit : ColorSettings.BarColorUnderLimit);
+                return LastReading >= limitDb ? BarOverBrush : BarBrush;
             }
         }
 
@@ -145,8 +151,7 @@ namespace AudioView.UserControls.CountDown
         {
             return Task.Factory.StartNew(() =>
             {
-                if (!isMajor)
-                    LastReading = data.LAeq;
+                LastReading = data.LAeq;
             });
         }
 
