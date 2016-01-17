@@ -8,5 +8,8 @@ namespace AudioView.Common.Engine
         Task<ReadingData> GetSecondReading();
         Task<ReadingData> GetMinorReading();
         Task<ReadingData> GetMajorReading();
+
+        void SetEngine(AudioViewEngine engine);
+        bool IsTriggerMode();
     }
 }

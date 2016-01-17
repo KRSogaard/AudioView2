@@ -171,6 +171,11 @@ namespace AudioView.UserControls.Graph
         {
             return Task.FromResult<object>(null);
         }
+
+        public Task StopListener()
+        {
+            return Task.FromResult<object>(null);
+        }
         #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;

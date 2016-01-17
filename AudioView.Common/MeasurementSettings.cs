@@ -17,6 +17,7 @@ namespace AudioView.Common
         public int MajorClockSecondaryItemId { get; set; }
         public string ProjectName { get; set; }
         public int Port { get; set; }
+        public bool IsLocal { get; set; }
 
         public void MeasurementViewModel()
         {

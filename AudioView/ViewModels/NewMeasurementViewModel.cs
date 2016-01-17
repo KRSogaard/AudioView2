@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using AudioView.Annotations;
 using AudioView.Common;
+using AudioView.Common.Engine;
 using AudioView.UserControls.CountDown;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
@@ -27,6 +28,7 @@ namespace AudioView.ViewModels
         private bool isRemoteTested { get; set; }
         private MainViewModel MainViewModel { get; set; }
         private MainViewModel mainViewModel;
+        private MeasurementSettings remoteSettings;
 
         public NewMeasurementViewModel(MainViewModel mainViewModel)
         {
@@ -380,7 +382,8 @@ namespace AudioView.ViewModels
                 MinorClockSecondaryItemId = MinorClockSecondaryItem.Id,
                 MajorInterval = new TimeSpan(_majorIntervalHours, _majorIntervalMinutes, _majorIntervalSeconds),
                 MinorInterval = new TimeSpan(_minorIntervalHours, _minorIntervalMinutes, _minorIntervalSeconds),
-                Port = int.Parse(ListenPort)
+                Port = int.Parse(ListenPort),
+                IsLocal = UseLocal
             };
         }
 
@@ -409,8 +412,33 @@ namespace AudioView.ViewModels
             {
                 return new RelayCommand(() =>
                 {
-                    logger.Debug("Adding new measurement to the main view model.");
-                    MainViewModel.AddNewMeasurement();
+                    try
+                    {
+                        logger.Debug("Adding new measurement to the main view model.");
+
+                        MeasurementViewModel newModel;
+                        var settings = GetSettings();
+                        IMeterReader reader;
+                        if (UseLocal)
+                        {
+                            reader = new MockMeterReader();
+                        }
+                        else
+                        {
+                            reader = new RemoteMeterReader(RemoteIpAddress, int.Parse(RemotePort));
+                            settings.MajorInterval = remoteSettings.MajorInterval;
+                            settings.MinorInterval = remoteSettings.MinorInterval;
+                            settings.DBLimit = remoteSettings.DBLimit;
+                        }
+
+                        newModel = new MeasurementViewModel(Guid.NewGuid(), settings, reader);
+
+                        MainViewModel.AddNewMeasurement(newModel);
+                    }
+                    catch (Exception exp)
+                    {
+                        logger.Error(exp, "Failed to start measurement.");
+                    }
                 });
             }
         }
@@ -471,9 +499,10 @@ namespace AudioView.ViewModels
         {
             return Task.Factory.StartNew(() =>
             {
-                logger.Debug("Test device {0}.", SelectedLocalDevice);
-                Task.Delay(new TimeSpan(0, 0, 10)).Wait();
-                return true;
+                logger.Debug("Testing remote device {0}:{1}", RemoteIpAddress, RemotePort);
+                var settings = RemoteMeterReader.TestConenction(RemoteIpAddress, int.Parse(RemotePort)).Result;
+                this.remoteSettings = settings;
+                return settings != null;
             });
         }
 

@@ -86,5 +86,15 @@ namespace AudioView.Common.Engine
                 };
             });
         }
+
+        public void SetEngine(AudioViewEngine engine)
+        {
+            // we don't need it
+        }
+
+        public bool IsTriggerMode()
+        {
+            return false;
+        }
     }
 }

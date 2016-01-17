@@ -11,5 +11,6 @@ namespace AudioView.Common.Engine
         Task OnSecond(DateTime time, ReadingData data);
         Task NextMinor(DateTime time);
         Task NextMajor(DateTime time);
+        Task StopListener();
     }
 }

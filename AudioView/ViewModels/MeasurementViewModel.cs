@@ -27,14 +27,25 @@ namespace AudioView.ViewModels
         private MeasurementSettings settings;
         private DataStorageMeterListener dataStorage;
         private DateTime started;
+        private TCPServerListener tcpServer;
 
-        public MeasurementViewModel(Guid id, MeasurementSettings settings)
+        public MeasurementViewModel(Guid id, MeasurementSettings settings, IMeterReader reader)
         {
             started = DateTime.Now;
             popOutWindows = new List<Window>();
-            var reader = new MockMeterReader();
             this.engine = new AudioViewEngine(settings.MinorInterval, settings.MajorInterval, reader);
             this.settings = settings;
+            
+            if (settings.IsLocal)
+            {
+                // Registering the TCP Server for remote connections
+                tcpServer = new TCPServerListener(settings);
+                this.engine.RegisterListener(tcpServer);
+
+                // Register the data storange unit
+                dataStorage = new DataStorageMeterListener(id, DateTime.Now, settings);
+                this.engine.RegisterListener(dataStorage);
+            }
 
             MinorClock = new AudioViewCountDownViewModel(false,
                     settings.MinorInterval,
@@ -64,8 +75,6 @@ namespace AudioView.ViewModels
             this.engine.RegisterListener(MinorClock);
             this.engine.RegisterListener(MajorClock);
 
-            dataStorage = new DataStorageMeterListener(id, DateTime.Now, settings);
-            this.engine.RegisterListener(dataStorage);
 
             this.engine.Start();
 

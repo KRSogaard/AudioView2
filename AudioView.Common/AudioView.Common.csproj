@@ -82,11 +82,13 @@
     <Compile Include="Data\ConverterHelepr.cs" />
     <Compile Include="Data\Project.cs" />
     <Compile Include="Data\Reading.cs" />
+    <Compile Include="Engine\RemoteMeterReader.cs" />
     <Compile Include="Listeners\DataStorageMeterListener.cs" />
     <Compile Include="Engine\AudioViewEngine.cs" />
     <Compile Include="Engine\IMeterListener.cs" />
     <Compile Include="Engine\IMeterReader.cs" />
     <Compile Include="Engine\MockMeterReader.cs" />
+    <Compile Include="Listeners\TCPServerListener.cs" />
     <Compile Include="MeasurementSettings.cs" />
     <Compile Include="Meter\NetworkMeterClient.cs" />
     <Compile Include="Meter\MeterReading.cs" />

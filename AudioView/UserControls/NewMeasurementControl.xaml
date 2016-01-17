@@ -13,44 +13,6 @@
                 <Label Content="Project Name:" />
                 <TextBox Text="{Binding ProjectName}" Margin="0,0,0,5" />
 
-                <Label Content="Minor Interval:" />
-                <Grid Margin="0,0,0,5">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
-                    <TextBox Grid.Column="0" Text="{Binding MinorIntervalHours}" />
-                    <Label Grid.Column="1" Content=":" />
-                    <TextBox Grid.Column="2" Text="{Binding MinorIntervalMinutes}" />
-                    <Label Grid.Column="3" Content=":" />
-                    <TextBox Grid.Column="4" Text="{Binding MinorIntervalSeconds}" />
-                </Grid>
-
-                <Label Content="MaJor Interval:" />
-                <Grid Margin="0,0,0,5">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
-                    <TextBox Grid.Column="0" Text="{Binding MajorIntervalHours}" />
-                    <Label Grid.Column="1" Content=":" />
-                    <TextBox Grid.Column="2" Text="{Binding MajorIntervalMinutes}" />
-                    <Label Grid.Column="3" Content=":" />
-                    <TextBox Grid.Column="4" Text="{Binding MajorIntervalSeconds}" />
-                </Grid>
-
-                <Label Content="dB Limit:" />
-                <TextBox Text="{Binding DBLimit}" Margin="0,0,0,5" />
-
-
                 <Expander Header="Display Settings" Margin="0" IsExpanded="True">
                     <StackPanel Margin="5,0">
 
@@ -85,6 +47,44 @@
                 <Expander Header="Local Unit" Margin="0" IsExpanded="{Binding UseLocal}">
                     <Grid>
                         <StackPanel>
+
+                            <Label Content="Minor Interval:" />
+                            <Grid Margin="0,0,0,5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBox Grid.Column="0" Text="{Binding MinorIntervalHours}" />
+                                <Label Grid.Column="1" Content=":" />
+                                <TextBox Grid.Column="2" Text="{Binding MinorIntervalMinutes}" />
+                                <Label Grid.Column="3" Content=":" />
+                                <TextBox Grid.Column="4" Text="{Binding MinorIntervalSeconds}" />
+                            </Grid>
+
+                            <Label Content="MaJor Interval:" />
+                            <Grid Margin="0,0,0,5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBox Grid.Column="0" Text="{Binding MajorIntervalHours}" />
+                                <Label Grid.Column="1" Content=":" />
+                                <TextBox Grid.Column="2" Text="{Binding MajorIntervalMinutes}" />
+                                <Label Grid.Column="3" Content=":" />
+                                <TextBox Grid.Column="4" Text="{Binding MajorIntervalSeconds}" />
+                            </Grid>
+
+                            <Label Content="dB Limit:" />
+                            <TextBox Text="{Binding DBLimit}" Margin="0,0,0,5" />
+                            
                             <Label Content="Listen Port: (For remote connections)" />
                             <TextBox Text="{Binding ListenPort}" />
                             

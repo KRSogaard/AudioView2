@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Timers;
 using NLog;
 
@@ -30,26 +32,25 @@ namespace AudioView.Common.Engine
 
             this.listeners = new List<IMeterListener>();
             this.reader = reader;
+            this.reader.SetEngine(this);
             this.minorInterval = minorInterval;
             this.majorInterval = majorInterval;
 
-            this.secondTimer = new Timer(new TimeSpan(0,0,1).TotalMilliseconds);
-            this.secondTimer.Elapsed += OnSecond;
+            if (!reader.IsTriggerMode())
+            {
+                this.secondTimer = new Timer(new TimeSpan(0, 0, 1).TotalMilliseconds);
+                this.secondTimer.Elapsed += OnSecond;
 
-            this.minorTimer = new Timer(minorInterval.TotalMilliseconds);
-            this.minorTimer.Elapsed += OnMinorInterval;
-            nextMinor = DateTime.Now + TimeSpan.FromMilliseconds(this.minorTimer.Interval);
+                this.minorTimer = new Timer(minorInterval.TotalMilliseconds);
+                this.minorTimer.Elapsed += OnMinorInterval;
+                nextMinor = DateTime.Now + TimeSpan.FromMilliseconds(this.minorTimer.Interval);
 
-            this.majorTimer = new Timer(majorInterval.TotalMilliseconds);
-            this.majorTimer.Elapsed += OnMajorInterval;
-            nextMajor = DateTime.Now + TimeSpan.FromMilliseconds(this.majorTimer.Interval);
+                this.majorTimer = new Timer(majorInterval.TotalMilliseconds);
+                this.majorTimer.Elapsed += OnMajorInterval;
+                nextMajor = DateTime.Now + TimeSpan.FromMilliseconds(this.majorTimer.Interval);
+            }
         }
-
-        public AudioViewEngine()
-        {
-            throw new NotImplementedException();
-        }
-
+        
         public void RegisterListener(IMeterListener listener)
         {
             if(listener == null)
@@ -78,78 +79,140 @@ namespace AudioView.Common.Engine
         public void Start()
         {
             logger.Debug("Staring the engine.");
-            this.secondTimer.Enabled = true;
-            this.minorTimer.Enabled = true;
-            this.majorTimer.Enabled = true;
+            if (this.secondTimer != null)
+                this.secondTimer.Enabled = true;
+            if(this.minorTimer != null)
+                this.minorTimer.Enabled = true;
+            if (this.majorTimer != null)
+                this.majorTimer.Enabled = true;
         }
 
         public void Stop()
         {
             logger.Debug("Stopping the engine.");
-            this.secondTimer.Enabled = false;
-            this.minorTimer.Enabled = false;
-            this.majorTimer.Enabled = false;
+            if (this.secondTimer != null)
+                this.secondTimer.Enabled = false;
+            if (this.minorTimer != null)
+                this.minorTimer.Enabled = false;
+            if (this.majorTimer != null)
+                this.majorTimer.Enabled = false;
             this.secondTimer = null;
             this.minorTimer = null;
             this.majorTimer = null;
         }
 
-        private async void OnMajorInterval(object sender, ElapsedEventArgs e)
+        public void OnMajorInterval(object sender, ElapsedEventArgs e)
         {
             DateTime time = e.SignalTime;
-            nextMajor = e.SignalTime + TimeSpan.FromMilliseconds(((Timer)sender).Interval);
-            logger.Trace("Fetching major reading, next fetch is at {0}.", nextMajor);
-            DateTime start = DateTime.Now;
-            var reading = await this.reader.GetMajorReading();
-            DateTime end = DateTime.Now;
-            logger.Trace("Got major reading \"{0}\" in {1} ms.", reading.LAeq, (end - start).TotalMilliseconds);
-
-            lock (this.listeners)
-            {
-                foreach (var listener in this.listeners)
-                {
-                    listener.NextMajor(nextMajor);
-                    listener.OnMajor(time, reading);
-                }
-            }
+            OnMajorInterval(time);
         }
 
-        private async void OnMinorInterval(object sender, ElapsedEventArgs e)
+        public Task OnMajorInterval(DateTime time)
+        {
+            return Task.Factory.StartNew(async () =>
+            {
+                try
+                {
+                    nextMajor = time + majorInterval;
+                    logger.Trace("Fetching major reading, next fetch is at {0}.", nextMajor);
+                    DateTime start = DateTime.Now;
+                    var reading = await this.reader.GetMajorReading();
+                    if (reading == null)
+                    {
+                        logger.Warn("Got null as major reading.");
+                        return;
+                    }
+                    DateTime end = DateTime.Now;
+                    logger.Trace("Got major reading \"{0}\" in {1} ms.", reading.LAeq, (end - start).TotalMilliseconds);
+
+                    lock (this.listeners)
+                    {
+                        foreach (var listener in this.listeners)
+                        {
+                            listener.NextMajor(nextMajor);
+                            listener.OnMajor(time, reading);
+                        }
+                    }
+                }
+                catch (Exception exp)
+                {
+                    logger.Error(exp, "Failed on Major Interval");
+                }
+            });
+        }
+
+        public void OnMinorInterval(object sender, ElapsedEventArgs e)
         {
             DateTime time = e.SignalTime;
-            nextMinor = e.SignalTime + TimeSpan.FromMilliseconds(((Timer)sender).Interval);
-            logger.Trace("Fetching minor reading, next fetch is at {0}.", nextMinor);
-            DateTime start = DateTime.Now;
-            var reading = await this.reader.GetMinorReading();
-            DateTime end = DateTime.Now;
-            logger.Trace("Got minor reading \"{0}\" in {1} ms.", reading.LAeq, (end - start).TotalMilliseconds);
-
-            lock (this.listeners)
+            OnMinorInterval(time);
+        }
+        public Task OnMinorInterval(DateTime time)
+        {
+            return Task.Factory.StartNew(async () =>
             {
-                foreach (var listener in this.listeners)
-                {
-                    listener.NextMinor(nextMinor);
-                    listener.OnMinor(time, reading);
+                try { 
+                    nextMinor = time + minorInterval;
+                    logger.Trace("Fetching minor reading, next fetch is at {0}.", nextMinor);
+                    DateTime start = DateTime.Now;
+                    var reading = await this.reader.GetMinorReading();
+                    if (reading == null)
+                    {
+                        logger.Warn("Got null as minor reading.");
+                        return;
+                    }
+                    DateTime end = DateTime.Now;
+                    logger.Trace("Got minor reading \"{0}\" in {1} ms.", reading.LAeq, (end - start).TotalMilliseconds);
+
+                    lock (this.listeners)
+                    {
+                        foreach (var listener in this.listeners)
+                        {
+                            listener.NextMinor(nextMinor);
+                            listener.OnMinor(time, reading);
+                        }
+                    }
                 }
-            }
+                catch (Exception exp)
+                {
+                    logger.Error(exp, "Failed on Minor Interval");
+                }
+            });
         }
 
-        private async void OnSecond(object sender, ElapsedEventArgs elapsedEventArgs)
+        public void OnSecond(object sender, ElapsedEventArgs elapsedEventArgs)
         {
-            DateTime time = DateTime.Now;
-            logger.Trace("Fetching second reading.");
-            DateTime start = DateTime.Now;
-            var reading = await this.reader.GetSecondReading();
-            DateTime end = DateTime.Now;
-            logger.Trace("Got second reading \"{0}\" in {1} ms.", reading.LAeq, (end - start).TotalMilliseconds);
+            OnSecond(DateTime.Now);
+        }
 
-            lock (this.listeners)
+        public Task OnSecond(DateTime time)
+        {
+            return Task.Factory.StartNew(async () =>
             {
-                foreach (var listener in this.listeners)
-                {
-                    listener.OnSecond(time, reading);
+                try { 
+                    logger.Trace("Fetching second reading.");
+                    DateTime start = DateTime.Now;
+                    var reading = await this.reader.GetSecondReading();
+                    if (reading == null)
+                    {
+                        logger.Warn("Got null as second reading.");
+                        return;
+                    }
+                    DateTime end = DateTime.Now;
+                    logger.Trace("Got second reading \"{0}\" in {1} ms.", reading.LAeq, (end - start).TotalMilliseconds);
+
+                    lock (this.listeners)
+                    {
+                        foreach (var listener in this.listeners)
+                        {
+                            listener.OnSecond(time, reading);
+                        }
+                    }
                 }
-            }
+                catch (Exception exp)
+                {
+                    logger.Error(exp, "Failed on second reading");
+                }
+            });
         }
     }
 }

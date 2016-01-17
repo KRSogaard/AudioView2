@@ -172,6 +172,12 @@ namespace AudioView.UserControls.CountDown
                     OnNext(time);
             });
         }
+
+        public Task StopListener()
+        {
+            return Task.FromResult<object>(null);
+        }
+
         #endregion
     }
 }

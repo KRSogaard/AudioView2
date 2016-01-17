@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
+using AudioView.Common.Engine;
 using AudioView.Common.Listeners;
 using AudioView.UserControls.CountDown;
 using GalaSoft.MvvmLight.CommandWpf;
@@ -263,10 +264,9 @@ namespace AudioView.ViewModels
             get { return SelectedMeasurement != null; }
         }
 
-        public void AddNewMeasurement()
+        public void AddNewMeasurement(MeasurementViewModel newModel)
         {
             ShowNewFlow = false;
-            var newModel = new MeasurementViewModel(Guid.NewGuid(), NewViewModel.GetSettings());
             Measurements.Add(newModel);
             if (SelectedMeasurement == null)
             {

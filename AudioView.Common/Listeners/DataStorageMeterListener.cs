@@ -96,6 +96,11 @@ namespace AudioView.Common.Listeners
             return Task.FromResult<object>(null);
         }
 
+        public Task StopListener()
+        {
+            return Task.FromResult<object>(null);
+        }
+
         private async void WriteReading(bool major, DateTime time, ReadingData data)
         {
             var readingGuid = Guid.NewGuid();
