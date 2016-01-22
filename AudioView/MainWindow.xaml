@@ -29,16 +29,13 @@
             </Controls:Flyout>
         </Controls:FlyoutsControl>
     </Controls:MetroWindow.Flyouts>
-    <Controls:MetroWindow.RightWindowCommands>
+    <!--<Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands ShowLastSeparator="False">
             <Button Command="{Binding ShowSettingsCommand}"
                     ToolTip="Open settings window"
                     Content="Settings" />
-            <Button Command="{Binding LogInCommand}"
-                    ToolTip="Log In"
-                    Content="Log In" />
         </Controls:WindowCommands>
-    </Controls:MetroWindow.RightWindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>-->
 
     <Grid>
         <Grid.RowDefinitions>
