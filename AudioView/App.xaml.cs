@@ -17,7 +17,7 @@ namespace AudioView
         static App()
         {
             DispatcherHelper.Initialize();
-            BitmapFont.RegisterFont("Segoe UI", new []{ 12, 16, 24, 32});
+            //BitmapFont.RegisterFont("Segoe UI", new []{ 12, 16, 24, 32});
         }
     }
 }
