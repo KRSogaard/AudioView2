@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using AudioView.ViewModels;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace AudioView
 {
@@ -18,43 +19,9 @@ namespace AudioView
         public MainWindow()
         {
             InitializeComponent();
-            this.DataContext = new MainViewModel();
+            var model = new MainViewModel();
+            this.DataContext = model;
 
-            //var model = new AudioViewGraphViewModel(10, 150, 90, new TimeSpan(0, 1, 0));
-            //AudioViewGraphMinor.DataContext = model;
-
-            //rnd = new Random();
-            //DateTime start = DateTime.Now.AddHours(-2).AddMinutes(-3);
-            //TimeSpan interval = new TimeSpan(0,1,0);
-            //TimeSpan current = new TimeSpan(0,0,0);
-            //lastValue = 50;
-            //while (start <= DateTime.Now)
-            //{
-            //    int reading = rnd.Next(Math.Max(lastValue - 5, 50), Math.Min(lastValue + 5, 150));
-            //    lastValue = reading;
-            //    current = current.Add(new TimeSpan(0, 0, 1));
-            //    if (current >= interval)
-            //    {
-            //        model.AddReading(start, reading);
-            //        current = new TimeSpan(0,0,0);
-            //    }
-            //    model.AddSecondReading(start, reading);
-            //    start = start.AddSeconds(1);
-            //}
-
-            //model = new AudioViewGraphViewModel(10, 150, 90, new TimeSpan(0,15,0));
-            //AudioViewGraphMajor.DataContext = model;
-            //start = DateTime.Now.AddHours(-2).AddMinutes(-3);
-            //interval = new TimeSpan(0, 15, 0);
-            //current = new TimeSpan(0, 0, 0);
-            //lastValue = 50;
-            //while (start <= DateTime.Now)
-            //{
-            //    int reading = rnd.Next(Math.Max(lastValue - 5, 50), Math.Min(lastValue + 5, 150));
-            //    lastValue = reading;
-            //    model.AddReading(start, reading);
-            //    start = start.Add(interval);
-            //}
         }
     }
 }

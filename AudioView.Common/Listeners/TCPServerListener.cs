@@ -109,6 +109,7 @@ namespace AudioView.Common.Listeners
 
         private void HandelRequest(TcpClient client, string message)
         {
+            logger.Trace("Got message \"{0}\" from {1}", message, client.Client.RemoteEndPoint);
             switch (message)
             {
                 case TcpMessages.GetSettings:
@@ -179,11 +180,16 @@ namespace AudioView.Common.Listeners
             });
         }
 
-        public Task OnSecond(DateTime time, ReadingData data)
+        public Task OnSecond(DateTime time, ReadingData data, ReadingData minorData, ReadingData majorData)
         {
             return Task.Factory.StartNew(() =>
             {
-                SendMessageToAll(string.Format(TcpMessages.OnSecondResponse, JsonConvert.SerializeObject(data)));
+                SendMessageToAll(string.Format(TcpMessages.OnSecondResponse, JsonConvert.SerializeObject(new TcpWrapperOnSecond()
+                {
+                    Second = data,
+                    Minor = minorData,
+                    Major = majorData
+                })));
             });
         }
 
@@ -218,5 +224,12 @@ namespace AudioView.Common.Listeners
                 }
             });
         }
+    }
+
+    public class TcpWrapperOnSecond
+    {
+        public ReadingData Second { get; set; }
+        public ReadingData Minor { get; set; }
+        public ReadingData Major { get; set; }
     }
 }

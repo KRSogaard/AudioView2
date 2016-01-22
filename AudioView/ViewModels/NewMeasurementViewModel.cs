@@ -16,6 +16,7 @@ using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Threading;
 using NLog;
+using Prism.Commands;
 using Prism.Mvvm;
 
 namespace AudioView.ViewModels
@@ -24,8 +25,8 @@ namespace AudioView.ViewModels
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
+        private bool testFailed;
         private int DefaultPort = 13674;
-        private bool isRemoteTested { get; set; }
         private MainViewModel MainViewModel { get; set; }
         private MainViewModel mainViewModel;
         private MeasurementSettings remoteSettings;
@@ -36,7 +37,7 @@ namespace AudioView.ViewModels
             ProjectName = "Untitled - " + DateTime.Now.ToString("yyyy-mm-dd hh-mm-ss");
             UseLocal = true;
             IsLoading = true;
-            isRemoteTested = false;
+            IsRemoteTested = false;
             LocalDevices = new ObservableCollection<string>();
 
             MajorIntervalSeconds = 0.ToString();
@@ -46,16 +47,20 @@ namespace AudioView.ViewModels
             MajorIntervalHours = 0.ToString();
             MinorIntervalHours = 0.ToString();
 
-            GraphBoundLower = 30.ToString();
-            GraphBoundUpper = 150.ToString();
+            GraphBoundUpper = 120.ToString();
+            GraphBoundLower = 60.ToString();
 
-            DBLimit = 90.ToString();
-            ClockItems = AudioView.UserControls.CountDown.ClockItems.Get;
+            MinorDBLimit = 90.ToString();
+            MajorDBLimit = 90.ToString();
+            ClockItems = UserControls.CountDown.ClockItems.Get;
 
-            MinorClockMainItem = ClockItems.FirstOrDefault(x => x.Id == 1);
+            MinorClockMainItem = ClockItems.FirstOrDefault(x => x.Id == 3);
             MinorClockSecondaryItem = ClockItems.FirstOrDefault(x => x.Id == 0);
-            MajorClockMainItem = ClockItems.FirstOrDefault(x => x.Id == 1);
+            MajorClockMainItem = ClockItems.FirstOrDefault(x => x.Id == 3);
             MajorClockSecondaryItem = ClockItems.FirstOrDefault(x => x.Id == 2);
+
+            RemoteIpAddress = "localhost";
+            RemotePort = DefaultPort.ToString();
 
             //// Find an avalible port
             while (mainViewModel.Measurements.Any(x => x.Settings.Port == DefaultPort))
@@ -73,16 +78,6 @@ namespace AudioView.ViewModels
                     GotDevices(result.Result);
                 });
             });
-            this.PropertyChanged += (sender, args) =>
-            {
-                logger.Trace("{0} changed.", args.PropertyName);
-                if (args.PropertyName == "RemotePort" || args.PropertyName == "RemoteIpAddress")
-                {
-                    CanTest = true;
-                    isRemoteTested = false;
-                    OnPropertyChanged("CanStart");
-                }
-            };
         }
 
         public IList<ClockItem> ClockItems { get; set; }
@@ -125,6 +120,13 @@ namespace AudioView.ViewModels
             }
         }
 
+        private bool _isRemoteTested;
+        private bool IsRemoteTested
+        {
+            get { return _isRemoteTested; }
+            set { SetProperty(ref _isRemoteTested, value); }
+        }
+
         private int _listenPort;
         public string ListenPort
         {
@@ -134,7 +136,6 @@ namespace AudioView.ViewModels
                 int tryParse;
                 if (int.TryParse(value, out tryParse) && tryParse >= 0)
                 {
-                    logger.Trace("Setting listening port to {0}.", value);
                     SetProperty(ref _listenPort, tryParse);
                 }
             }
@@ -146,8 +147,18 @@ namespace AudioView.ViewModels
             get { return _projectName; }
             set
             {
-                logger.Trace("Setting project name to {0}.", value);
-                SetProperty(ref _projectName, value); }
+                SetProperty(ref _projectName, value);
+            }
+        }
+
+        private string _projectNumber;
+        public string ProjectNumber
+        {
+            get { return _projectNumber; }
+            set
+            {
+                SetProperty(ref _projectNumber, value);
+            }
         }
 
         private string _remoteIpAddress;
@@ -157,6 +168,7 @@ namespace AudioView.ViewModels
             set
             {
                 logger.Trace("Setting ip address to {0}.", value);
+                IsRemoteTested = false;
                 SetProperty(ref _remoteIpAddress, value);
             }
         }
@@ -168,6 +180,7 @@ namespace AudioView.ViewModels
             set
             {
                 logger.Trace("Setting remote port to {0}.", value);
+                IsRemoteTested = false;
                 SetProperty(ref _remotePort, value); }
         }
 
@@ -219,16 +232,6 @@ namespace AudioView.ViewModels
                 SetProperty(ref _isTesting, value); }
         }
 
-        private bool _canTest;
-        public bool CanTest
-        {
-            get { return _canTest; }
-            set
-            {
-                logger.Trace("Setting can test to {0}.", value);
-                SetProperty(ref _canTest, value); }
-        }
-
         private int _minorIntervalSeconds;
         public string MinorIntervalSeconds
         {
@@ -238,6 +241,10 @@ namespace AudioView.ViewModels
                 int tryParse;
                 if (int.TryParse(value, out tryParse) && tryParse >= 0)
                 {
+                    if (tryParse > 60)
+                        tryParse = 60;
+                    if (tryParse < 0)
+                        tryParse = 0;
                     logger.Trace("Setting minor seconds to {0}.", value);
                     SetProperty(ref _minorIntervalSeconds, tryParse);
                 }
@@ -253,6 +260,10 @@ namespace AudioView.ViewModels
                 int tryParse;
                 if (int.TryParse(value, out tryParse) && tryParse >= 0)
                 {
+                    if (tryParse > 60)
+                        tryParse = 60;
+                    if (tryParse < 0)
+                        tryParse = 0;
                     logger.Trace("Setting major seconds to {0}.", value);
                     SetProperty(ref _majorIntervalSeconds, tryParse);
                 }
@@ -268,6 +279,10 @@ namespace AudioView.ViewModels
                 int tryParse;
                 if (int.TryParse(value, out tryParse) && tryParse >= 0)
                 {
+                    if (tryParse > 60)
+                        tryParse = 60;
+                    if (tryParse < 0)
+                        tryParse = 0;
                     logger.Trace("Setting minor minutes to {0}.", value);
                     SetProperty(ref _minorIntervalMinutes, tryParse);
                 }
@@ -283,6 +298,10 @@ namespace AudioView.ViewModels
                 int tryParse;
                 if (int.TryParse(value, out tryParse) && tryParse >= 0)
                 {
+                    if (tryParse > 60)
+                        tryParse = 60;
+                    if (tryParse < 0)
+                        tryParse = 0;
                     logger.Trace("Setting major minutes to {0}.", value);
                     SetProperty(ref _majorIntervalMinutes, tryParse);
                 }
@@ -298,6 +317,10 @@ namespace AudioView.ViewModels
                 int tryParse;
                 if (int.TryParse(value, out tryParse) && tryParse >= 0)
                 {
+                    if (tryParse > 24)
+                        tryParse = 24;
+                    if (tryParse < 0)
+                        tryParse = 0;
                     logger.Trace("Setting minor hour to {0}.", value);
                     SetProperty(ref _minorIntervalHours, tryParse);
                 }
@@ -313,6 +336,10 @@ namespace AudioView.ViewModels
                 int tryParse;
                 if (int.TryParse(value, out tryParse) && tryParse >= 0)
                 {
+                    if (tryParse > 24)
+                        tryParse = 24;
+                    if (tryParse < 0)
+                        tryParse = 0;
                     logger.Trace("Setting major hour to {0}.", value);
                     SetProperty(ref _majorIntervalHours, tryParse);
                 }
@@ -331,7 +358,8 @@ namespace AudioView.ViewModels
                     logger.Trace("Updated lower bound to {0}.", value);
                     SetProperty(ref _graphBoundLower, tryParse);
                 }
-                DBLimit = DBLimit;
+                MinorDBLimit = MinorDBLimit;
+                MajorDBLimit = MajorDBLimit;
             }
         }
 
@@ -347,21 +375,37 @@ namespace AudioView.ViewModels
                     logger.Trace("Updated upper bound to {0}.", value);
                     SetProperty(ref _graphBoundUpper, tryParse);
                 }
-                DBLimit = DBLimit;
+                MinorDBLimit = MinorDBLimit;
+                MajorDBLimit = MajorDBLimit;
             }
         }
 
-        private int _dBLimit;
-        public string DBLimit
+        private int _MinordBLimit;
+        public string MinorDBLimit
         {
-            get { return _dBLimit.ToString(); }
+            get { return _MinordBLimit.ToString(); }
             set
             {
                 int tryParse;
-                if(int.TryParse(value, out tryParse) && tryParse >= 10)
+                if (int.TryParse(value, out tryParse) && tryParse >= 10)
                 {
                     logger.Trace("Updated dbLimit to {0}.", value);
-                    SetProperty(ref _dBLimit, Math.Max(_graphBoundLower, Math.Min(_graphBoundUpper, tryParse)));
+                    SetProperty(ref _MinordBLimit, Math.Max(_graphBoundLower, Math.Min(_graphBoundUpper, tryParse)));
+                }
+            }
+        }
+
+        private int _MajordBLimit;
+        public string MajorDBLimit
+        {
+            get { return _MajordBLimit.ToString(); }
+            set
+            {
+                int tryParse;
+                if (int.TryParse(value, out tryParse) && tryParse >= 10)
+                {
+                    logger.Trace("Updated dbLimit to {0}.", value);
+                    SetProperty(ref _MajordBLimit, Math.Max(_graphBoundLower, Math.Min(_graphBoundUpper, tryParse)));
                 }
             }
         }
@@ -372,8 +416,10 @@ namespace AudioView.ViewModels
             return new MeasurementSettings()
             {
                 ProjectName = ProjectName,
+                ProjectNumber = ProjectNumber,
                 BarsDisplayed = 15,
-                DBLimit = _dBLimit,
+                MinorDBLimit = _MinordBLimit,
+                MajorDBLimit = _MajordBLimit,
                 GraphLowerBound = _graphBoundLower,
                 GraphUpperBound = _graphBoundUpper,
                 MajorClockMainItemId = MajorClockMainItem.Id,
@@ -387,59 +433,89 @@ namespace AudioView.ViewModels
             };
         }
 
+        private ICommand _startTest;
         public ICommand StartTest
         {
             get
             {
-                return new RelayCommand(() =>
+                if (_startTest == null)
                 {
-                    logger.Debug("Starting remote test.");
-                    IsTesting = true;
-                    isRemoteTested = false;
-                    OnPropertyChanged("CanStart");
-                    TestDevice().ContinueWith(result =>
+                    _startTest = new DelegateCommand(() =>
                     {
-                        logger.Debug("Parsing remote test result to UI thread.");
-                        DispatcherHelper.CheckBeginInvokeOnUI(() => GotTest(result.Result));
-                    });
-                });
+                        logger.Debug("Starting remote test.");
+                        IsTesting = true;
+                        IsRemoteTested = false;
+                        TestDevice().ContinueWith(result =>
+                        {
+                            logger.Debug("Parsing remote test result to UI thread.");
+                            DispatcherHelper.CheckBeginInvokeOnUI(() => GotTest(result.Result));
+                        });
+                    }, () =>
+                    {
+                        return !IsRemoteTested && !IsTesting;
+                    })
+                    .ObservesProperty(() => IsRemoteTested)
+                    .ObservesProperty(() => IsTesting);
+                }
+                return _startTest;
             }
         }
 
+        private ICommand _startMeasurement;
         public ICommand StartMeasurement
         {
             get
             {
-                return new RelayCommand(() =>
+                if (_startMeasurement == null)
                 {
-                    try
+                    _startMeasurement = new DelegateCommand(() =>
                     {
-                        logger.Debug("Adding new measurement to the main view model.");
-
-                        MeasurementViewModel newModel;
-                        var settings = GetSettings();
-                        IMeterReader reader;
-                        if (UseLocal)
+                        try
                         {
-                            reader = new MockMeterReader();
+                            logger.Debug("Adding new measurement to the main view model.");
+
+                            MeasurementViewModel newModel;
+                            var settings = GetSettings();
+                            IMeterReader reader;
+                            if (UseLocal)
+                            {
+                                reader = new MockMeterReader();
+                            }
+                            else
+                            {
+                                reader = new RemoteMeterReader(RemoteIpAddress, int.Parse(RemotePort));
+                                settings.ProjectName = remoteSettings.ProjectName;
+                                settings.ProjectNumber = remoteSettings.ProjectNumber;
+                                settings.MajorInterval = remoteSettings.MajorInterval;
+                                settings.MinorInterval = remoteSettings.MinorInterval;
+                                settings.MinorDBLimit = remoteSettings.MinorDBLimit;
+                                settings.MajorDBLimit = remoteSettings.MajorDBLimit;
+                            }
+
+                            newModel = new MeasurementViewModel(Guid.NewGuid(), settings, reader);
+
+                            MainViewModel.AddNewMeasurement(newModel);
                         }
-                        else
+                        catch (Exception exp)
                         {
-                            reader = new RemoteMeterReader(RemoteIpAddress, int.Parse(RemotePort));
-                            settings.MajorInterval = remoteSettings.MajorInterval;
-                            settings.MinorInterval = remoteSettings.MinorInterval;
-                            settings.DBLimit = remoteSettings.DBLimit;
+                            logger.Error(exp, "Failed to start measurement.");
                         }
-
-                        newModel = new MeasurementViewModel(Guid.NewGuid(), settings, reader);
-
-                        MainViewModel.AddNewMeasurement(newModel);
-                    }
-                    catch (Exception exp)
+                    }, () =>
                     {
-                        logger.Error(exp, "Failed to start measurement.");
-                    }
-                });
+                        if (UseLocal && (IsLoading || SelectedLocalDevice == null))
+                            return false;
+                        if (UseRemote && (IsTesting || !IsRemoteTested))
+                            return false;
+                        return true;
+                    })
+                    .ObservesProperty(() => UseRemote)
+                    .ObservesProperty(() => UseLocal)
+                    .ObservesProperty(() => IsLoading)
+                    .ObservesProperty(() => SelectedLocalDevice)
+                    .ObservesProperty(() => IsTesting)
+                    .ObservesProperty(() => IsRemoteTested);
+                }
+                return _startMeasurement;
             }
         }
 
@@ -447,9 +523,8 @@ namespace AudioView.ViewModels
         {
             logger.Debug("Remote test result {0}.", result);
             IsTesting = false;
-            isRemoteTested = result;
-            CanTest = !result;
-            OnPropertyChanged("CanStart");
+            testFailed = result;
+            IsRemoteTested = result;
         }
 
         private ObservableCollection<string> _localDevices;
@@ -472,27 +547,23 @@ namespace AudioView.ViewModels
             return Task.Factory.StartNew(() =>
             {
                 logger.Debug("Get connect local devices.");
-                //Task.Delay(new TimeSpan(0, 0, 1)).Wait();
+                Task.Delay(new TimeSpan(0, 0, 1)).Wait();
                 return new List<string>()
                 {
-                    "Device 1",
-                    "Device 2"
+                    "Test Device 1",
+                    "Test Device 2"
                 };
             });
         }
         private void GotDevices(List<string> devices)
         {
             IsLoading = false;
-
             LocalDevices.Clear();
             foreach (var device in devices)
             {
                 LocalDevices.Add(device);
             }
             SelectedLocalDevice = LocalDevices.FirstOrDefault();
-            
-            OnPropertyChanged("LocalDevices");
-            OnPropertyChanged("CanStart");
         }
 
         private Task<bool> TestDevice()
@@ -506,17 +577,6 @@ namespace AudioView.ViewModels
             });
         }
 
-        public bool CanStart
-        {
-            get
-            {
-                logger.Trace("Verifying if can start new measurement start.");
-                if (UseLocal && (IsLoading || SelectedLocalDevice == null))
-                    return false;
-                if (UseRemote && (IsTesting || !isRemoteTested))
-                    return false;
-                return true;
-            }
-        }
+        public string Error { get; }
     }
 }

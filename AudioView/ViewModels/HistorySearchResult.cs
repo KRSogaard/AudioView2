@@ -27,20 +27,30 @@ namespace AudioView.ViewModels
         private TimeSpan dateSpan;
 
         private Project project;
-        
+
         public string ProjectName
         {
             get { return project.Name; }
         }
-        
+
+        public string ProjectNumber
+        {
+            get { return project.Number; }
+        }
+
         public string Date
         {
             get { return project.Created.ToString("f"); }
         }
-        
-        public string DBLimit
+
+        public string MinorDBLimit
         {
-            get { return project.DBLimit + " dB"; }
+            get { return project.MinorDBLimit + " dB"; }
+        }
+
+        public string MajorDBLimit
+        {
+            get { return project.MajorDBLimit + " dB"; }
         }
 
         public string MinorInterval
@@ -133,29 +143,6 @@ namespace AudioView.ViewModels
             set { SetProperty(ref _readingsMajor, value); }
         }
 
-        private ICommand _deleteProject;
-        public ICommand DeleteProject
-        {
-            get
-            {
-                if (_deleteProject == null)
-                {
-                    _deleteProject = new DelegateCommand(() =>
-                    {
-                        logger.Trace("Deleting project {0} ({1})", project.Name, project.Id);
-                        databaseService.DeleteProject(project.Id).ContinueWith((task) =>
-                        {
-
-                            DispatcherHelper.CheckBeginInvokeOnUI(() => {
-                                                                            parent.SelectedProjectDelete();
-                            });
-                        });
-                    });
-                }
-                return _deleteProject;
-            }
-        }
-
         public HistorySearchResult(HistoryViewModel parent, Project project)
         {
             this.parent = parent;
@@ -164,10 +151,9 @@ namespace AudioView.ViewModels
             ReadingsMajor = new ObservableCollection<HistoryReadingViewModel>();
             ReadingsMinor = new ObservableCollection<HistoryReadingViewModel>();
 
-
             MinorGraph = new AudioViewGraphViewModel(false,
                     10, // Ignored
-                    project.DBLimit,
+                    project.MinorDBLimit,
                     project.MinorInterval,
                     50,
                     150)
@@ -176,7 +162,7 @@ namespace AudioView.ViewModels
             };
             MajorGraph = new AudioViewGraphViewModel(true,
                     10,
-                    project.DBLimit,
+                    project.MajorDBLimit,
                     project.MajorInterval,
                     50,
                     150)
@@ -265,13 +251,11 @@ namespace AudioView.ViewModels
 
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-
                     ReadingsMinor.Clear();
                     ReadingsMajor.Clear();
                     ReadingsMinor.AddRange(minor);
                     ReadingsMajor.AddRange(major);
                     IsLoading = false;
-
                 });
             });
         }

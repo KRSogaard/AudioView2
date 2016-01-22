@@ -151,7 +151,7 @@ namespace AudioView.UserControls.Graph
             }
         }
 
-        public Task OnSecond(DateTime time, ReadingData data)
+        public Task OnSecond(DateTime time, ReadingData data, ReadingData minorData, ReadingData majorData)
         {
             if(isMajor)
                 return Task.FromResult<object>(null);

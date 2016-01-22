@@ -22,21 +22,25 @@ namespace AudioView.UserControls.CountDown
         private int mainItem;
         private int secondItem;
         private int limitDb;
+        private bool isPopOut;
 
-        public AudioViewCountDownViewModel(bool isMajor, TimeSpan interval, int limitDb, int mainItem, int secondItem)
+        public AudioViewCountDownViewModel(bool isMajor, TimeSpan interval, int limitDb, int mainItem, int secondItem, bool isPopOut = false)
         {
             Interval = interval;
             this.isMajor = isMajor;
             this.limitDb = limitDb;
             this.mainItem = mainItem;
             this.secondItem = secondItem;
+            this.isPopOut = isPopOut;
         }
         
         public TimeSpan Interval { get; set; }
         public DateTime NextReadingTime { get; set; }
         public DateTime LastReadingTime { get; set; }
-        public double LastReading { get; set; }
-        public double LastInterval { get; set; }
+
+        public ReadingData LastReading { get; set; }
+        public ReadingData LastBuildingInterval { get; set; }
+        public ReadingData LastInterval { get; set; }
         public string RenderTime { get; set; }
 
         public SolidColorBrush BarBrush { get; set; }
@@ -70,6 +74,7 @@ namespace AudioView.UserControls.CountDown
         }
 
         private bool _isEnabled;
+
         public bool IsEnabled
         {
             get { return _isEnabled; }
@@ -91,12 +96,14 @@ namespace AudioView.UserControls.CountDown
             switch (displayId)
             {
                 case 1: // Latests interval
-                    return ((int)Math.Ceiling(LastInterval)).ToString();
+                    return ((int)Math.Ceiling(LastInterval.LAeq)).ToString();
                 case 2: // Time to next interval
                     return (NextReadingTime - DateTime.Now).ToString(@"mm\:ss\.f", null);
+                case 3: // Latests building interval
+                    return ((int)Math.Ceiling(LastBuildingInterval.LAeq)).ToString();
                 case 0: // Lastest reading (live data)
                 default:
-                    return ((int)Math.Ceiling(LastReading)).ToString();
+                    return ((int)Math.Ceiling(LastReading.LAeq)).ToString();
             }
         }
 
@@ -104,7 +111,7 @@ namespace AudioView.UserControls.CountDown
         {
             get
             {
-                return LastReading >= limitDb ? BarOverBrush : BarBrush;
+                return LastReading.LAeq >= limitDb ? BarOverBrush : BarBrush;
             }
         }
 
@@ -117,13 +124,9 @@ namespace AudioView.UserControls.CountDown
             if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private void OnNext(DateTime time)
+        public void OnNext(DateTime time)
         {
-            if (NextReadingTime == new DateTime())
-            {
-                NextReadingTime = time.AddMilliseconds(-Interval.TotalMilliseconds);
-            }
-            LastReadingTime = NextReadingTime;
+            LastReadingTime = time.AddMilliseconds(-Interval.TotalMilliseconds);
             NextReadingTime = time;
         }
 
@@ -133,7 +136,7 @@ namespace AudioView.UserControls.CountDown
             return Task.Factory.StartNew(() =>
             {
                 if (!isMajor)
-                    LastInterval = data.LAeq;
+                    LastInterval = data;
             });
         }
 
@@ -142,16 +145,16 @@ namespace AudioView.UserControls.CountDown
             return Task.Factory.StartNew(() =>
             {
                 if (isMajor)
-                    LastInterval = data.LAeq;
+                    LastInterval = data;
             });
         }
 
-
-        public Task OnSecond(DateTime time, ReadingData data)
+        public Task OnSecond(DateTime time, ReadingData data, ReadingData minorData, ReadingData majorData)
         {
             return Task.Factory.StartNew(() =>
             {
-                LastReading = data.LAeq;
+                LastReading = data;
+                LastBuildingInterval = isMajor ? majorData : minorData;
             });
         }
 

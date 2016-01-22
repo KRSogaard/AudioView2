@@ -50,7 +50,7 @@ namespace AudioView.UserControls.CountDown
 
         private void Draw()
         {
-            DateTime start = DateTime.Now;
+            //DateTime start = DateTime.Now;
             var model = (AudioViewCountDownViewModel)this.DataContext;
             if (model == null || !model.IsEnabled)
                 return;
@@ -70,8 +70,8 @@ namespace AudioView.UserControls.CountDown
 
             model.BarBrush = BarBrush;
             model.BarOverBrush = BarOverBrush;
-            var end = DateTime.Now;
-            model.RenderTime = "Render time: " + (start - end).TotalMilliseconds + " ms. Inteval: " + model.LastInterval + " reading: " + model.LastReading;
+            //var end = DateTime.Now;
+            //model.RenderTime = "Render time: " + (start - end).TotalMilliseconds + " ms. Inteval: " + model.LastInterval + " reading: " + model.LastReading;
         }
     }
 }

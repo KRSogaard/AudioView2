@@ -13,8 +13,10 @@
           <Property Name="Created" Type="datetime" Nullable="false" />
           <Property Name="MinorInterval" Type="bigint" Nullable="false" />
           <Property Name="MajorInterval" Type="bigint" Nullable="false" />
-          <Property Name="DBLimit" Type="int" Nullable="false" />
+          <Property Name="MinorDBLimit" Type="int" Nullable="false" />
+          <Property Name="MajorDBLimit" Type="int" Nullable="false" />
           <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Number" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="Readings">
           <Key>
@@ -67,10 +69,12 @@
           <Property Name="Id" Type="Guid" Nullable="false" />
           <Property Name="MinorInterval" Type="Int64" Nullable="false" />
           <Property Name="MajorInterval" Type="Int64" Nullable="false" />
-          <Property Name="DBLimit" Type="Int32" Nullable="false" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Readings" Relationship="AudioViewModel.FK_Readings_Projects" FromRole="Project" ToRole="Reading" />
           <Property Name="Created" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="MinorDBLimit" Type="Int32" Nullable="false" />
+          <Property Name="MajorDBLimit" Type="Int32" Nullable="false" />
+          <Property Name="Number" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Reading">
           <Key>
@@ -106,9 +110,11 @@
           <EntitySetMapping Name="Projects">
             <EntityTypeMapping TypeName="AudioViewModel.Project">
               <MappingFragment StoreEntitySet="Projects">
+                <ScalarProperty Name="Number" ColumnName="Number" />
+                <ScalarProperty Name="MajorDBLimit" ColumnName="MajorDBLimit" />
+                <ScalarProperty Name="MinorDBLimit" ColumnName="MinorDBLimit" />
                 <ScalarProperty Name="Created" ColumnName="Created" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="DBLimit" ColumnName="DBLimit" />
                 <ScalarProperty Name="MajorInterval" ColumnName="MajorInterval" />
                 <ScalarProperty Name="MinorInterval" ColumnName="MinorInterval" />
                 <ScalarProperty Name="Id" ColumnName="Id" />

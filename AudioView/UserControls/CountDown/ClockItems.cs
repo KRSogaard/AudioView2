@@ -28,7 +28,12 @@ namespace AudioView.UserControls.CountDown
                     {
                         Id = 2,
                         Name = "Time to next interval"
-                    }
+                    },
+                    new ClockItem()
+                    {
+                        Id = 3,
+                        Name = "Latest building interval"
+                    },
                 };
             }
         } 

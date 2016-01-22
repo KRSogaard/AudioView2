@@ -16,25 +16,46 @@ using AudioView.Common.Listeners;
 using AudioView.UserControls.CountDown;
 using AudioView.UserControls.Graph;
 using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Threading;
+using MahApps.Metro.Controls;
+using NLog;
 using Prism.Mvvm;
 
 namespace AudioView.ViewModels
 {
     public class MeasurementViewModel : BindableBase
     {
-        private List<Window> popOutWindows;
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
+        private LinkedList<MetroWindow> popOutWindows;
         public AudioViewEngine engine { get; set; }
         private MeasurementSettings settings;
         private DataStorageMeterListener dataStorage;
         private DateTime started;
         private TCPServerListener tcpServer;
+        private bool ConnectionStatus;
 
         public MeasurementViewModel(Guid id, MeasurementSettings settings, IMeterReader reader)
         {
             started = DateTime.Now;
-            popOutWindows = new List<Window>();
+            popOutWindows = new LinkedList<MetroWindow>();
             this.engine = new AudioViewEngine(settings.MinorInterval, settings.MajorInterval, reader);
             this.settings = settings;
+
+            this.engine.ConnectionStatusEvent += connected =>
+            {
+                if(ConnectionStatus == connected)
+                    return; // No need
+
+                Task.Factory.StartNew(() =>
+                {
+                    ConnectionStatus = connected;
+                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                    {
+                        OnPropertyChanged(nameof(IsDisconnected));
+                    });
+                });
+            };
             
             if (settings.IsLocal)
             {
@@ -49,23 +70,23 @@ namespace AudioView.ViewModels
 
             MinorClock = new AudioViewCountDownViewModel(false,
                     settings.MinorInterval,
-                    settings.DBLimit,
+                    settings.MinorDBLimit,
                     settings.MinorClockMainItemId,
                     settings.MinorClockSecondaryItemId);
             MajorClock = new AudioViewCountDownViewModel(true,
                     settings.MajorInterval,
-                    settings.DBLimit,
+                    settings.MajorDBLimit,
                     settings.MajorClockMainItemId,
                     settings.MajorClockSecondaryItemId);
             MinorGraph = new AudioViewGraphViewModel(false,
                     settings.BarsDisplayed,
-                    settings.DBLimit,
+                    settings.MinorDBLimit,
                     settings.MinorInterval,
                     settings.GraphLowerBound,
                     settings.GraphUpperBound);
             MajorGraph = new AudioViewGraphViewModel(true,
                     settings.BarsDisplayed,
-                    settings.DBLimit,
+                    settings.MajorDBLimit,
                     settings.MajorInterval,
                     settings.GraphLowerBound,
                     settings.GraphUpperBound);
@@ -74,12 +95,10 @@ namespace AudioView.ViewModels
             this.engine.RegisterListener(MajorGraph);
             this.engine.RegisterListener(MinorClock);
             this.engine.RegisterListener(MajorClock);
-
-
+            
             this.engine.Start();
 
             Title = settings.ProjectName;
-
         }
 
         private string title;
@@ -102,9 +121,13 @@ namespace AudioView.ViewModels
             get { return settings; }
         }
 
-        public string DBLimit
+        public string MinorDBLimit
         {
-            get { return settings.DBLimit + "dB."; }
+            get { return settings.MinorDBLimit + "dB."; }
+        }
+        public string MajorDBLimit
+        {
+            get { return settings.MajorDBLimit + "dB."; }
         }
         public string MinorInterval
         {
@@ -118,12 +141,10 @@ namespace AudioView.ViewModels
         {
             get { return settings.Port.ToString(); }
         }
-
         public string Started
         {
             get { return started.ToString("g"); }
         }
-
         public string MyIp
         {
             get
@@ -138,6 +159,14 @@ namespace AudioView.ViewModels
                 }
                 return "Unknown";
             }
+        }
+        public bool IsDisconnected
+        {
+            get { return !ConnectionStatus; }
+        }
+        public bool IsLocal
+        {
+            get { return settings.IsLocal; }
         }
 
         private AudioViewCountDownViewModel minorClockViewModel;
@@ -173,18 +202,21 @@ namespace AudioView.ViewModels
             var window = new LiveReadingWindow()
             {
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                BorderThickness = new Thickness(1)
+                BorderThickness = new Thickness(1),
+                GlowBrush = null
             };
-            popOutWindows.Add(window);
+            window.SetResourceReference(MetroWindow.BorderBrushProperty, "AccentColorBrush");
+
+            popOutWindows.AddLast(window);
             var model = new LiveReadingViewModel(isMajor,
-                settings.MinorInterval,
-                settings.DBLimit,
+                isMajor ?  settings.MajorInterval : settings.MinorInterval,
+                isMajor ? settings.MajorDBLimit : settings.MinorDBLimit,
                 mainClockItemId,
                 secondayClockItemId);
+            model.OnNext(isMajor ? MajorClock.NextReadingTime : MinorClock.NextReadingTime);
+
             model.Title = Title;
             this.engine.RegisterListener(model);
-            model.NextReadingTime = MinorClock.NextReadingTime;
-            model.LastReadingTime = MinorClock.LastReadingTime;
             window.DataContext = model;
             window.Closed += (sender, args) =>
             {
@@ -201,12 +233,15 @@ namespace AudioView.ViewModels
             var window = new GraphWindow()
             {
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                BorderThickness = new Thickness(1)
+                BorderThickness = new Thickness(1),
+                GlowBrush = null
             };
-            popOutWindows.Add(window);
+            window.SetResourceReference(MetroWindow.BorderBrushProperty, "AccentColorBrush");
+
+            popOutWindows.AddLast(window);
             var model = new GraphReadingViewModel(isMajor,
                     settings.BarsDisplayed,
-                    settings.DBLimit,
+                    isMajor ? settings.MajorDBLimit : settings.MinorDBLimit,
                     isMajor ? settings.MajorInterval : settings.MinorInterval,
                     settings.GraphLowerBound,
                     settings.GraphUpperBound);
@@ -225,12 +260,31 @@ namespace AudioView.ViewModels
 
         public void Close()
         {
-            foreach (var window in popOutWindows)
-            {
-                window.Close();
-            }
-            popOutWindows.Clear();
             this.engine.Stop();
+            if (popOutWindows.Count <= 0)
+                return;
+
+            logger.Debug("Closing all {0} pop-up windows.", popOutWindows.Count);
+            while (popOutWindows.First != null)
+            {
+                logger.Trace("Closing pop-op window {0}.", popOutWindows.First);
+                try
+                {
+                    var first = popOutWindows.First.Value;
+                    first.Close();
+                    // It should be removed by the even, but lets check just to be sure
+                    if (popOutWindows.First.Value == first)
+                    {
+                        popOutWindows.RemoveFirst();
+                    }
+                }
+                catch (Exception exp)
+                {
+                    logger.Error(exp, "Failed to close pop-op window.");
+                }
+            }
+            // Clear to make sure everyting ise ok
+            popOutWindows.Clear();
         }
 
         private bool _isEnabled;
@@ -240,10 +294,15 @@ namespace AudioView.ViewModels
             set {
                 _isEnabled = value;
                 OnPropertyChanged();
-                MinorClock.IsEnabled = value;
-                MajorClock.IsEnabled = value;
-                MinorGraph.IsEnabled = value;
-                MajorGraph.IsEnabled = value;
+
+                if (MinorClock != null)
+                    MinorClock.IsEnabled = value;
+                if (MajorClock != null)
+                    MajorClock.IsEnabled = value;
+                if (MinorGraph != null)
+                    MinorGraph.IsEnabled = value;
+                if (MajorGraph != null)
+                    MajorGraph.IsEnabled = value;
             }
         }
     }

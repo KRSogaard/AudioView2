@@ -8,9 +8,8 @@ namespace AudioView.Common.Engine
     {
         Task OnMinor(DateTime time, ReadingData data);
         Task OnMajor(DateTime time, ReadingData data);
-        Task OnSecond(DateTime time, ReadingData data);
+        Task OnSecond(DateTime time, ReadingData data, ReadingData minorData, ReadingData majorData);
         Task NextMinor(DateTime time);
         Task NextMajor(DateTime time);
-        Task StopListener();
     }
 }

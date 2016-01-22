@@ -11,13 +11,16 @@ namespace AudioView.Common.Engine
     {
         private Random rnd;
         private int lastReading;
-        private List<double> minor;
-        private List<double> major; 
+        private List<Tuple<DateTime, double>> minor;
+        private List<Tuple<DateTime, double>> major;
+        private bool lastConnectionStatus;
+        private TimeSpan minorInterval;
+        private TimeSpan majorInterval;
 
         public MockMeterReader()
         {
-            this.minor = new List<double>();
-            this.major = new List<double>();
+            this.minor = new List<Tuple<DateTime,double>>();
+            this.major = new List<Tuple<DateTime, double>>();
             this.rnd = new Random();
             this.lastReading = 50;
         }
@@ -26,16 +29,19 @@ namespace AudioView.Common.Engine
         {
             return Task.Factory.StartNew(() =>
             {
+                OnConnectionStatus(true);
                 var newReading = Math.Min(150, Math.Max(60, this.rnd.Next(this.lastReading - 5, this.lastReading + 7)));
                 this.lastReading = newReading;
 
                 lock (minor)
                 {
-                    minor.Add(newReading);
+                    minor.Add(new Tuple<DateTime, double>(DateTime.Now, newReading));
+                    minor.RemoveAll(x => x.Item1 < DateTime.Now - minorInterval);
                 }
                 lock (major)
                 {
-                    major.Add(newReading);
+                    major.Add(new Tuple<DateTime, double>(DateTime.Now, newReading));
+                    major.RemoveAll(x => x.Item1 < DateTime.Now - majorInterval);
                 }
 
                 return new ReadingData()
@@ -49,13 +55,13 @@ namespace AudioView.Common.Engine
         {
             return Task.Factory.StartNew(() =>
             {
+                OnConnectionStatus(true);
                 double reading = 0;
                 int count = 0;
                 lock (minor)
                 {
-                    reading += minor.Sum();
+                    reading += minor.Select(x => x.Item2).Sum();
                     count = minor.Count;
-                    minor.Clear();
                 }
                 reading = (double)reading / (double)count;
 
@@ -70,13 +76,13 @@ namespace AudioView.Common.Engine
         {
             return Task.Factory.StartNew(() =>
             {
+                OnConnectionStatus(true);
                 double reading = 0;
                 int count = 0;
-                lock (minor)
+                lock (major)
                 {
-                    reading += major.Sum();
+                    reading += major.Select(x=>x.Item2).Sum();
                     count = major.Count;
-                    major.Clear();
                 }
                 reading = (double)reading / (double)count;
 
@@ -87,6 +93,16 @@ namespace AudioView.Common.Engine
             });
         }
 
+        public void SetMinorInterval(TimeSpan interval)
+        {
+            this.minorInterval = interval;
+        }
+
+        public void SetMajorInterval(TimeSpan interval)
+        {
+            this.majorInterval = interval;
+        }
+
         public void SetEngine(AudioViewEngine engine)
         {
             // we don't need it
@@ -95,6 +111,22 @@ namespace AudioView.Common.Engine
         public bool IsTriggerMode()
         {
             return false;
+        }
+
+        public void OnConnectionStatus(bool status)
+        {
+            if (status == lastConnectionStatus)
+                return;
+
+            lastConnectionStatus = status;
+            if (ConnectionStatusEvent == null)
+                return;
+            ConnectionStatusEvent(status);
+        }
+        public event ConnectionStatusUpdateDeligate ConnectionStatusEvent;
+        public Task Close()
+        {
+            return Task.FromResult<object>(null);
         }
     }
 }

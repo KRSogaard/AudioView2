@@ -8,7 +8,8 @@ namespace AudioView.Common
         public TimeSpan MinorInterval { get; set; }
         public TimeSpan MajorInterval { get; set; }
         public int BarsDisplayed { get; set; }
-        public int DBLimit { get; set; }
+        public int MinorDBLimit { get; set; }
+        public int MajorDBLimit { get; set; }
         public int GraphUpperBound { get; set; }
         public int GraphLowerBound { get; set; }
         public int MinorClockMainItemId { get; set; }
@@ -16,6 +17,7 @@ namespace AudioView.Common
         public int MajorClockMainItemId { get; set; }
         public int MajorClockSecondaryItemId { get; set; }
         public string ProjectName { get; set; }
+        public string ProjectNumber { get; set; }
         public int Port { get; set; }
         public bool IsLocal { get; set; }
 

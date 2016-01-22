@@ -12,6 +12,7 @@ using AudioView.Common.Engine;
 using AudioView.Common.Listeners;
 using AudioView.UserControls.CountDown;
 using GalaSoft.MvvmLight.CommandWpf;
+using MahApps.Metro.Controls.Dialogs;
 using NLog;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -22,6 +23,7 @@ namespace AudioView.ViewModels
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
+        private MainWindow window;
         private DispatcherTimer timer;
         public MainViewModel()
         {
@@ -79,12 +81,33 @@ namespace AudioView.ViewModels
                     SelectedMeasurement.IsEnabled = true;
                 }
                 OnPropertyChanged();
-                OnPropertyChanged("MeasurementSelected");
+                OnPropertyChanged(nameof(MeasurementSelected));
             }
         }
 
         public HistoryViewModel HistoryViewModel { get; set; }
         public SettingsViewModel SettingsViewModel { get; set; }
+
+        private ICommand _logInCommand;
+
+        public ICommand LogInCommand
+        {
+            get
+            {
+                if (_logInCommand == null)
+                {
+                    _logInCommand = new RelayCommand(() =>
+                    {
+                        DialogCoordinator.Instance.ShowLoginAsync(window, "Audio View",
+                            "Please log in with your provided credentials.").ContinueWith(
+                                t =>
+                                {
+                                });
+                    });
+                }
+                return _logInCommand;
+            }
+        }
 
         private ICommand _showSettingsCommand;
         public ICommand ShowSettingsCommand
@@ -245,12 +268,6 @@ namespace AudioView.ViewModels
             get { return _showSettings; }
             set { SetProperty(ref _showSettings, value); }
         }
-        
-        private bool _showDetails;
-        public bool ShowDetails
-        {
-            get { return SelectedMeasurement != null; }
-        }
 
         private int _lagTest;
         public int LagTest
@@ -276,6 +293,7 @@ namespace AudioView.ViewModels
         }
 
         public NewMeasurementViewModel _newViewModel;
+
         public NewMeasurementViewModel NewViewModel
         {
             get { return _newViewModel; }
@@ -299,6 +317,11 @@ namespace AudioView.ViewModels
                     OnPropertyChanged("ShowDetails");
                     break;
             }
+        }
+
+        public void RegisterWindow(MainWindow mainWindow)
+        {
+            this.window = mainWindow;
         }
     }
 }

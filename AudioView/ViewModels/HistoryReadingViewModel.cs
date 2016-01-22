@@ -22,27 +22,5 @@ namespace AudioView.ViewModels
         }
 
         public Reading Reading { get; set; }
-
-        private ICommand _deleteReading;
-        public ICommand DeleteReading
-        {
-            get
-            {
-                if (_deleteReading == null)
-                {
-                    _deleteReading = new DelegateCommand(() =>
-                    {
-                        logger.Trace("Deleting reading {0}", Reading.Id);
-                        databaseService.DeleteReading(Reading.Id).ContinueWith((task) =>
-                        {
-                            DispatcherHelper.CheckBeginInvokeOnUI(() => {
-                                                                            parent.RemoveReading(this);
-                            });
-                        });
-                    });
-                }
-                return _deleteReading;
-            }
-        }
     }
 }

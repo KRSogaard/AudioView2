@@ -10,7 +10,11 @@
     <Grid>
         <TabControl SelectedIndex="{Binding SelectedTab}">
             <TabItem Header="Selection">
-                <StackPanel>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
                     <Expander Header="{Binding SearchHeader}" IsExpanded="True">
                         <StackPanel>
                         <Label Content="Recording Date:" />
@@ -33,43 +37,35 @@
                             <Button Margin="0,5,0,0" Content="Search" Command="{Binding ExecuteSearch}" />
                         </StackPanel>
                     </Expander>
-                    <Grid MinHeight="100">
-                        <DataGrid
-                            HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                            RenderOptions.ClearTypeHint="Enabled"
-                            TextOptions.TextFormattingMode="Display"
-                            Margin="0,5,0,0"
-                            ItemsSource="{Binding SearchResults}"
-                            SelectedItem="{Binding SelectedSearch}"
-                            Style="{DynamicResource AzureDataGrid}"
-                            AutoGenerateColumns="False">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="Name"
-                                        Binding="{Binding ProjectName}" />
-                                <DataGridTextColumn Header="Date"
-                                        Binding="{Binding Date}" />
-                                <DataGridTextColumn Header="dB limit"
-                                        Binding="{Binding DBLimit}" />
+                    <DataGrid
+                        Grid.Row="1"
+                        Margin="0,5,0,0"
+                        ItemsSource="{Binding SearchResults}"
+                        SelectedItem="{Binding SelectedSearch}"
+                        AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Name"
+                                    Binding="{Binding ProjectName}" />
+                            <DataGridTextColumn Header="Number"
+                                    Binding="{Binding ProjectNumber}" />
+                            <DataGridTextColumn Header="Date"
+                                    Binding="{Binding Date}" />
+                                <DataGridTextColumn Header="Minor dB limit"
+                                    Binding="{Binding MinorDBLimit}" />
                                 <DataGridTextColumn Header="Minor Interval"
-                                        Binding="{Binding MinorInterval}" />
-                                <DataGridTextColumn Header="Major Interval"
-                                        Binding="{Binding MajorInterval}" />
+                                    Binding="{Binding MinorInterval}" />
+                            <DataGridTextColumn Header="Major dB limit"
+                                    Binding="{Binding MajorDBLimit}" />
+                            <DataGridTextColumn Header="Major Interval"
+                                    Binding="{Binding MajorInterval}" />
                                 <DataGridTextColumn Header="Measurements"
-                                        Binding="{Binding MeasurementsCount}" />
-                                <DataGridTemplateColumn Header="Delete">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Button Command="{Binding DeleteProject}">Delete</Button>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
+                                    Binding="{Binding MeasurementsCount}" />
                             </DataGrid.Columns>
                         </DataGrid>
                         <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{StaticResource ControlBackgroundBrush}" Visibility="{Binding IsSearching, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}" Opacity="0.75">
                             <controls:ProgressRing Width="90" Height="90" IsActive="True" />
                         </Border>
                     </Grid>
-                </StackPanel>
             </TabItem>
             <TabItem Header="Data" IsEnabled="{Binding CanSeeDetails}"  Visibility="{Binding CanSeeDetails, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
                 <local:HistoryDataView  DataContext="{Binding SelectedSearch}" />

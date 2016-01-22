@@ -42,14 +42,6 @@
                                         Binding="{Binding Reading.Time}" />
                 <DataGridTextColumn Header="LAeq"
                                         Binding="{Binding Reading.LAeq}" />
-                
-                <DataGridTemplateColumn Header="Delete">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Command="{Binding DeleteReading}">Delete</Button>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
 

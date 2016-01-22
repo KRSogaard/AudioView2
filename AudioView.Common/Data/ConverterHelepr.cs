@@ -12,8 +12,10 @@ namespace AudioView.Common.Data
                 Id = p.Id,
                 MinorInterval = TimeSpan.FromTicks(p.MinorInterval),
                 MajorInterval = TimeSpan.FromTicks(p.MajorInterval),
-                DBLimit = p.DBLimit,
+                MinorDBLimit = p.MinorDBLimit,
+                MajorDBLimit = p.MajorDBLimit,
                 Name = p.Name,
+                Number = p.Number,
                 Created = p.Created,
                 Readings = readings
             };

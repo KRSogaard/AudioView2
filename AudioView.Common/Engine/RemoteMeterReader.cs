@@ -23,74 +23,110 @@ namespace AudioView.Common.Engine
         private ReadingData lastMinorReading;
         private ReadingData lastMajorReading;
         private ReadingData lastSecondReading;
+        private ReadingData lastBuldingMinorReading;
+        private ReadingData lastBuldingMajorReading;
+        private bool lastConnectionStatus;
+        private bool run;
 
         public RemoteMeterReader(string ip, int port)
         {
             this.ip = ip;
             this.port = port;
             StartRemoveReader();
+            lastConnectionStatus = false;
+            run = true;
+        }
+
+        public Task Close()
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                run = false;
+            });
         }
 
         private Task StartRemoveReader()
         {
             return Task.Factory.StartNew(() =>
             {
-                try
+                while (run)
                 {
-                    TcpClient client = new TcpClient(ip, port);
                     try
                     {
-                        using (StreamReader reader = new StreamReader(client.GetStream(), Encoding.UTF8))
+                        TcpClient client = new TcpClient(ip, port);
+                        try
                         {
-                            string line;
-                            while ((line = reader.ReadLineAsync().Result) != null)
+                            OnConnectionStatus(true);
+                            using (StreamReader reader = new StreamReader(client.GetStream(), Encoding.UTF8))
                             {
-                                if (this.engine == null)
+                                CancellationTokenSource token = new CancellationTokenSource();
+                                token.CancelAfter(new TimeSpan(0, 0, 15)); // If no message after 15 sek = disconnected
+                                string line;
+                                while ((line = reader.ReadLineAsync().WithCancellation(token.Token).Result) != null)
                                 {
-                                    continue;
-                                }
+                                    if (this.engine == null)
+                                    {
+                                        continue;
+                                    }
 
-                                if (line.StartsWith(TCPServerListener.TcpMessages.OnMinorResponse.Replace("{0}", "")))
-                                {
-                                    var json =
-                                        line.Substring(
-                                            TCPServerListener.TcpMessages.OnMinorResponse.Replace("{0}", "").Length);
-                                    this.lastMinorReading = JsonConvert.DeserializeObject<ReadingData>(json);
-                                    this.engine.OnMinorInterval(DateTime.Now);
-                                }
-                                else if (line.StartsWith(TCPServerListener.TcpMessages.OnMajorResponse.Replace("{0}", "")))
-                                {
-                                    var json =
-                                        line.Substring(
-                                            TCPServerListener.TcpMessages.OnMajorResponse.Replace("{0}", "").Length);
-                                    this.lastMajorReading = JsonConvert.DeserializeObject<ReadingData>(json);
-                                    this.engine.OnMajorInterval(DateTime.Now);
-                                }
-                                else if (
-                                    line.StartsWith(TCPServerListener.TcpMessages.OnSecondResponse.Replace(
-                                        "{0}", "")))
-                                {
-                                    var json =
-                                        line.Substring(
-                                            TCPServerListener.TcpMessages.OnSecondResponse.Replace("{0}", "")
-                                                .Length);
-                                    this.lastSecondReading = JsonConvert.DeserializeObject<ReadingData>(json);
-                                    this.engine.OnSecond(DateTime.Now);
+                                    if (line.StartsWith(TCPServerListener.TcpMessages.OnMinorResponse.Replace("{0}", "")))
+                                    {
+                                        var json =
+                                            line.Substring(
+                                                TCPServerListener.TcpMessages.OnMinorResponse.Replace("{0}", "").Length);
+                                        this.lastMinorReading = JsonConvert.DeserializeObject<ReadingData>(json);
+                                        this.engine.OnMinorInterval(DateTime.Now);
+                                    }
+                                    else if (
+                                        line.StartsWith(TCPServerListener.TcpMessages.OnMajorResponse.Replace(
+                                            "{0}", "")))
+                                    {
+                                        var json =
+                                            line.Substring(
+                                                TCPServerListener.TcpMessages.OnMajorResponse.Replace("{0}", "")
+                                                    .Length);
+                                        this.lastMajorReading = JsonConvert.DeserializeObject<ReadingData>(json);
+                                        this.engine.OnMajorInterval(DateTime.Now);
+                                    }
+                                    else if (
+                                        line.StartsWith(TCPServerListener.TcpMessages.OnSecondResponse.Replace(
+                                            "{0}", "")))
+                                    {
+                                        var json =
+                                            line.Substring(
+                                                TCPServerListener.TcpMessages.OnSecondResponse.Replace("{0}", "")
+                                                    .Length);
+                                        var wrapper = JsonConvert.DeserializeObject<TcpWrapperOnSecond>(json);
+                                        this.lastSecondReading = wrapper.Second;
+                                        this.engine.OnSecond(DateTime.Now, wrapper.Second, wrapper.Minor, wrapper.Major);
+                                    }
+
+                                    token.CancelAfter(new TimeSpan(0, 0, 15));
+                                    // If no message after 15 sek = disconnected
                                 }
                             }
+                        }
+                        catch (Exception exp)
+                        {
+                            OnConnectionStatus(false);
+                            logger.Warn(exp, "Connection to remote device {0}:{1} lost, trying to reconnect.", ip, port);
+                            // Try and close it just to be sure.
+                            try
+                            {
+                                client.Close();
+                            }
+                            catch
+                            {
+                            }
+                            client = new TcpClient(ip, port);
                         }
                     }
                     catch (Exception exp)
                     {
-                        logger.Warn("Connection to remote device {0}:{1} lost, trying to reconnect.", ip, port);
-                        Task.Delay(250).RunSynchronously();
-                        client = new TcpClient(ip, port);
+                        logger.Error(exp, "Unable to make connection to remote server {0}:{1}.", ip, port);
                     }
                 }
-                catch (Exception exp)
-                {
-                    logger.Error("Unable to make connection to remote server {0}:{1}.", ip, port);
-                }
+                OnConnectionStatus(false);
             });
         }
 
@@ -109,6 +145,14 @@ namespace AudioView.Common.Engine
             return Task.FromResult(this.lastMajorReading);
         }
 
+        public void SetMinorInterval(TimeSpan interval)
+        {
+        }
+
+        public void SetMajorInterval(TimeSpan interval)
+        {
+        }
+
         public void SetEngine(AudioViewEngine engine)
         {
             this.engine = engine;
@@ -119,6 +163,19 @@ namespace AudioView.Common.Engine
             return true;
         }
 
+        public void OnConnectionStatus(bool status)
+        {
+            if (status == lastConnectionStatus)
+                return;
+
+            lastConnectionStatus = status;
+            if (ConnectionStatusEvent == null)
+                return;
+            ConnectionStatusEvent(status);
+        }
+
+        public event ConnectionStatusUpdateDeligate ConnectionStatusEvent;
+
         public static Task<MeasurementSettings> TestConenction(string ip, int port)
         {
             return Task.Factory.StartNew(() =>
@@ -126,7 +183,7 @@ namespace AudioView.Common.Engine
                 try
                 {
                     CancellationTokenSource tokenSource = new CancellationTokenSource();
-                    tokenSource.CancelAfter(new TimeSpan(0,0,30));
+                    tokenSource.CancelAfter(new TimeSpan(0, 0, 10));
 
                     TcpClient client = new TcpClient(ip, port);
                     NetworkStream networkStream = client.GetStream();
@@ -138,6 +195,7 @@ namespace AudioView.Common.Engine
                         string line;
                         while ((line = reader.ReadLineAsync().WithCancellation(tokenSource.Token).Result) != null)
                         {
+                            logger.Trace("Got message \"{0}\" while testing connection", line.Trim());
                             if (line.StartsWith(TCPServerListener.TcpMessages.SettingsResponse.Replace("{0}", "")))
                             {
                                 var json =

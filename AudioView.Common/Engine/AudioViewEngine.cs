@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Timers;
+using AudioView.Common.Data;
 using NLog;
 
 namespace AudioView.Common.Engine
@@ -29,12 +30,22 @@ namespace AudioView.Common.Engine
         public AudioViewEngine(TimeSpan minorInterval, TimeSpan majorInterval, IMeterReader reader)
         {
             logger.Info("Started engine with major: {0} minor: {1}", majorInterval, minorInterval);
+            reader.SetMinorInterval(minorInterval);
+            reader.SetMajorInterval(majorInterval);
 
             this.listeners = new List<IMeterListener>();
             this.reader = reader;
             this.reader.SetEngine(this);
             this.minorInterval = minorInterval;
             this.majorInterval = majorInterval;
+
+            this.reader.ConnectionStatusEvent += connected =>
+            {
+                if (ConnectionStatusEvent != null)
+                {
+                    ConnectionStatusEvent(connected);
+                }
+            };
 
             if (!reader.IsTriggerMode())
             {
@@ -96,9 +107,14 @@ namespace AudioView.Common.Engine
                 this.minorTimer.Enabled = false;
             if (this.majorTimer != null)
                 this.majorTimer.Enabled = false;
+
+            if (reader != null)
+                reader.Close();
+
             this.secondTimer = null;
             this.minorTimer = null;
             this.majorTimer = null;
+            this.reader = null;
         }
 
         public void OnMajorInterval(object sender, ElapsedEventArgs e)
@@ -106,7 +122,6 @@ namespace AudioView.Common.Engine
             DateTime time = e.SignalTime;
             OnMajorInterval(time);
         }
-
         public Task OnMajorInterval(DateTime time)
         {
             return Task.Factory.StartNew(async () =>
@@ -183,28 +198,38 @@ namespace AudioView.Common.Engine
         {
             OnSecond(DateTime.Now);
         }
-
         public Task OnSecond(DateTime time)
         {
-            return Task.Factory.StartNew(async () =>
+            return Task.Factory.StartNew(() =>
             {
-                try { 
+                try
+                {
                     logger.Trace("Fetching second reading.");
                     DateTime start = DateTime.Now;
-                    var reading = await this.reader.GetSecondReading();
-                    if (reading == null)
+                    var readingSecond = this.reader.GetSecondReading();
+                    var readingMinor = this.reader.GetMinorReading();
+                    var readingMajor = this.reader.GetMajorReading();
+                    Task.WaitAll(readingSecond, readingMinor, readingMajor);
+
+                    if (readingSecond.Result == null)
                     {
                         logger.Warn("Got null as second reading.");
                         return;
                     }
+
+                    if (readingMinor.Result.LAeq < 50 || readingMajor.Result.LAeq < 50)
+                    {
+                        Console.WriteLine("Something went wrong!");
+                    }
+
                     DateTime end = DateTime.Now;
-                    logger.Trace("Got second reading \"{0}\" in {1} ms.", reading.LAeq, (end - start).TotalMilliseconds);
+                    logger.Trace("Got second reading \"{0}\" in {1} ms.", readingSecond.Result.LAeq, (end - start).TotalMilliseconds);
 
                     lock (this.listeners)
                     {
                         foreach (var listener in this.listeners)
                         {
-                            listener.OnSecond(time, reading);
+                            listener.OnSecond(time, readingSecond.Result, readingMinor.Result, readingMajor.Result);
                         }
                     }
                 }
@@ -214,5 +239,28 @@ namespace AudioView.Common.Engine
                 }
             });
         }
+        public Task OnSecond(DateTime time, ReadingData second, ReadingData minor, ReadingData major)
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                try
+                {
+                    logger.Trace("Triggered second reading \"{0}\".", second.LAeq);
+                    lock (this.listeners)
+                    {
+                        foreach (var listener in this.listeners)
+                        {
+                            listener.OnSecond(time, second, minor, major);
+                        }
+                    }
+                }
+                catch (Exception exp)
+                {
+                    logger.Error(exp, "Failed on second reading");
+                }
+            });
+        }
+
+        public event ConnectionStatusUpdateDeligate ConnectionStatusEvent;
     }
 }

@@ -71,8 +71,8 @@ namespace AudioView.ViewModels
             if (!File.Exists("settings.json"))
             {
                 isInitalizating = true;
-                Theme = "BaseLight"; // ThemeManager.Accents.Select(x=>x.Name).First(),
-                Accent = "Cobalt"; // ThemeManager.AppThemes.Select(x => x.Name).First()
+                Theme = "BaseDark"; // ThemeManager.Accents.Select(x=>x.Name).First(),
+                Accent = "Amber"; // ThemeManager.AppThemes.Select(x => x.Name).First()
                 isInitalizating = false;
                 UpdateSettings();
                 return;
@@ -83,14 +83,14 @@ namespace AudioView.ViewModels
             isInitalizating = true;
             if (!Themes.Any(x => x == settings.Theme))
             {
-                settings.Theme = "BaseLight";
+                settings.Theme = "BaseDark";
                 SaveSettings();
             }
             Theme = settings.Theme;
 
             if (!Accents.Any(x => x == settings.Accent))
             {
-                settings.Accent = "Cobalt";
+                settings.Accent = "Amber";
                 SaveSettings();
             }
             Accent = settings.Accent;

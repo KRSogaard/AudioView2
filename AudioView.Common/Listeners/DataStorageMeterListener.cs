@@ -49,10 +49,12 @@ namespace AudioView.Common.Listeners
                             {
                                 Id = id,
                                 Created = started,
-                                DBLimit = settings.DBLimit,
+                                MinorDBLimit = settings.MinorDBLimit,
+                                MajorDBLimit = settings.MajorDBLimit,
                                 MajorInterval = settings.MajorInterval.Ticks,
                                 MinorInterval = settings.MinorInterval.Ticks,
-                                Name = settings.ProjectName
+                                Name = settings.ProjectName,
+                                Number = settings.ProjectNumber
                             });
                             await audioViewEntities.SaveChangesAsync();
                         }
@@ -81,7 +83,7 @@ namespace AudioView.Common.Listeners
             });
         }
 
-        public Task OnSecond(DateTime time, ReadingData data)
+        public Task OnSecond(DateTime time, ReadingData data, ReadingData minorData, ReadingData majorData)
         {
             return Task.FromResult<object>(null);
         }
@@ -227,10 +229,12 @@ namespace AudioView.Common.Listeners
                                     {
                                         Id = settings.Id,
                                         Created = settings.Created,
-                                        DBLimit = settings.MeasurementSettings.DBLimit,
+                                        MinorDBLimit = settings.MeasurementSettings.MinorDBLimit,
+                                        MajorDBLimit = settings.MeasurementSettings.MajorDBLimit,
                                         MajorInterval = settings.MeasurementSettings.MajorInterval.Ticks,
                                         MinorInterval = settings.MeasurementSettings.MinorInterval.Ticks,
-                                        Name = settings.MeasurementSettings.ProjectName
+                                        Name = settings.MeasurementSettings.ProjectName,
+                                        Number = settings.MeasurementSettings.ProjectNumber
                                     });
                                     audioViewEntities.SaveChanges();
                                 }
@@ -257,6 +261,21 @@ namespace AudioView.Common.Listeners
                             }
                             // If we got to here is the file uploaded
                             filesToDelete.Add(fileInfo.FullName);
+                        }
+                        catch (DbEntityValidationException e)
+                        {
+                            logger.Error(e, "Was unable to uploade \"{0}\"", fileInfo.FullName);
+                            foreach (var eve in e.EntityValidationErrors)
+                            {
+                                logger.Error("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                                    eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                                foreach (var ve in eve.ValidationErrors)
+                                {
+                                    logger.Error("- Property: \"{0}\", Error: \"{1}\"",
+                                        ve.PropertyName, ve.ErrorMessage);
+                                }
+                            }
+                            throw;
                         }
                         catch (Exception exp)
                         {

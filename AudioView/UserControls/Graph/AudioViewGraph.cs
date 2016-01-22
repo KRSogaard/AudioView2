@@ -295,15 +295,15 @@ namespace AudioView.UserControls
 
             DateTime end = DateTime.Now;
             var totalMs = (end - start).TotalMilliseconds;
-#if DEBUG
-            var label = new Label()
-            {
-                Content = "x: " + xPixelValue + " p/ms. - y: " + yPixelValue + " p/ms. - Left: " + this.leftDateTime.ToString("hh:mm:ss.fff") + " Right: " + this.latestReading.ToString("hh:mm:ss.fff") + " - Diff: " + (latestReading - leftDateTime).TotalMilliseconds + " ms - Render time: " + totalMs + " ms. Interval: " + timer.Interval.TotalMilliseconds
-            };
-            Canvas.SetLeft(label, 10);
-            Canvas.SetTop(label, 10);
-            this.innerCanvas.Children.Add(label);
-#endif
+//#if DEBUG
+//            var label = new Label()
+//            {
+//                Content = "x: " + xPixelValue + " p/ms. - y: " + yPixelValue + " p/ms. - Left: " + this.leftDateTime.ToString("hh:mm:ss.fff") + " Right: " + this.latestReading.ToString("hh:mm:ss.fff") + " - Diff: " + (latestReading - leftDateTime).TotalMilliseconds + " ms - Render time: " + totalMs + " ms. Interval: " + timer.Interval.TotalMilliseconds
+//            };
+//            Canvas.SetLeft(label, 10);
+//            Canvas.SetTop(label, 10);
+//            this.innerCanvas.Children.Add(label);
+//#endif
             this.lastActualWidth = this.ActualWidth;
             this.lastActualHeight = this.ActualHeight;
         }
