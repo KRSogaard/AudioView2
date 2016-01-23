@@ -6,11 +6,14 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using AudioView.UserControls.CountDown;
 using GalaSoft.MvvmLight.CommandWpf;
+using NLog;
+using Prism.Commands;
 
 namespace AudioView.ViewModels
 {
     public class LiveReadingViewModel : AudioViewCountDownViewModel
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
         private string _title;
 
         public string Title
@@ -34,7 +37,7 @@ namespace AudioView.ViewModels
         {
             get
             {
-                return new RelayCommand(() =>
+                return new DelegateCommand(() =>
                 {
                     StayOnTop = !StayOnTop;
                 });
@@ -44,6 +47,11 @@ namespace AudioView.ViewModels
         public LiveReadingViewModel(bool isMajor, TimeSpan interval, int limitDb, int mainItem, int secondItem) : 
             base(isMajor, interval, limitDb, mainItem, secondItem, true)
         {
+            PropertyChanged += (sender, args) =>
+            {
+                logger.Trace("LiveReadingViewModel {0} was change", args.PropertyName);
+            };
+
             StayOnTop = false;
             IsEnabled = true; // Always true for this control
         }

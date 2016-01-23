@@ -37,6 +37,11 @@ namespace AudioView.ViewModels
 
         public MeasurementViewModel(Guid id, MeasurementSettings settings, IMeterReader reader)
         {
+            PropertyChanged += (sender, args) =>
+            {
+                logger.Trace("MeasurementViewModel {0} was changed.", args.PropertyName);
+            };
+
             started = DateTime.Now;
             popOutWindows = new LinkedList<MetroWindow>();
             this.engine = new AudioViewEngine(settings.MinorInterval, settings.MajorInterval, reader);
@@ -95,7 +100,7 @@ namespace AudioView.ViewModels
             this.engine.RegisterListener(MajorGraph);
             this.engine.RegisterListener(MinorClock);
             this.engine.RegisterListener(MajorClock);
-            
+
             this.engine.Start();
 
             Title = settings.ProjectName;
@@ -112,7 +117,7 @@ namespace AudioView.ViewModels
         {
             get
             {
-                return new SolidColorBrush(ColorSettings.AxisColor);
+                return new SolidColorBrush(Colors.White);
             }
         }
 

@@ -6,12 +6,15 @@ using System.Windows;
 using System.Windows.Documents;
 using MahApps.Metro;
 using Newtonsoft.Json;
+using NLog;
 using Prism.Mvvm;
 
 namespace AudioView.ViewModels
 {
     public class SettingsViewModel : BindableBase
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         private bool isInitalizating = false;
         public List<string> Themes { get; set; }
         public List<string> Accents { get; set; }
@@ -40,6 +43,11 @@ namespace AudioView.ViewModels
 
         public SettingsViewModel()
         {
+            PropertyChanged += (sender, args) =>
+            {
+                logger.Trace("SettingsViewModel {0} was change", args.PropertyName);
+            };
+            
             Accents = ThemeManager.Accents.Select(x => x.Name).ToList();
             Themes = ThemeManager.AppThemes.Select(x => x.Name).ToList();
             LoadSettings();

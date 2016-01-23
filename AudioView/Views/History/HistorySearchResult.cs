@@ -22,7 +22,6 @@ namespace AudioView.ViewModels
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-
         private HistoryViewModel parent;
         private IDatabaseService databaseService;
         private DateTime? firstDate;
@@ -132,15 +131,15 @@ namespace AudioView.ViewModels
             get { return GetRightDate().ToString("f"); }
         }
 
-        private ObservableCollection<HistoryReadingViewModel> _readingsMinor;
-        public ObservableCollection<HistoryReadingViewModel> ReadingsMinor
+        private List<HistoryReadingViewModel> _readingsMinor;
+        public List<HistoryReadingViewModel> ReadingsMinor
         {
             get { return _readingsMinor; }
             set { SetProperty(ref _readingsMinor, value); }
         }
 
-        private ObservableCollection<HistoryReadingViewModel> _readingsMajor;
-        public ObservableCollection<HistoryReadingViewModel> ReadingsMajor
+        private List<HistoryReadingViewModel> _readingsMajor;
+        public List<HistoryReadingViewModel> ReadingsMajor
         {
             get { return _readingsMajor; }
             set { SetProperty(ref _readingsMajor, value); }
@@ -148,30 +147,14 @@ namespace AudioView.ViewModels
 
         public HistorySearchResult(HistoryViewModel parent, Project project)
         {
+            PropertyChanged += (sender, args) =>
+            {
+                logger.Trace("HistorySearchResult {0} was change", args.PropertyName);
+            };
+
             this.parent = parent;
             this.project = project;
             databaseService = new DatabaseService();
-            ReadingsMajor = new ObservableCollection<HistoryReadingViewModel>();
-            ReadingsMinor = new ObservableCollection<HistoryReadingViewModel>();
-
-            MinorGraph = new AudioViewGraphViewModel(false,
-                    10, // Ignored
-                    project.MinorDBLimit,
-                    project.MinorInterval,
-                    50,
-                    150)
-            {
-                IsEnabled = true
-            };
-            MajorGraph = new AudioViewGraphViewModel(true,
-                    10,
-                    project.MajorDBLimit,
-                    project.MajorInterval,
-                    50,
-                    150)
-            {
-                IsEnabled = true
-            };
         }
 
         public AudioViewGraphViewModel MajorGraph { get; set; }
@@ -179,11 +162,13 @@ namespace AudioView.ViewModels
 
         public Task LoadReadings()
         {
-            if (ReadingsMinor.Count > 0 || ReadingsMajor.Count > 0)
+            if (ReadingsMinor != null && ReadingsMajor != null 
+                && (ReadingsMinor.Count > 0 || ReadingsMajor.Count > 0))
             {
                 logger.Trace("Already got reading for {0} skipping load", project.Id);
                 return Task.FromResult<object>(null);
             }
+
             logger.Debug("Loading reading for {0} ({1})", project.Name, project.Id);
             IsLoading = true;
             return databaseService.GetReading(project.Id).ContinueWith((Task<IList<Reading>> task) =>
@@ -252,8 +237,8 @@ namespace AudioView.ViewModels
                     });
                 });
 
-                _readingsMinor = new ObservableCollection<HistoryReadingViewModel>();
-                _readingsMajor = new ObservableCollection<HistoryReadingViewModel>();
+                _readingsMinor = new List<HistoryReadingViewModel>();
+                _readingsMajor = new List<HistoryReadingViewModel>();
                 _readingsMinor.AddRange(minor);
                 _readingsMajor.AddRange(major);
 
@@ -303,6 +288,36 @@ namespace AudioView.ViewModels
                     });
                 }
                 return _downloadCSV;
+            }
+        }
+
+        public void OnSelected()
+        {
+            if (MinorGraph == null)
+            {
+                MinorGraph = new AudioViewGraphViewModel(false,
+                    10, // Ignored
+                    project.MinorDBLimit,
+                    project.MinorInterval,
+                    50,
+                    150)
+                {
+                    IsEnabled = true
+                };
+                OnPropertyChanged(nameof(MinorGraph));
+            }
+            if (MajorGraph == null)
+            {
+                MajorGraph = new AudioViewGraphViewModel(true,
+                        10,
+                        project.MajorDBLimit,
+                        project.MajorInterval,
+                        50,
+                        150)
+                {
+                    IsEnabled = true
+                };
+                OnPropertyChanged(nameof(MajorGraph));
             }
         }
     }

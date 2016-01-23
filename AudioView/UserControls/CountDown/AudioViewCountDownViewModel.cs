@@ -13,11 +13,13 @@ using AudioView.Common;
 using AudioView.Common.Data;
 using AudioView.Common.Engine;
 using AudioView.ViewModels;
+using NLog;
 
 namespace AudioView.UserControls.CountDown
 {
     public class AudioViewCountDownViewModel : INotifyPropertyChanged, IMeterListener
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
         private bool isMajor;
         private int mainItem;
         private int secondItem;
@@ -26,6 +28,11 @@ namespace AudioView.UserControls.CountDown
 
         public AudioViewCountDownViewModel(bool isMajor, TimeSpan interval, int limitDb, int mainItem, int secondItem, bool isPopOut = false)
         {
+            PropertyChanged += (sender, args) =>
+            {
+                logger.Trace("AudioViewCountDownViewModel {0} was change", args.PropertyName);
+            };
+
             Interval = interval;
             this.isMajor = isMajor;
             this.limitDb = limitDb;

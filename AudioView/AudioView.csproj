@@ -116,9 +116,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="BitmapFont.cs" />
     <Compile Include="GlobalContainer.cs" />
-    <Compile Include="GraphImage.cs" />
     <Compile Include="GraphWindow.xaml.cs">
       <DependentUpon>GraphWindow.xaml</DependentUpon>
     </Compile>
@@ -132,37 +130,38 @@
     <Compile Include="UserControls\CountDown\ClockItems.cs" />
     <Compile Include="UserControls\Graph\AudioViewGraph.cs" />
     <Compile Include="Properties\Annotations1.cs" />
-    <Compile Include="SizeObserver.cs" />
     <Compile Include="UserControls\Graph\AudioViewGraphViewModel.cs" />
-    <Compile Include="UserControls\HistoryControl.xaml.cs">
+    <Compile Include="Views\History\HistoryControl.xaml.cs">
       <DependentUpon>HistoryControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\HistoryDataView.xaml.cs">
+    <Compile Include="Views\History\HistoryDataView.xaml.cs">
       <DependentUpon>HistoryDataView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\HistoryGraphView.xaml.cs">
+    <Compile Include="Views\History\HistoryGraphView.xaml.cs">
       <DependentUpon>HistoryGraphView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\MeasurementControl.xaml.cs">
+    <Compile Include="Views\Measurement\MeasurementControl.xaml.cs">
       <DependentUpon>MeasurementControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\NewMeasurementControl.xaml.cs">
+    <Compile Include="Views\Measurement\MeasurementsViewModel.cs" />
+    <Compile Include="Views\Measurement\MeasurementsView.xaml.cs">
+      <DependentUpon>MeasurementsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Measurement\NewMeasurementControl.xaml.cs">
       <DependentUpon>NewMeasurementControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\SettingsView.xaml.cs">
+    <Compile Include="Views\Settings\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\BaseViewModel.cs" />
-    <Compile Include="ViewModels\ColorSettings.cs" />
-    <Compile Include="ViewModels\GraphReadingViewModel.cs" />
-    <Compile Include="ViewModels\HistoryReadingViewModel.cs" />
-    <Compile Include="ViewModels\HistorySearchResult.cs" />
-    <Compile Include="ViewModels\HistoryViewModel.cs" />
-    <Compile Include="ViewModels\LiveReadingViewModel.cs" />
+    <Compile Include="UserControls\Graph\GraphReadingViewModel.cs" />
+    <Compile Include="Views\History\HistoryReadingViewModel.cs" />
+    <Compile Include="Views\History\HistorySearchResult.cs" />
+    <Compile Include="Views\History\HistoryViewModel.cs" />
+    <Compile Include="UserControls\CountDown\LiveReadingViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="ViewModels\MeasurementViewModel.cs" />
-    <Compile Include="ViewModels\NewMeasurementViewModel.cs" />
-    <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="Views\Measurement\MeasurementViewModel.cs" />
+    <Compile Include="Views\Measurement\NewMeasurementViewModel.cs" />
+    <Compile Include="Views\Settings\SettingsViewModel.cs" />
     <Page Include="GraphWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -191,27 +190,31 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\HistoryControl.xaml">
+    <Page Include="Views\History\HistoryControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\HistoryDataView.xaml">
+    <Page Include="Views\History\HistoryDataView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\HistoryGraphView.xaml">
+    <Page Include="Views\History\HistoryGraphView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\MeasurementControl.xaml">
+    <Page Include="Views\Measurement\MeasurementControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\NewMeasurementControl.xaml">
+    <Page Include="Views\Measurement\MeasurementsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\SettingsView.xaml">
+    <Page Include="Views\Measurement\NewMeasurementControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings\SettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -260,38 +263,7 @@
       <Name>AudioView.Common</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Fonts\Segoe UI 12.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <None Include="Fonts\Segoe UI 12.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Fonts\Segoe UI 16.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <None Include="Fonts\Segoe UI 16.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <Resource Include="Fonts\Segoe UI 24.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <None Include="Fonts\Segoe UI 24.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <Resource Include="Fonts\Segoe UI 32.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <None Include="Fonts\Segoe UI 32.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Fonts\Black\" />
-    <Folder Include="Fonts\White\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Resources\WindowsIcons-license.txt" />
   </ItemGroup>

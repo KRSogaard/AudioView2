@@ -21,7 +21,6 @@ namespace AudioView
             InitializeComponent();
             var model = new MainViewModel();
             this.DataContext = model;
-
         }
     }
 }

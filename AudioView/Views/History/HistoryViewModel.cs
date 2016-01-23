@@ -37,6 +37,10 @@ namespace AudioView.ViewModels
             {
                 SetProperty(ref _selectedSearch, value);
                 CanSeeDetails = SelectedSearch != null;
+                if (value != null)
+                {
+                    SelectedSearch.OnSelected();
+                }
             }
         }
         
@@ -123,6 +127,11 @@ namespace AudioView.ViewModels
 
         public HistoryViewModel()
         {
+            PropertyChanged += (sender, args) =>
+            {
+                logger.Trace("HistoryViewModel {0} was change", args.PropertyName);
+            };
+
             databaseService = new DatabaseService();
             SearchResults = new ObservableCollection<HistorySearchResult>();
             SelectedSearch = null;
@@ -136,15 +145,19 @@ namespace AudioView.ViewModels
             {
                 logger.Debug("Searching for projects with Name=\"{0}\" Left=\"{1}\" Right=\"{2}\"", SearchName, SearchLeftDate, SearchRightDate);
                 SearchHeader = "Search Settings - Searching";
+                logger.Info("Starting the search!");
                 databaseService.SearchProjects(SearchName, SearchLeftDate, SearchRightDate).ContinueWith((Task<IList<Project>> task) =>
                 {
+                    logger.Info("Search finished!");
                     var results = task.Result;
                     DispatcherHelper.CheckBeginInvokeOnUI(() =>
                     {
                         try
                         {
-                            SearchResults.Clear();
-                            SearchResults.AddRange(results.OrderBy(x => x.Created).Select(x => new HistorySearchResult(this, x)));
+                            _searchResults = new ObservableCollection<HistorySearchResult>();
+                            _searchResults.AddRange(results.OrderBy(x => x.Created).Select(x => new HistorySearchResult(this, x)));
+                            OnPropertyChanged(nameof(SearchResults));
+
                             IsSearching = false;
                             SearchHeader = string.Format("Search Settings - {0} results", SearchResults.Count);
                             logger.Debug("Finisehd search with {0} results.", SearchResults.Count);
@@ -155,6 +168,7 @@ namespace AudioView.ViewModels
                         }
                     });
                 });
+                logger.Info("Search have been started!");
             }
             catch (Exception exp)
             {

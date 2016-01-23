@@ -4,6 +4,7 @@ using System.Windows.Threading;
 using AudioView.Common;
 using AudioView.Common.Data;
 using AudioView.Common.Engine;
+using NLog;
 
 namespace AudioView.UserControls.Graph
 {
@@ -21,9 +22,16 @@ namespace AudioView.UserControls.Graph
 
     public class AudioViewGraphViewModel : INotifyPropertyChanged, IMeterListener
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         private bool isMajor;
         public AudioViewGraphViewModel(bool isMajor, int intervalsShown, int limitDb, TimeSpan interval, int minHeight, int maxHeight)
         {
+            PropertyChanged += (sender, args) =>
+            {
+                logger.Trace("AudioViewGraphViewModel {0} was change", args.PropertyName);
+            };
+
             SecondReadings = new ConcurrentQueue<Tuple<DateTime, double>>();
             Readings = new ConcurrentQueue<Tuple<DateTime, double>>();
             IntervalsShown = intervalsShown;

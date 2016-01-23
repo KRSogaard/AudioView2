@@ -13,11 +13,14 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using AudioView.UserControls.Graph;
 using AudioView.ViewModels;
+using NLog;
 
 namespace AudioView.UserControls
 {
     public class AudioViewGraph : UserControl
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         private bool isEventRegistered;
         private ConcurrentDictionary<string, Size> sizeMap;
         private DateTime sizeMapCreated;
@@ -52,7 +55,7 @@ namespace AudioView.UserControls
             {
                 if (_limitColor == null)
                 {
-                    _limitColor = new SolidColorBrush(ColorSettings.LimitColor);
+                    _limitColor = new SolidColorBrush(Colors.Red);
                 }
                 return _limitColor; }
             set { _limitColor = value; }
@@ -64,7 +67,7 @@ namespace AudioView.UserControls
             {
                 if (_barColor == null)
                 {
-                    _barColor = new SolidColorBrush(ColorSettings.BarColorUnderLimit);
+                    _barColor = new SolidColorBrush(Colors.DodgerBlue);
                 }
                 return _barColor;
             }
@@ -77,7 +80,7 @@ namespace AudioView.UserControls
             {
                 if (_barWarrningColor == null)
                 {
-                    _barWarrningColor = new SolidColorBrush(ColorSettings.BarColorOverLimit);
+                    _barWarrningColor = new SolidColorBrush(Colors.MediumVioletRed);
                 }
                 return _barWarrningColor;
             }
@@ -90,7 +93,7 @@ namespace AudioView.UserControls
             {
                 if (_axisColor == null)
                 {
-                    _axisColor = new SolidColorBrush(ColorSettings.AxisColor);
+                    _axisColor = new SolidColorBrush(Colors.Cornsilk);
                 }
                 return _axisColor;
             }
@@ -103,7 +106,7 @@ namespace AudioView.UserControls
             {
                 if (_lineColor == null)
                 {
-                    _lineColor = new SolidColorBrush(ColorSettings.LineColor);
+                    _lineColor = new SolidColorBrush(Colors.LawnGreen);
                 }
                 return _lineColor;
             }
@@ -139,7 +142,7 @@ namespace AudioView.UserControls
             Content = b;
 
             this.timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(1000); // 5 fps
+            timer.Interval = TimeSpan.FromMilliseconds(1000);
             timer.Tick += Tick;
             timer.Start();
 
@@ -196,11 +199,13 @@ namespace AudioView.UserControls
 
         public void Draw()
         {
-            DateTime start = DateTime.Now;
 
             var model = (AudioViewGraphViewModel)this.DataContext;
             if(model == null || !model.IsEnabled)
                 return;
+
+            logger.Trace("Starting draw");
+            DateTime start = DateTime.Now;
 
             if (!isEventRegistered)
             {
@@ -210,12 +215,14 @@ namespace AudioView.UserControls
 
             if ((DateTime.Now - sizeMapCreated).TotalMinutes > 1)
             {
+                logger.Trace("Clearing the size map");
                 sizeMap.Clear();
                 sizeMapCreated = DateTime.Now;
             }
 
             if (model.IsCustomSpan)
             {
+                logger.Trace("Is custom span");
                 this.latestReading = model.RightDate;
                 this.leftDateTime = model.LeftDate;
 
@@ -224,6 +231,7 @@ namespace AudioView.UserControls
             }
             else
             {
+                logger.Trace("Is live span");
                 this.latestReading = getLastestReading();
                 if (this.latestReading + TimeSpan.FromTicks((long)(this.interval.Ticks * 1.5)) >= DateTime.Now)
                 {
@@ -256,6 +264,7 @@ namespace AudioView.UserControls
                 this.lastActualHeight != this.ActualHeight ||
                 this.lastActualWidth != this.ActualWidth)
             {
+                logger.Trace("Drawing axies.");
                 sizeMap.Clear();
                 canvas.Children.Clear();
                 DrawAxis();
@@ -290,20 +299,14 @@ namespace AudioView.UserControls
                 this.labelsCanvas.Children.Clear();
             }
 
+            logger.Trace("Drawing bars.");
             DrawBars();
+            logger.Trace("Drawing seconds.");
             DrawSeconds();
 
             DateTime end = DateTime.Now;
             var totalMs = (end - start).TotalMilliseconds;
-//#if DEBUG
-//            var label = new Label()
-//            {
-//                Content = "x: " + xPixelValue + " p/ms. - y: " + yPixelValue + " p/ms. - Left: " + this.leftDateTime.ToString("hh:mm:ss.fff") + " Right: " + this.latestReading.ToString("hh:mm:ss.fff") + " - Diff: " + (latestReading - leftDateTime).TotalMilliseconds + " ms - Render time: " + totalMs + " ms. Interval: " + timer.Interval.TotalMilliseconds
-//            };
-//            Canvas.SetLeft(label, 10);
-//            Canvas.SetTop(label, 10);
-//            this.innerCanvas.Children.Add(label);
-//#endif
+            logger.Trace("Graph drawing finished in {0} ms.", totalMs);
             this.lastActualWidth = this.ActualWidth;
             this.lastActualHeight = this.ActualHeight;
         }

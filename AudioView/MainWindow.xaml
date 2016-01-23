@@ -7,6 +7,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:AudioView.ViewModels"
+        xmlns:measurement="clr-namespace:AudioView.Views.Measurement"
         mc:Ignorable="d" 
         x:Class="AudioView.MainWindow"
         Title="AudioView" 
@@ -21,21 +22,24 @@
     </Controls:MetroWindow.Resources>
     <Controls:MetroWindow.Flyouts>
         <Controls:FlyoutsControl>
-            <Controls:Flyout Header="New Measurement" Position="Right" Width="450" IsOpen="{Binding ShowNewFlow}">
-                <UserControls:NewMeasurementControl DataContext="{Binding NewViewModel}" />
+
+            <Controls:Flyout DataContext="{Binding MeasurementsViewModel}" Header="New Measurement" Position="Right" Width="450" IsOpen="{Binding ShowNew}">
+                <UserControls:NewMeasurementControl DataContext="{Binding NewViewModel}"/>
             </Controls:Flyout>
+            
             <Controls:Flyout Header="Settings" Position="Right" Width="450" IsOpen="{Binding ShowSettings}">
                 <UserControls:SettingsView DataContext="{Binding SettingsViewModel}" />
             </Controls:Flyout>
+            
         </Controls:FlyoutsControl>
     </Controls:MetroWindow.Flyouts>
-    <!--<Controls:MetroWindow.RightWindowCommands>
+    <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands ShowLastSeparator="False">
             <Button Command="{Binding ShowSettingsCommand}"
                     ToolTip="Open settings window"
                     Content="Settings" />
         </Controls:WindowCommands>
-    </Controls:MetroWindow.RightWindowCommands>-->
+    </Controls:MetroWindow.RightWindowCommands>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -46,93 +50,7 @@
         <TabControl TabStripPlacement="Top"
                     Margin="10">
             <TabItem Header="Measurements">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*" MinWidth="200" />
-                        <ColumnDefinition Width="6*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-
-                    <Menu Grid.Row="0"
-						Grid.ColumnSpan="2"
-						Margin="5"
-						VerticalAlignment="Stretch"
-						HorizontalAlignment="Left">
-                        <MenuItem Header="New measurement" Command="{Binding NewMeasurementCommand}" />
-                        <MenuItem Header="Pop-Outs" IsEnabled="{Binding MeasurementSelected}">
-                            <MenuItem Header="Readings">
-                                <MenuItem Header="Live"  Command="{Binding ReadingsPopUpLive}" />
-                                <MenuItem Header="Latest Major"  Command="{Binding ReadingsPopUpLatestMajor}" />
-                                <MenuItem Header="Latest Minor"  Command="{Binding ReadingsPopUpLatestMinor}" />
-                            </MenuItem>
-                            <MenuItem Header="Graph">
-                                <MenuItem Header="Major"  Command="{Binding GraphPopUpMajor}" />
-                                <MenuItem Header="Minor"  Command="{Binding GraphPopUpMinor}" />
-                            </MenuItem>
-                            </MenuItem>
-                        <MenuItem Header="Close measurement" IsEnabled="{Binding MeasurementSelected}" Command="{Binding CloseMeasurementCommand}"/>
-                    </Menu>
-
-                    <Grid Grid.Row="1" Visibility="{Binding MeasurementSelected, Converter={StaticResource BoolToVisibilityConverter}}">
-                        <StackPanel VerticalAlignment="Bottom" DataContext="{Binding SelectedMeasurement}">
-                            <Rectangle Width="200" Height="200" Visibility="{Binding IsDisconnected, Converter={StaticResource BoolToVisibilityConverter}}">
-                                <Rectangle.Fill>
-                                    <VisualBrush Visual="{StaticResource appbar_network_disconnect}" />
-                                </Rectangle.Fill>
-                            </Rectangle>
-
-                            <Label FontSize="24" FontWeight="ExtraBold" Content="{Binding Title}" />
-                            <StackPanel Orientation="Horizontal">
-                                <Label FontWeight="Bold" Content="Minor dB Limit:" />
-                                <Label Margin="2,0,0,0" Content="{Binding MinorDBLimit}" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <Label FontWeight="Bold" Content="Major dB Limit:" />
-                                <Label Margin="2,0,0,0" Content="{Binding MajorDBLimit}" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <Label FontWeight="Bold" Content="Minor Interval:" />
-                                <Label Margin="2,0,0,0" Content="{Binding MinorInterval}" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <Label FontWeight="Bold" Content="Major Interval:" />
-                                <Label Margin="2,0,0,0" Content="{Binding MajorInterval}" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <Label FontWeight="Bold" Content="Started:" />
-                                <Label Margin="2,0,0,0" Content="{Binding Started}" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" Visibility="{Binding IsLocal, Converter={StaticResource BoolToVisibilityConverter}}">
-                                <Label FontWeight="Bold" Content="Ip:" />
-                                <Label Margin="2,0,0,0" Content="{Binding MyIp}" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" Visibility="{Binding IsLocal, Converter={StaticResource BoolToVisibilityConverter}}">
-                                <Label FontWeight="Bold" Content="Port:" />
-                                <Label Margin="2,0,0,0" Content="{Binding Port}" />
-                            </StackPanel>
-                        </StackPanel>
-                    </Grid>
-
-                    <TabControl Grid.Row="1" Grid.Column="1"
-						ItemsSource="{Binding Measurements}"
-						SelectedItem="{Binding SelectedMeasurement}"
-                        >
-                        <TabControl.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Title}" />
-                            </DataTemplate>
-                        </TabControl.ItemTemplate>
-
-                        <TabControl.ContentTemplate>
-                            <DataTemplate>
-                                <UserControls:MeasurementControl DataContext="{Binding}" />
-                            </DataTemplate>
-                        </TabControl.ContentTemplate>
-                    </TabControl>
-                </Grid>
+                <measurement:MeasurementsView DataContext="{Binding MeasurementsViewModel}" />
             </TabItem>
             <TabItem Header="New">
                 <Grid>

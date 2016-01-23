@@ -7,11 +7,15 @@ using System.Windows.Input;
 using AudioView.UserControls.CountDown;
 using AudioView.UserControls.Graph;
 using GalaSoft.MvvmLight.CommandWpf;
+using NLog;
+using Prism.Commands;
 
 namespace AudioView.ViewModels
 {
     public class GraphReadingViewModel : AudioViewGraphViewModel
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         private string _title;
 
         public string Title
@@ -35,7 +39,7 @@ namespace AudioView.ViewModels
         {
             get
             {
-                return new RelayCommand(() =>
+                return new DelegateCommand(() =>
                 {
                     StayOnTop = !StayOnTop;
                 });
@@ -45,6 +49,11 @@ namespace AudioView.ViewModels
         public GraphReadingViewModel(bool isMajor, int intervalsShown, int limitDb, TimeSpan interval, int minHeight, int maxHeight) : 
             base(isMajor, intervalsShown, limitDb, interval, minHeight, maxHeight)
         {
+            PropertyChanged += (sender, args) =>
+            {
+                logger.Trace("GraphReadingViewModel {0} was change", args.PropertyName);
+            };
+
             StayOnTop = false;
             IsEnabled = true; // Always true for this control
         }
