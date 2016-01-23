@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Entity.Core.Metadata.Edm;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -9,6 +10,8 @@ using AudioView.Common.Data;
 using AudioView.Common.Services;
 using AudioView.UserControls.Graph;
 using GalaSoft.MvvmLight.Threading;
+using MahApps.Metro.Controls.Dialogs;
+using Microsoft.Win32;
 using NLog;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -25,7 +28,7 @@ namespace AudioView.ViewModels
         private DateTime? firstDate;
         private DateTime? lastDate;
         private TimeSpan dateSpan;
-
+        private Task resultDownloadTask;
         private Project project;
 
         public string ProjectName
@@ -174,16 +177,16 @@ namespace AudioView.ViewModels
         public AudioViewGraphViewModel MajorGraph { get; set; }
         public AudioViewGraphViewModel MinorGraph { get; set; }
 
-        public void LoadReadings()
+        public Task LoadReadings()
         {
             if (ReadingsMinor.Count > 0 || ReadingsMajor.Count > 0)
             {
                 logger.Trace("Already got reading for {0} skipping load", project.Id);
-                return;
+                return Task.FromResult<object>(null);
             }
             logger.Debug("Loading reading for {0} ({1})", project.Name, project.Id);
             IsLoading = true;
-            databaseService.GetReading(project.Id).ContinueWith((Task<IList<Reading>> task) =>
+            return databaseService.GetReading(project.Id).ContinueWith((Task<IList<Reading>> task) =>
             {
                 var readings = task.Result.OrderBy(x=>x.Time);
                 logger.Debug("Got {0} readings for {1}", task.Result.Count, project.Id);
@@ -249,12 +252,15 @@ namespace AudioView.ViewModels
                     });
                 });
 
+                _readingsMinor = new ObservableCollection<HistoryReadingViewModel>();
+                _readingsMajor = new ObservableCollection<HistoryReadingViewModel>();
+                _readingsMinor.AddRange(minor);
+                _readingsMajor.AddRange(major);
+
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    ReadingsMinor.Clear();
-                    ReadingsMajor.Clear();
-                    ReadingsMinor.AddRange(minor);
-                    ReadingsMajor.AddRange(major);
+                    OnPropertyChanged("ReadingsMinor");
+                    OnPropertyChanged("ReadingsMajor");
                     IsLoading = false;
                 });
             });
@@ -264,6 +270,40 @@ namespace AudioView.ViewModels
         {
             ReadingsMajor.Remove(historyReadingViewModel);
             ReadingsMinor.Remove(historyReadingViewModel);
+        }
+
+        private ICommand _downloadCSV;
+        public ICommand DownloadCSV
+        {
+            get
+            {
+                if (_downloadCSV == null)
+                {
+                    _downloadCSV = new DelegateCommand(async () =>
+                    {
+                        try
+                        {
+                            SaveFileDialog saveFileDialog = new SaveFileDialog();
+                            saveFileDialog.FileName = ProjectName + ".csv";
+                            saveFileDialog.Filter = "CSV file (*.csv)|*.csv";
+                            if (saveFileDialog.ShowDialog() == true)
+                            {
+                                await LoadReadings();
+                                var readingToSave = ReadingsMajor.Select(x => x.Reading)
+                                    .Union(ReadingsMinor.Select(x => x.Reading))
+                                    .ToList();
+                                var ordered = readingToSave.OrderBy(x => x.Time).ToList();
+                                File.WriteAllText(saveFileDialog.FileName, Reading.CSV(ordered));
+                            }
+                        }
+                        catch (Exception exp)
+                        {
+                            logger.Error(exp, "Failed to save the readinds as CSV.");
+                        }
+                    });
+                }
+                return _downloadCSV;
+            }
         }
     }
 }

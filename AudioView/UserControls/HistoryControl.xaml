@@ -54,13 +54,20 @@
                                     Binding="{Binding MinorDBLimit}" />
                                 <DataGridTextColumn Header="Minor Interval"
                                     Binding="{Binding MinorInterval}" />
-                            <DataGridTextColumn Header="Major dB limit"
+                                <DataGridTextColumn Header="Major dB limit"
                                     Binding="{Binding MajorDBLimit}" />
-                            <DataGridTextColumn Header="Major Interval"
+                                <DataGridTextColumn Header="Major Interval"
                                     Binding="{Binding MajorInterval}" />
                                 <DataGridTextColumn Header="Measurements"
                                     Binding="{Binding MeasurementsCount}" />
-                            </DataGrid.Columns>
+                                <DataGridTemplateColumn Header="Download">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Command="{Binding DownloadCSV}">Download CSV</Button>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                        </DataGrid.Columns>
                         </DataGrid>
                         <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{StaticResource ControlBackgroundBrush}" Visibility="{Binding IsSearching, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}" Opacity="0.75">
                             <controls:ProgressRing Width="90" Height="90" IsActive="True" />
