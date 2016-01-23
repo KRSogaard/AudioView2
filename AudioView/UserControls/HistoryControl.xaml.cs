@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using AudioView.Common.Services;
 
 namespace AudioView.UserControls
 {
@@ -23,6 +24,22 @@ namespace AudioView.UserControls
         public HistoryControl()
         {
             InitializeComponent();
+        }
+
+        private async void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            var service = new UserService();
+            var user = await service.Validate(username.Text, password.Password);
+            if (user == null)
+            {
+                loginFailedLabel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                GlobalContainer.CurrentUser = user;
+                this.LogInGrid.Visibility = Visibility.Collapsed;
+                this.contentTabControl.Visibility = Visibility.Visible;
+            }
         }
     }
 }

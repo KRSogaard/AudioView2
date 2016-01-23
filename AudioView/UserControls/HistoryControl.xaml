@@ -8,7 +8,20 @@
              mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="600">
     <Grid>
-        <TabControl SelectedIndex="{Binding SelectedTab}">
+        <Grid x:Name="LogInGrid">
+            <StackPanel Width="450" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Label>Access to the database requires authorization, please log in to continue.</Label>
+                <Label Foreground="{StaticResource ControlsValidationBrush}" x:Name="loginFailedLabel" Visibility="Collapsed">Log-in failed.</Label>
+                <Label>Username:</Label>
+                <TextBox x:Name="username" />
+
+                <Label Margin="0,5,0,0">Password:</Label>
+                <PasswordBox x:Name="password" />
+                
+                <Button Margin="0,10,0,0" Click="ButtonBase_OnClick">Log In</Button>
+            </StackPanel>
+        </Grid>
+        <TabControl x:Name="contentTabControl" SelectedIndex="{Binding SelectedTab}" Visibility="Hidden">
             <TabItem Header="Selection">
                 <Grid>
                     <Grid.RowDefinitions>

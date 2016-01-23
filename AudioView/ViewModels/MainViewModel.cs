@@ -88,27 +88,6 @@ namespace AudioView.ViewModels
         public HistoryViewModel HistoryViewModel { get; set; }
         public SettingsViewModel SettingsViewModel { get; set; }
 
-        private ICommand _logInCommand;
-
-        public ICommand LogInCommand
-        {
-            get
-            {
-                if (_logInCommand == null)
-                {
-                    _logInCommand = new RelayCommand(() =>
-                    {
-                        DialogCoordinator.Instance.ShowLoginAsync(window, "Audio View",
-                            "Please log in with your provided credentials.").ContinueWith(
-                                t =>
-                                {
-                                });
-                    });
-                }
-                return _logInCommand;
-            }
-        }
-
         private ICommand _showSettingsCommand;
         public ICommand ShowSettingsCommand
         {
@@ -275,7 +254,7 @@ namespace AudioView.ViewModels
             get { return _lagTest; }
             set { SetProperty(ref _lagTest, value); }
         }
-        
+
         public bool MeasurementSelected
         {
             get { return SelectedMeasurement != null; }

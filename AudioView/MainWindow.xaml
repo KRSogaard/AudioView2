@@ -44,7 +44,7 @@
         </Grid.RowDefinitions>
 
         <TabControl TabStripPlacement="Top"
-			Margin="10">
+                    Margin="10">
             <TabItem Header="Measurements">
                 <Grid>
                     <Grid.ColumnDefinitions>
