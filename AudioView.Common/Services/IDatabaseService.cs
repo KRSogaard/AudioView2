@@ -11,5 +11,6 @@ namespace AudioView.Common.Services
         Task<IList<Reading>> GetReading(Guid projectId);
         Task DeleteProject(Guid ProjectId);
         Task DeleteReading(Guid readingId);
+        Task<Project> GetProject(Guid id);
     }
 }

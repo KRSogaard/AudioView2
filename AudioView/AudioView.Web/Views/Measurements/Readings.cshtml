@@ -1,0 +1,172 @@
+﻿@model AudioView.Web.Models.ReadingsModel
+
+@{
+    ViewBag.Title = Model.Project.Name;
+}
+
+<h2>@Model.Project.Name - @Model.Project.Number</h2>
+@Html.ActionLink("Back to readings", "Index")
+<hr/>
+
+<div class="form-horizontal">
+    @Html.ValidationSummary(true, "", new {@class = "text-danger"})
+
+    <hr/>
+
+    <div class="form-group">
+        <label class="control-label col-md-2" style="padding-top: 0px;">Created</label>
+        <div class="col-md-10">
+            @Model.Project.Created.ToString("f")
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2" style="padding-top: 0px;">Readings</label>
+        <div class="col-md-10">
+            @Model.Project.Readings
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2" style="padding-top: 0px;">Major Interval</label>
+        <div class="col-md-4">
+            @Model.Project.MajorInterval
+        </div>
+        <label class="control-label col-md-2" style="padding-top: 0px;">Minor Interval</label>
+        <div class="col-md-4">
+            @Model.Project.MinorInterval
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2" style="padding-top: 0px;">Major Limit</label>
+        <div class="col-md-4">
+            @Model.Project.MajorDBLimit dB.
+        </div>
+        <label class="control-label col-md-2" style="padding-top: 0px;">Minor Limit</label>
+        <div class="col-md-4">
+            @Model.Project.MinorDBLimit dB.
+        </div>
+    </div>
+
+    <hr/>
+
+    <div class="row">
+        <div class="col-md-12">
+            <a href="#Major">To Major readings.</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <a href="#Minor">To Minor readings.</a>
+        </div>
+    </div>
+
+    <h2>Major readings graph</h2>
+    <div id="chart_major_div"></div>
+
+    <h2>Minor readings graph</h2>
+    <div id="chart_minor_div"></div>
+
+    <h2 id="Major">Major readings</h2>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Time</th>
+                <th>Laeq</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var reading in Model.MajorReadings)
+            {
+                <tr>
+                    <td>@reading.Time</td>
+                    <td>@Math.Round(reading.LAeq, 1)</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+
+    <h2 id="Minor">Minor readings</h2>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Time</th>
+                <th>Laeq</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var reading in Model.MinorReadings)
+            {
+                <tr>
+                    <td>@reading.Time</td>
+                    <td>@Math.Round(reading.LAeq, 1)</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+        google.load('visualization', '1.0', { 'packages': ['corechart', 'bar'] });
+        google.setOnLoadCallback(function() {
+            drawMinorChart();
+            drawMajorChart();
+        });
+
+        function drawMinorChart() {
+            var data = google.visualization.arrayToDataTable([
+                ['Time', 'Reading', { role: 'style' }],
+            @foreach (var reading in Model.MinorReadings.OrderBy(x=>x.Time))
+            {
+                <text>['@reading.Time.ToString("hh:mm")', @reading.LAeq, 'color: @if(reading.LAeq >= Model.Project.MinorDBLimit) { <text>#dc3912</text> } else {<text>#3366cc</text>}'],</text>
+            }
+            ]);
+
+            // Set chart options
+            var options = {
+                'title': 'Minor readings',
+                'width': 930,
+                'height': 400,
+                'animation.startup': true,
+                'animation.easing': 'inAndOut',
+                legend: { position: "none" },
+            };
+
+            var chart = new google.visualization.ColumnChart(document.getElementById('chart_minor_div'));
+            chart.draw(data, options);
+        }
+
+
+        function drawMajorChart() {
+            var data = google.visualization.arrayToDataTable([
+                ['Time', 'Reading', { role: 'style' }],
+            @foreach (var reading in Model.MajorReadings.OrderBy(x=>x.Time))
+            {
+                <text>['@reading.Time.ToString("hh:mm")', @reading.LAeq, 'color: @if(reading.LAeq >= Model.Project.MinorDBLimit) { <text>#dc3912</text> } else {<text>#3366cc</text>}'],</text>
+            }
+            ]);
+
+            // Set chart options
+            var options = {
+                'title': 'Major readings',
+                'width': 930,
+                'height': 400,
+                'animation.startup': true,
+                'animation.easing': 'inAndOut',
+                legend: { position: "none" },
+            };
+
+            var chart = new google.visualization.ColumnChart(document.getElementById('chart_major_div'));
+            chart.draw(data, options);
+        }
+    </script>
+}

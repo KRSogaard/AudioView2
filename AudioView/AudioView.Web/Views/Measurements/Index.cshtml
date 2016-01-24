@@ -1,0 +1,116 @@
+﻿@using System.Globalization
+@model AudioView.Web.Models.MeasurementsSearchResultModel
+
+@{
+    ViewBag.Title = "Measurements";
+}
+
+<h2>Measurements</h2>
+<hr />
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ProjectName, htmlAttributes: new {@class = "control-label col-md-2"})
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ProjectName, new {htmlAttributes = new {@class = "form-control"}})
+                @Html.ValidationMessageFor(model => model.ProjectName, "", new {@class = "text-danger"})
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-offset-2 col-md-2">
+                @Html.LabelFor(model => model.From)
+            </div>
+            <div class="col-md-2">
+                @Html.LabelFor(model => model.To)
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-offset-2 col-md-2">
+                @Html.EditorFor(model => model.From, new { htmlAttributes = new { @class = "form-control datefield" } })
+                @Html.ValidationMessageFor(model => model.From, "", new {@class = "text-danger"})
+            </div>
+            <div class="col-md-2">
+                @Html.EditorFor(model => model.To, new { htmlAttributes = new { @class = "form-control datefield" } })
+                @Html.ValidationMessageFor(model => model.To, "", new {@class = "text-danger"})
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Search" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+@if (Model.Projects.Count == 0)
+{
+    <h2>No measurement was found.</h2>
+}
+else
+{
+    <h2>Measurements.</h2>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Project name</th>
+                    <th>Project number</th>
+                    <th>Major Interval</th>
+                    <th>Major Limit</th>
+                    <th>Minor Interval</th>
+                    <th>Minor Limit</th>
+                    <th>Created</th>
+                    <th>Readings</th>
+                    <th colspan="2">&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var project in Model.Projects)
+                {
+                    <tr>
+                        <td>@Html.ActionLink(@project.Name, "Readings", new { id = project.Id })</td>
+                        <td>@project.Number</td>
+                        <td>@project.MajorInterval</td>
+                        <td>@project.MajorDBLimit dB.</td>
+                        <td>@project.MinorInterval</td>
+                        <td>@project.MinorDBLimit dB.</td>
+                        <td>@project.Created</td>
+                        <td>@project.Readings</td>
+                        <td>@Html.ActionLink("Download CSV", "Download", new { id = project.Id })</td>
+                        <td>@Html.ActionLink("Delete", "Delete", new { id = project.Id })</td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.datefield').datepicker({
+                dateFormat: "dd/mm/yy",
+                showStatus: true,
+                showWeeks: true,
+                currentText: 'Now',
+                autoSize: true,
+                gotoCurrent: true,
+                showAnim: 'blind',
+                highlightWeek: true
+            });
+        });
+    </script>
+}

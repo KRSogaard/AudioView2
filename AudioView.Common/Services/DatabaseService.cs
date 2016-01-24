@@ -14,87 +14,96 @@ namespace AudioView.Common.Services
 {
     public class DatabaseService : IDatabaseService
     {
-        public Task<IList<Project>> SearchProjects(string name, DateTime? leftTime, DateTime? rightTime)
+        public async Task<IList<Project>> SearchProjects(string name, DateTime? leftTime, DateTime? rightTime)
         {
-            return Task.Factory.StartNew(() => { 
-                IList < Project > projects = new List<Project>();
-                using (var audioViewEntities = new AudioViewEntities())
+            IList < Project > projects = new List<Project>();
+            using (var audioViewEntities = new AudioViewEntities())
+            {
+                var request = audioViewEntities.Projects.Where(x=>true);
+
+                if (!string.IsNullOrWhiteSpace(name))
                 {
-                    var request = audioViewEntities.Projects.Where(x=>true);
-
-                    if (!string.IsNullOrWhiteSpace(name))
-                    {
-                        request = request.Where(x => x.Name.ToLower().Contains(name.Trim().ToLower()));
-                    }
-                    if (leftTime != null)
-                    {
-                        request = request.Where(x => x.Created >= leftTime.Value);
-                    }
-                    if (rightTime != null)
-                    {
-                        request = request.Where(x => x.Created <= rightTime.Value);
-                    }
-                    request = request.Take(50);
-
-                    var result = request.Select(x => new
-                    {
-                        Project = x,
-                        Readings = x.Readings.Count
-                    }) .ToListAsync().Result;
-                    foreach (var project in result)
-                    {
-                        projects.Add(project.Project.ToInternal(project.Readings));
-                    }
+                    request = request.Where(x => x.Name.ToLower().Contains(name.Trim().ToLower()));
                 }
-                return projects;
-            });
+                if (leftTime != null)
+                {
+                    request = request.Where(x => x.Created >= leftTime.Value);
+                }
+                if (rightTime != null)
+                {
+                    request = request.Where(x => x.Created <= rightTime.Value);
+                }
+                request = request.Take(50);
+
+                return (await request.Select(x => new
+                {
+                    Project = x,
+                    Readings = x.Readings.Count
+                })
+                .OrderByDescending(x=>x.Project.Created)
+                .ToListAsync())
+                .Select(x=>x.Project.ToInternal(x.Readings)).ToList();
+            }
+            return projects;
         }
 
-        public Task<IList<Reading>> GetReading(Guid projectId)
+        public async Task<IList<Reading>> GetReading(Guid projectId)
         {
-            return Task.Factory.StartNew(() => {
-                IList<Reading> readings = new List<Reading>();
-                using (var audioViewEntities = new AudioViewEntities())
+            IList<Reading> readings = new List<Reading>();
+            using (var audioViewEntities = new AudioViewEntities())
+            {
+                var results = (await audioViewEntities.Readings
+                                .Where(x => x.Project == projectId)
+                                .OrderByDescending(x=>x.Time)
+                                .ToListAsync())
+                                .Select(x=>x.ToInternal());
+                foreach (var reading in results)
                 {
-                    var results = audioViewEntities.Readings
-                                    .Where(x => x.Project == projectId)
-                                    .ToListAsync().Result
-                                    .Select(x=>x.ToInternal());
-                    foreach (var reading in results)
-                    {
-                        readings.Add(reading);
-                    }
+                    readings.Add(reading);
                 }
-                return readings;
-            });
+            }
+            return readings;
         }
 
-        public Task DeleteProject(Guid projectId)
+        public async Task DeleteProject(Guid projectId)
         {
-            return Task.Factory.StartNew(() => {
-                using (var audioViewEntities = new AudioViewEntities())
-                {
-                    var project = audioViewEntities.Projects.Where(x => x.Id == projectId).FirstOrDefaultAsync().Result;
-                    if (project == null)
-                        return;
-                    audioViewEntities.Projects.Remove(project);
-                    audioViewEntities.SaveChanges();
-                }
-            });
+            using (var audioViewEntities = new AudioViewEntities())
+            {
+                var project = await audioViewEntities.Projects.Where(x => x.Id == projectId).FirstOrDefaultAsync();
+                if (project == null)
+                    return;
+                audioViewEntities.Projects.Remove(project);
+                audioViewEntities.SaveChanges();
+            }
         }
 
-        public Task DeleteReading(Guid readingId)
+        public async Task DeleteReading(Guid readingId)
         {
-            return Task.Factory.StartNew(() => {
-                using (var audioViewEntities = new AudioViewEntities())
+            using (var audioViewEntities = new AudioViewEntities())
+            {
+                var reading = await audioViewEntities.Readings.Where(x => x.Id == readingId).FirstOrDefaultAsync();
+                if (reading == null)
+                    return;
+                audioViewEntities.Readings.Remove(reading);
+                audioViewEntities.SaveChanges();
+            }
+        }
+
+        public async Task<Project> GetProject(Guid id)
+        {
+            using (var audioViewEntities = new AudioViewEntities())
+            {
+                var project = await audioViewEntities.Projects.Where(x => x.Id == id).Select(x => new
                 {
-                    var reading = audioViewEntities.Readings.Where(x => x.Id == readingId).FirstOrDefaultAsync().Result;
-                    if (reading == null)
-                        return;
-                    audioViewEntities.Readings.Remove(reading);
-                    audioViewEntities.SaveChanges();
-                }
-            });
+                    Project = x,
+                    Readings = x.Readings.Count
+                }).FirstOrDefaultAsync();
+
+                if (project == null)
+                    return null;
+
+                return project.Project.ToInternal(project.Readings);
+            }
         }
     }
 }
