@@ -124,7 +124,7 @@ namespace AudioView.Common.Engine
         }
         public Task OnMajorInterval(DateTime time)
         {
-            return Task.Factory.StartNew(async () =>
+            return Task.Run(async () =>
             {
                 try
                 {
@@ -163,7 +163,7 @@ namespace AudioView.Common.Engine
         }
         public Task OnMinorInterval(DateTime time)
         {
-            return Task.Factory.StartNew(async () =>
+            return Task.Run(async () =>
             {
                 try { 
                     nextMinor = time + minorInterval;
@@ -200,7 +200,7 @@ namespace AudioView.Common.Engine
         }
         public Task OnSecond(DateTime time)
         {
-            return Task.Factory.StartNew(() =>
+            return Task.Run(async () =>
             {
                 try
                 {
@@ -209,7 +209,7 @@ namespace AudioView.Common.Engine
                     var readingSecond = this.reader.GetSecondReading();
                     var readingMinor = this.reader.GetMinorReading();
                     var readingMajor = this.reader.GetMajorReading();
-                    Task.WaitAll(readingSecond, readingMinor, readingMajor);
+                    await Task.WhenAll(readingSecond, readingMinor, readingMajor).ConfigureAwait(false);
 
                     if (readingSecond.Result == null)
                     {
@@ -241,7 +241,7 @@ namespace AudioView.Common.Engine
         }
         public Task OnSecond(DateTime time, ReadingData second, ReadingData minor, ReadingData major)
         {
-            return Task.Factory.StartNew(() =>
+            return Task.Run(() =>
             {
                 try
                 {

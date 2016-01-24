@@ -536,10 +536,10 @@ namespace AudioView.ViewModels
 
         private Task<List<string>> GetConnectedDevices()
         {
-            return Task.Factory.StartNew(() =>
+            return Task.Run(async () =>
             {
                 logger.Debug("Get connect local devices.");
-                Task.Delay(new TimeSpan(0, 0, 1)).Wait();
+                await Task.Delay(new TimeSpan(0, 0, 1)).ConfigureAwait(false);
                 return new List<string>()
                 {
                     "Test Device 1",
@@ -560,10 +560,10 @@ namespace AudioView.ViewModels
 
         private Task<bool> TestDevice()
         {
-            return Task.Factory.StartNew(() =>
+            return Task.Run(async () =>
             {
                 logger.Debug("Testing remote device {0}:{1}", RemoteIpAddress, RemotePort);
-                var settings = RemoteMeterReader.TestConenction(RemoteIpAddress, int.Parse(RemotePort)).Result;
+                var settings = await RemoteMeterReader.TestConenction(RemoteIpAddress, int.Parse(RemotePort)).ConfigureAwait(false);
                 this.remoteSettings = settings;
                 return settings != null;
             });

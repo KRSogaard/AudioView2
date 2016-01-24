@@ -37,7 +37,7 @@ namespace AudioView.Common.Listeners
             Settings = settings;
             created = started;
 
-            initalCreate = Task.Factory.StartNew(async () =>
+            initalCreate = Task.Run(async () =>
             {
                 try
                 {
@@ -56,7 +56,7 @@ namespace AudioView.Common.Listeners
                                 Name = settings.ProjectName,
                                 Number = settings.ProjectNumber
                             });
-                            await audioViewEntities.SaveChangesAsync();
+                            await audioViewEntities.SaveChangesAsync().ConfigureAwait(false);
                         }
                     }
                 }
@@ -69,7 +69,7 @@ namespace AudioView.Common.Listeners
 
         public Task OnMinor(DateTime time, ReadingData data)
         {
-            return Task.Factory.StartNew(() =>
+            return Task.Run(() =>
             {
                 WriteReading(false, time, data);
             });
@@ -77,7 +77,7 @@ namespace AudioView.Common.Listeners
 
         public Task OnMajor(DateTime time, ReadingData data)
         {
-            return Task.Factory.StartNew(() =>
+            return Task.Run(() =>
             {
                 WriteReading(true, time, data);
             });
@@ -194,7 +194,7 @@ namespace AudioView.Common.Listeners
 
         public static Task UploadLocalFiles()
         {
-            return Task.Factory.StartNew(() =>
+            return Task.Run(() =>
             {
                 lock (LogFileLock)
                 {

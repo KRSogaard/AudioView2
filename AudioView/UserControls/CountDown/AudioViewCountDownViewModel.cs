@@ -135,7 +135,7 @@ namespace AudioView.UserControls.CountDown
         #region IMeterListener
         public Task OnMinor(DateTime time, ReadingData data)
         {
-            return Task.Factory.StartNew(() =>
+            return Task.Run(() =>
             {
                 if (!isMajor)
                     LastInterval = data;
@@ -144,7 +144,7 @@ namespace AudioView.UserControls.CountDown
 
         public Task OnMajor(DateTime time, ReadingData data)
         {
-            return Task.Factory.StartNew(() =>
+            return Task.Run(() =>
             {
                 if (isMajor)
                     LastInterval = data;
@@ -153,7 +153,7 @@ namespace AudioView.UserControls.CountDown
 
         public Task OnSecond(DateTime time, ReadingData data, ReadingData minorData, ReadingData majorData)
         {
-            return Task.Factory.StartNew(() =>
+            return Task.Run(() =>
             {
                 LastReading = data;
                 LastBuildingInterval = isMajor ? majorData : minorData;
@@ -162,7 +162,7 @@ namespace AudioView.UserControls.CountDown
 
         public Task NextMinor(DateTime time)
         {
-            return Task.Factory.StartNew(() =>
+            return Task.Run(() =>
             {
                 if(!isMajor)
                     OnNext(time);
@@ -171,7 +171,7 @@ namespace AudioView.UserControls.CountDown
 
         public Task NextMajor(DateTime time)
         {
-            return Task.Factory.StartNew(() =>
+            return Task.Run(() =>
             {
                 if (isMajor)
                     OnNext(time);

@@ -27,7 +27,7 @@ namespace AudioView.Common.Engine
 
         public Task<ReadingData> GetSecondReading()
         {
-            return Task.Factory.StartNew(() =>
+            return Task.Run(() =>
             {
                 OnConnectionStatus(true);
                 var newReading = Math.Min(150, Math.Max(60, this.rnd.Next(this.lastReading - 5, this.lastReading + 7)));
@@ -53,7 +53,7 @@ namespace AudioView.Common.Engine
 
         public Task<ReadingData> GetMinorReading()
         {
-            return Task.Factory.StartNew(() =>
+            return Task.Run(() =>
             {
                 OnConnectionStatus(true);
                 double reading = 0;
@@ -74,7 +74,7 @@ namespace AudioView.Common.Engine
 
         public Task<ReadingData> GetMajorReading()
         {
-            return Task.Factory.StartNew(() =>
+            return Task.Run(() =>
             {
                 OnConnectionStatus(true);
                 double reading = 0;

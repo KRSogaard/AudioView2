@@ -47,7 +47,7 @@ namespace AudioView.ViewModels
                 if(ConnectionStatus == connected)
                     return; // No need
 
-                Task.Factory.StartNew(() =>
+                Task.Run(() =>
                 {
                     ConnectionStatus = connected;
                     DispatcherHelper.CheckBeginInvokeOnUI(() =>

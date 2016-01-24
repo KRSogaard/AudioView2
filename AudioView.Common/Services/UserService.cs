@@ -17,7 +17,7 @@ namespace AudioView.Common.Services
         {
             using (var audioViewEntities = new AudioViewEntities())
             {
-                var user = await audioViewEntities.Users.FirstOrDefaultAsync(x => x.username.ToLower() == username.ToLower());
+                var user = await audioViewEntities.Users.FirstOrDefaultAsync(x => x.username.ToLower() == username.ToLower()).ConfigureAwait(false);
                 if (user == null)
                     return null;
 
@@ -33,7 +33,7 @@ namespace AudioView.Common.Services
         {
             using (var audioViewEntities = new AudioViewEntities())
             {
-                var result = await audioViewEntities.Users.OrderBy(x => x.username).ToListAsync();
+                var result = await audioViewEntities.Users.OrderBy(x => x.username).ToListAsync().ConfigureAwait(false);
                 return result.Select(x => x.ToInternal()).ToList();
             }
         }
@@ -42,7 +42,7 @@ namespace AudioView.Common.Services
         {
             using (var audioViewEntities = new AudioViewEntities())
             {
-                return (await audioViewEntities.Users.FirstOrDefaultAsync(x => x.username.ToLower() == username.ToLower()))?.ToInternal();
+                return (await audioViewEntities.Users.FirstOrDefaultAsync(x => x.username.ToLower() == username.ToLower()).ConfigureAwait(false))?.ToInternal();
             }
         }
 
@@ -54,7 +54,7 @@ namespace AudioView.Common.Services
                 userObject.passwordSalt = getRandomSalt();
                 userObject.password = generateHash(password, userObject.passwordSalt);
                 audioViewEntities.Users.Add(userObject);
-                await audioViewEntities.SaveChangesAsync();
+                await audioViewEntities.SaveChangesAsync().ConfigureAwait(false);
             }
         }
 
@@ -67,7 +67,7 @@ namespace AudioView.Common.Services
                     return;
                 user.passwordSalt = getRandomSalt();
                 user.password = generateHash(newPassword, user.passwordSalt);
-                await audioViewEntities.SaveChangesAsync();
+                await audioViewEntities.SaveChangesAsync().ConfigureAwait(false);
             }
         }
 
@@ -75,11 +75,11 @@ namespace AudioView.Common.Services
         {
             using (var audioViewEntities = new AudioViewEntities())
             {
-                var user = await audioViewEntities.Users.FirstOrDefaultAsync(x => x.username.ToLower() == username.ToLower());
+                var user = await audioViewEntities.Users.FirstOrDefaultAsync(x => x.username.ToLower() == username.ToLower()).ConfigureAwait(false);
                 if (user == null)
                     return;
                 audioViewEntities.Users.Remove(user);
-                await audioViewEntities.SaveChangesAsync();
+                await audioViewEntities.SaveChangesAsync().ConfigureAwait(false);
             }
         }
 

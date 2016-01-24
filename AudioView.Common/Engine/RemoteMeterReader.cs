@@ -39,7 +39,7 @@ namespace AudioView.Common.Engine
 
         public Task Close()
         {
-            return Task.Factory.StartNew(() =>
+            return Task.Run(() =>
             {
                 run = false;
             });
@@ -47,7 +47,7 @@ namespace AudioView.Common.Engine
 
         private Task StartRemoveReader()
         {
-            return Task.Factory.StartNew(() =>
+            return Task.Run(async () =>
             {
                 while (run)
                 {
@@ -62,7 +62,7 @@ namespace AudioView.Common.Engine
                                 CancellationTokenSource token = new CancellationTokenSource();
                                 token.CancelAfter(new TimeSpan(0, 0, 15)); // If no message after 15 sek = disconnected
                                 string line;
-                                while ((line = reader.ReadLineAsync().WithCancellation(token.Token).Result) != null)
+                                while ((line = await reader.ReadLineAsync().WithCancellation(token.Token).ConfigureAwait(false)) != null)
                                 {
                                     if (this.engine == null)
                                     {
@@ -178,7 +178,7 @@ namespace AudioView.Common.Engine
 
         public static Task<MeasurementSettings> TestConenction(string ip, int port)
         {
-            return Task.Factory.StartNew(() =>
+            return Task.Run(async () =>
             {
                 try
                 {
@@ -193,7 +193,7 @@ namespace AudioView.Common.Engine
                     using (StreamReader reader = new StreamReader(client.GetStream(), Encoding.UTF8))
                     {
                         string line;
-                        while ((line = reader.ReadLineAsync().WithCancellation(tokenSource.Token).Result) != null)
+                        while ((line = await reader.ReadLineAsync().WithCancellation(tokenSource.Token).ConfigureAwait(false)) != null)
                         {
                             logger.Trace("Got message \"{0}\" while testing connection", line.Trim());
                             if (line.StartsWith(TCPServerListener.TcpMessages.SettingsResponse.Replace("{0}", "")))

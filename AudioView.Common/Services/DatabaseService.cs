@@ -41,7 +41,7 @@ namespace AudioView.Common.Services
                     Readings = x.Readings.Count
                 })
                 .OrderByDescending(x=>x.Project.Created)
-                .ToListAsync())
+                .ToListAsync().ConfigureAwait(false))
                 .Select(x=>x.Project.ToInternal(x.Readings)).ToList();
             }
             return projects;
@@ -55,7 +55,7 @@ namespace AudioView.Common.Services
                 var results = (await audioViewEntities.Readings
                                 .Where(x => x.Project == projectId)
                                 .OrderByDescending(x=>x.Time)
-                                .ToListAsync())
+                                .ToListAsync().ConfigureAwait(false))
                                 .Select(x=>x.ToInternal());
                 foreach (var reading in results)
                 {
@@ -69,7 +69,7 @@ namespace AudioView.Common.Services
         {
             using (var audioViewEntities = new AudioViewEntities())
             {
-                var project = await audioViewEntities.Projects.Where(x => x.Id == projectId).FirstOrDefaultAsync();
+                var project = await audioViewEntities.Projects.Where(x => x.Id == projectId).FirstOrDefaultAsync().ConfigureAwait(false);
                 if (project == null)
                     return;
                 audioViewEntities.Projects.Remove(project);
@@ -81,7 +81,7 @@ namespace AudioView.Common.Services
         {
             using (var audioViewEntities = new AudioViewEntities())
             {
-                var reading = await audioViewEntities.Readings.Where(x => x.Id == readingId).FirstOrDefaultAsync();
+                var reading = await audioViewEntities.Readings.Where(x => x.Id == readingId).FirstOrDefaultAsync().ConfigureAwait(false);
                 if (reading == null)
                     return;
                 audioViewEntities.Readings.Remove(reading);
@@ -97,7 +97,7 @@ namespace AudioView.Common.Services
                 {
                     Project = x,
                     Readings = x.Readings.Count
-                }).FirstOrDefaultAsync();
+                }).FirstOrDefaultAsync().ConfigureAwait(false);
 
                 if (project == null)
                     return null;

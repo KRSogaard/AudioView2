@@ -48,7 +48,7 @@ namespace AudioView.Common.Listeners
         /// </summary>
         private Task RunServerAsync()
         {
-            return Task.Factory.StartNew(async () =>
+            return Task.Run(async () =>
             {
                 try
                 {
@@ -79,7 +79,7 @@ namespace AudioView.Common.Listeners
 
         private Task HandleClientAsync(TcpClient client)
         {
-            return Task.Factory.StartNew(async () =>
+            return Task.Run(async () =>
             {
                 while (runServer)
                 {
@@ -166,7 +166,7 @@ namespace AudioView.Common.Listeners
 
         public Task OnMinor(DateTime time, ReadingData data)
         {
-            return Task.Factory.StartNew(() =>
+            return Task.Run(() =>
             {
                 SendMessageToAll(string.Format(TcpMessages.OnMinorResponse, JsonConvert.SerializeObject(data)));
             });
@@ -174,7 +174,7 @@ namespace AudioView.Common.Listeners
 
         public Task OnMajor(DateTime time, ReadingData data)
         {
-            return Task.Factory.StartNew(() =>
+            return Task.Run(() =>
             {
                 SendMessageToAll(string.Format(TcpMessages.OnMajorResponse, JsonConvert.SerializeObject(data)));
             });
@@ -182,7 +182,7 @@ namespace AudioView.Common.Listeners
 
         public Task OnSecond(DateTime time, ReadingData data, ReadingData minorData, ReadingData majorData)
         {
-            return Task.Factory.StartNew(() =>
+            return Task.Run(() =>
             {
                 SendMessageToAll(string.Format(TcpMessages.OnSecondResponse, JsonConvert.SerializeObject(new TcpWrapperOnSecond()
                 {
@@ -205,7 +205,7 @@ namespace AudioView.Common.Listeners
 
         public Task StopListener()
         {
-            return Task.Factory.StartNew(() =>
+            return Task.Run(() =>
             {
                 SendMessageToAll(string.Format(TcpMessages.StopListenerResponse));
 

@@ -127,7 +127,7 @@ namespace AudioView.UserControls.Graph
             if (isMajor)
                 return Task.FromResult<object>(null);
 
-            return Task.Factory.StartNew(() =>
+            return Task.Run(() =>
             {
                 AddReading(time, data);
             });
@@ -138,7 +138,7 @@ namespace AudioView.UserControls.Graph
             if (!isMajor)
                 return Task.FromResult<object>(null);
 
-            return Task.Factory.StartNew(() =>
+            return Task.Run(() =>
             {
                 AddReading(time, data);
             });
@@ -159,7 +159,7 @@ namespace AudioView.UserControls.Graph
             if(isMajor)
                 return Task.FromResult<object>(null);
 
-            return Task.Factory.StartNew(() =>
+            return Task.Run(() =>
             {
                 SecondReadings.Enqueue(new Tuple<DateTime, double>(time, data.LAeq));
             });

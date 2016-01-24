@@ -35,7 +35,7 @@ namespace AudioView.Common.Meter
                 var udpClient = new UdpClient();
                 string welcome = "Hello, are you there?";
                 var data = Encoding.ASCII.GetBytes(welcome);
-                udpClient.SendAsync(data, data.Length, groupEP);
+                udpClient.SendAsync(data, data.Length, groupEP); // TODO await?
 
                 var token = new CancellationTokenSource();
                 token.CancelAfter(timeOut);

@@ -182,7 +182,7 @@ namespace AudioView.ViewModels
                 }
 
                 // Graph minipolations can be done outside of the UI thread
-                Task.Factory.StartNew(() =>
+                Task.Run(() =>
                 {
                     var minMaxOrder = readings.OrderBy(x => x.LAeq).Select(x => x.LAeq).ToList();
                     var min = minMaxOrder.FirstOrDefault();
@@ -190,7 +190,7 @@ namespace AudioView.ViewModels
                     if (min == 0) min = 50;
                     if (max == 0) max = 150;
 
-                    var majorGraphTask = Task.Factory.StartNew(() =>
+                    var majorGraphTask = Task.Run(() =>
                     {
                         while (!MajorGraph.Readings.IsEmpty)
                         {
@@ -198,7 +198,7 @@ namespace AudioView.ViewModels
                             MajorGraph.Readings.TryDequeue(out result);
                         }
                     });
-                    var minorGraphTask = Task.Factory.StartNew(() =>
+                    var minorGraphTask = Task.Run(() =>
                     {
                         while (!MinorGraph.Readings.IsEmpty)
                         {
