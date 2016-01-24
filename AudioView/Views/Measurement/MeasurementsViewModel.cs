@@ -243,7 +243,6 @@ namespace AudioView.Views.Measurement
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
-            logger.Trace("MeasurementsViewModel {0} was changed.", propertyChangedEventArgs.PropertyName);
             switch (propertyChangedEventArgs.PropertyName)
             {
                 case "SelectedMeasurement":

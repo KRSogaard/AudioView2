@@ -28,12 +28,6 @@ namespace AudioView.ViewModels
         private DispatcherTimer timer;
         public MainViewModel()
         {
-            PropertyChanged += (sender, args) =>
-            {
-                if(args.PropertyName != nameof(LagTest))
-                    logger.Trace("MainViewModel {0} was change", args.PropertyName);
-            };
-
             logger.Info("Audio View started at {0}", DateTime.Now);
 
             SettingsViewModel = new SettingsViewModel();

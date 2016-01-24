@@ -16,11 +16,6 @@ namespace AudioView.ViewModels
 
         public HistoryReadingViewModel(Reading reading, HistorySearchResult parent)
         {
-            PropertyChanged += (sender, args) =>
-            {
-                logger.Trace("HistoryReadingViewModel {0} was change", args.PropertyName);
-            };
-
             databaseService = new DatabaseService();
             this.parent = parent;
             Reading = reading;

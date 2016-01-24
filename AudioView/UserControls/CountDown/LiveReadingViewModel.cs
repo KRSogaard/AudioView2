@@ -47,11 +47,6 @@ namespace AudioView.ViewModels
         public LiveReadingViewModel(bool isMajor, TimeSpan interval, int limitDb, int mainItem, int secondItem) : 
             base(isMajor, interval, limitDb, mainItem, secondItem, true)
         {
-            PropertyChanged += (sender, args) =>
-            {
-                logger.Trace("LiveReadingViewModel {0} was change", args.PropertyName);
-            };
-
             StayOnTop = false;
             IsEnabled = true; // Always true for this control
         }

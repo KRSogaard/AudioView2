@@ -147,11 +147,6 @@ namespace AudioView.ViewModels
 
         public HistorySearchResult(HistoryViewModel parent, Project project)
         {
-            PropertyChanged += (sender, args) =>
-            {
-                logger.Trace("HistorySearchResult {0} was change", args.PropertyName);
-            };
-
             this.parent = parent;
             this.project = project;
             databaseService = new DatabaseService();

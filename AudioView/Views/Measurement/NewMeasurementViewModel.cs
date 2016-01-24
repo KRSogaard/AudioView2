@@ -33,11 +33,6 @@ namespace AudioView.ViewModels
 
         public NewMeasurementViewModel(MeasurementsViewModel mainViewModel)
         {
-            PropertyChanged += (sender, args) =>
-            {
-                logger.Trace("NewMeasurementViewModel {0} was change", args.PropertyName);
-            };
-
             MainViewModel = mainViewModel;
             ProjectName = "Untitled - " + DateTime.Now.ToString("yyyy-mm-dd hh-mm-ss");
             UseLocal = true;

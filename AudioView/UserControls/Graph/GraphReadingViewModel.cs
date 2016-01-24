@@ -49,11 +49,6 @@ namespace AudioView.ViewModels
         public GraphReadingViewModel(bool isMajor, int intervalsShown, int limitDb, TimeSpan interval, int minHeight, int maxHeight) : 
             base(isMajor, intervalsShown, limitDb, interval, minHeight, maxHeight)
         {
-            PropertyChanged += (sender, args) =>
-            {
-                logger.Trace("GraphReadingViewModel {0} was change", args.PropertyName);
-            };
-
             StayOnTop = false;
             IsEnabled = true; // Always true for this control
         }

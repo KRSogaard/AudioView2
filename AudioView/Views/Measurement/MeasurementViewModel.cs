@@ -37,11 +37,6 @@ namespace AudioView.ViewModels
 
         public MeasurementViewModel(Guid id, MeasurementSettings settings, IMeterReader reader)
         {
-            PropertyChanged += (sender, args) =>
-            {
-                logger.Trace("MeasurementViewModel {0} was changed.", args.PropertyName);
-            };
-
             started = DateTime.Now;
             popOutWindows = new LinkedList<MetroWindow>();
             this.engine = new AudioViewEngine(settings.MinorInterval, settings.MajorInterval, reader);

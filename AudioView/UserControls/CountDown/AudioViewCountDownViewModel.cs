@@ -28,11 +28,6 @@ namespace AudioView.UserControls.CountDown
 
         public AudioViewCountDownViewModel(bool isMajor, TimeSpan interval, int limitDb, int mainItem, int secondItem, bool isPopOut = false)
         {
-            PropertyChanged += (sender, args) =>
-            {
-                logger.Trace("AudioViewCountDownViewModel {0} was change", args.PropertyName);
-            };
-
             Interval = interval;
             this.isMajor = isMajor;
             this.limitDb = limitDb;

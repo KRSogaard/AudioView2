@@ -43,11 +43,6 @@ namespace AudioView.ViewModels
 
         public SettingsViewModel()
         {
-            PropertyChanged += (sender, args) =>
-            {
-                logger.Trace("SettingsViewModel {0} was change", args.PropertyName);
-            };
-            
             Accents = ThemeManager.Accents.Select(x => x.Name).ToList();
             Themes = ThemeManager.AppThemes.Select(x => x.Name).ToList();
             LoadSettings();

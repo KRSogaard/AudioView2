@@ -27,11 +27,6 @@ namespace AudioView.UserControls.Graph
         private bool isMajor;
         public AudioViewGraphViewModel(bool isMajor, int intervalsShown, int limitDb, TimeSpan interval, int minHeight, int maxHeight)
         {
-            PropertyChanged += (sender, args) =>
-            {
-                logger.Trace("AudioViewGraphViewModel {0} was change", args.PropertyName);
-            };
-
             SecondReadings = new ConcurrentQueue<Tuple<DateTime, double>>();
             Readings = new ConcurrentQueue<Tuple<DateTime, double>>();
             IntervalsShown = intervalsShown;

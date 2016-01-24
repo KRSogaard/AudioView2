@@ -127,11 +127,6 @@ namespace AudioView.ViewModels
 
         public HistoryViewModel()
         {
-            PropertyChanged += (sender, args) =>
-            {
-                logger.Trace("HistoryViewModel {0} was change", args.PropertyName);
-            };
-
             databaseService = new DatabaseService();
             SearchResults = new ObservableCollection<HistorySearchResult>();
             SelectedSearch = null;
