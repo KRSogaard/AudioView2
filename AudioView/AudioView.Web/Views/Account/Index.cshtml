@@ -1,0 +1,33 @@
+﻿@model List<AudioView.Common.Data.User>
+@{
+    ViewBag.Title = "Users";
+}
+
+<h2 class="sub-header">Users</h2>
+
+<div class="row">
+    <div class="col-md-12">
+        @Html.ActionLink("Create new user", "Create")
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th colspan="2">&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.UserName</td>
+                    <td>@Html.ActionLink("Edit", "Edit", new { username = user.UserName })</td>
+                    <td>@Html.ActionLink("Delete", "Delete", new { username = user.UserName })</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

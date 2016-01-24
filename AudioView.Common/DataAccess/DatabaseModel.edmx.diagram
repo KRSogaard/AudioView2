@@ -8,6 +8,7 @@
         <EntityTypeShape EntityType="AudioViewModel.Project" Width="1.5" PointX="0.75" PointY="0.875" />
         <EntityTypeShape EntityType="AudioViewModel.Reading" Width="1.5" PointX="3" PointY="0.875" />
         <AssociationConnector Association="AudioViewModel.FK_Readings_Projects" />
+        <EntityTypeShape EntityType="AudioViewModel.User" Width="1.5" PointX="0.75" PointY="4.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

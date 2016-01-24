@@ -1,0 +1,35 @@
+﻿@using AudioView.Web.Tools
+@if (FlashHelper.Count(FlashType.Error) > 0 ||
+    FlashHelper.Count(FlashType.Notice) > 0 ||
+    FlashHelper.Count(FlashType.Success) > 0)
+{
+    <div id="messages">
+        @if (FlashHelper.Count(FlashType.Error) > 0)
+        {
+            <ul class="Error">
+            @foreach (var s in FlashHelper.Get(FlashType.Error))
+            {
+                <li>@s</li>
+            }
+            </ul>
+        }
+        @if (FlashHelper.Count(FlashType.Notice) > 0)
+        {
+            <ul class="Notice">
+            @foreach (var s in FlashHelper.Get(FlashType.Notice))
+            {
+                <li>@s</li>
+            }
+            </ul>
+        }
+        @if (FlashHelper.Count(FlashType.Success) > 0)
+        {
+            <ul class="Success">
+            @foreach (var s in FlashHelper.Get(FlashType.Success))
+            {
+                <li>@s</li>
+            }
+            </ul>
+        }
+    </div>
+}

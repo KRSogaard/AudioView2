@@ -28,6 +28,15 @@
           <Property Name="Major" Type="tinyint" Nullable="false" />
           <Property Name="LAeq" Type="float" Nullable="false" />
         </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="username" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="password" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="passwordSalt" Type="int" Nullable="false" />
+        </EntityType>
         <Association Name="FK_Readings_Projects">
           <End Role="Projects" Type="Self.Projects" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -45,6 +54,7 @@
         <EntityContainer Name="AudioViewModelStoreContainer">
           <EntitySet Name="Projects" EntityType="Self.Projects" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Readings" EntityType="Self.Readings" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_Readings_Projects" Association="Self.FK_Readings_Projects">
             <End Role="Projects" EntitySet="Projects" />
             <End Role="Readings" EntitySet="Readings" />
@@ -61,6 +71,7 @@
             <End Role="Project" EntitySet="Projects" />
             <End Role="Reading" EntitySet="Readings" />
           </AssociationSet>
+          <EntitySet Name="Users" EntityType="AudioViewModel.User" />
         </EntityContainer>
         <EntityType Name="Project">
           <Key>
@@ -101,6 +112,15 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Guid" Nullable="false" />
+          <Property Name="username" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="password" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="passwordSalt" Type="Int32" Nullable="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -129,6 +149,16 @@
                 <ScalarProperty Name="Time" ColumnName="Time" />
                 <ScalarProperty Name="Project" ColumnName="Project" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="AudioViewModel.User">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="passwordSalt" ColumnName="passwordSalt" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="username" ColumnName="username" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

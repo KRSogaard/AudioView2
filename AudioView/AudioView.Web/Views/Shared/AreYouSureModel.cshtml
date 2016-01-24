@@ -1,0 +1,29 @@
+﻿@model AudioView.Web.Models.AreYouSureModel
+
+@{
+    ViewBag.Title = "Are you sure?";
+}
+
+<h2>Are you sure?</h2>
+
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <h4>@Model.Message</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <input type="submit" value="Yes" class="btn btn-primary"/>
+            @Html.ActionLink("No take me back.", Model.RedirectAction, Model.Redirect)
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

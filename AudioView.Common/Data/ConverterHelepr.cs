@@ -31,5 +31,23 @@ namespace AudioView.Common.Data
                 LAeq = r.LAeq
             };
         }
+
+        public static User ToInternal(this DataAccess.User u)
+        {
+            return new User()
+            {
+                Id = u.id,
+                UserName = u.username
+            };
+        }
+
+        public static DataAccess.User ToDatabase(this User u)
+        {
+            return new DataAccess.User()
+            {
+                id = u.Id,
+                username = u.UserName
+            };
+        }
     }
 }

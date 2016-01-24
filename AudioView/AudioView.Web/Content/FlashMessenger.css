@@ -1,0 +1,36 @@
+﻿#messages {
+    margin-bottom: 2em;
+}
+
+#messages ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#messages ul li {
+    display: block;
+    margin: .75em 0;
+    padding: 10px;
+    border: 2px solid #ddd;
+    background-color: #eee;
+    color: #222;
+}
+
+#messages ul.Notice li {
+    background: #FFF6BF;
+    color: #817134;
+    border-color: #FFD324;
+}
+
+#messages ul.Success li {
+    background: #E6EFC2;
+    color: #529214;
+    border-color: #C6D880;
+}
+
+#messages ul.Error li {
+    background: #FBE3E4;
+    color: #D12F19;
+    border-color: #FBC2C4;
+}

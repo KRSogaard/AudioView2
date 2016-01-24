@@ -27,5 +27,6 @@ namespace AudioView.Common.DataAccess
     
         public virtual DbSet<Project> Projects { get; set; }
         public virtual DbSet<Reading> Readings { get; set; }
+        public virtual DbSet<User> Users { get; set; }
     }
 }

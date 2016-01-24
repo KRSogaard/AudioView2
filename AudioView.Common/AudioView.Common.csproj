@@ -79,6 +79,9 @@
     <Compile Include="DataAccess\Reading.cs">
       <DependentUpon>DatabaseModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="DataAccess\User.cs">
+      <DependentUpon>DatabaseModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Data\ConverterHelepr.cs" />
     <Compile Include="Data\Project.cs" />
     <Compile Include="Data\Reading.cs" />
