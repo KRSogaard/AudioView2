@@ -41,7 +41,11 @@
                     <MenuItem Header="Major"  Command="{Binding GraphPopUpMajor}" />
                     <MenuItem Header="Minor"  Command="{Binding GraphPopUpMinor}" />
                 </MenuItem>
+                <Separator />
+                <MenuItem Header="Reading tabel" Command="{Binding SelectedMeasurement.DisplayReadingsTabel}" />
+                <MenuItem Header="Reading graph" Command="{Binding SelectedMeasurement.DisplayReadingsGraph}" />
             </MenuItem>
+            <MenuItem Header="Download CVS" IsEnabled="{Binding MeasurementSelected}" Command="{Binding SelectedMeasurement.DownloadAsCSV}"/>
             <MenuItem Header="Close measurement" IsEnabled="{Binding MeasurementSelected}" Command="{Binding CloseMeasurementCommand}"/>
         </Menu>
 

@@ -116,6 +116,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DataGraphWindow.xaml.cs">
+      <DependentUpon>DataGraphWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DataTabelWindow.xaml.cs">
+      <DependentUpon>DataTabelWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GlobalContainer.cs" />
     <Compile Include="GraphWindow.xaml.cs">
       <DependentUpon>GraphWindow.xaml</DependentUpon>
@@ -131,6 +137,7 @@
     <Compile Include="UserControls\Graph\AudioViewGraph.cs" />
     <Compile Include="Properties\Annotations1.cs" />
     <Compile Include="UserControls\Graph\AudioViewGraphViewModel.cs" />
+    <Compile Include="Views\History\DataTabelViewModel.cs" />
     <Compile Include="Views\History\HistoryControl.xaml.cs">
       <DependentUpon>HistoryControl.xaml</DependentUpon>
     </Compile>
@@ -162,6 +169,14 @@
     <Compile Include="Views\Measurement\MeasurementViewModel.cs" />
     <Compile Include="Views\Measurement\NewMeasurementViewModel.cs" />
     <Compile Include="Views\Settings\SettingsViewModel.cs" />
+    <Page Include="DataGraphWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataTabelWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GraphWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

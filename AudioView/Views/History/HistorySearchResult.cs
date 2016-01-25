@@ -21,8 +21,7 @@ namespace AudioView.ViewModels
     public class HistorySearchResult : BindableBase
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
-
-        private HistoryViewModel parent;
+        
         private IDatabaseService databaseService;
         private DateTime? firstDate;
         private DateTime? lastDate;
@@ -145,15 +144,34 @@ namespace AudioView.ViewModels
             set { SetProperty(ref _readingsMajor, value); }
         }
 
-        public HistorySearchResult(HistoryViewModel parent, Project project)
+        public HistorySearchResult(Project project)
         {
-            this.parent = parent;
             this.project = project;
             databaseService = new DatabaseService();
         }
 
         public AudioViewGraphViewModel MajorGraph { get; set; }
         public AudioViewGraphViewModel MinorGraph { get; set; }
+
+        public async Task Preloadreadings(IList<Reading> majorReadings, IList<Reading> minoReadings)
+        {
+            ReadingsMajor = majorReadings.Select(x => new HistoryReadingViewModel(x, this)).ToList();
+            ReadingsMinor = minoReadings.Select(x => new HistoryReadingViewModel(x, this)).ToList();
+
+            firstDate = ReadingsMajor.FirstOrDefault()?.Reading.Time;
+            var first = ReadingsMinor.FirstOrDefault()?.Reading.Time;
+            if (first < firstDate || firstDate == new DateTime()) firstDate = first;
+            lastDate = ReadingsMajor.LastOrDefault()?.Reading.Time;
+            var last = ReadingsMajor.FirstOrDefault()?.Reading.Time;
+            if (last > lastDate || lastDate == new DateTime()) lastDate = last;
+
+            if (firstDate != null)
+            {
+                dateSpan = (lastDate.Value - firstDate.Value);
+            }
+
+            await loadGraph(ReadingsMajor, ReadingsMinor);
+        }
 
         public Task LoadReadings()
         {
@@ -182,55 +200,7 @@ namespace AudioView.ViewModels
                 }
 
                 // Graph minipolations can be done outside of the UI thread
-                Task.Run(() =>
-                {
-                    var minMaxOrder = readings.OrderBy(x => x.LAeq).Select(x => x.LAeq).ToList();
-                    var min = minMaxOrder.FirstOrDefault();
-                    var max = minMaxOrder.LastOrDefault();
-                    if (min == 0) min = 50;
-                    if (max == 0) max = 150;
-
-                    var majorGraphTask = Task.Run(() =>
-                    {
-                        while (!MajorGraph.Readings.IsEmpty)
-                        {
-                            Tuple<DateTime, double> result;
-                            MajorGraph.Readings.TryDequeue(out result);
-                        }
-                    });
-                    var minorGraphTask = Task.Run(() =>
-                    {
-                        while (!MinorGraph.Readings.IsEmpty)
-                        {
-                            Tuple<DateTime, double> result;
-                            MinorGraph.Readings.TryDequeue(out result);
-                        }
-                    });
-                    Task.WaitAll(majorGraphTask, minorGraphTask);
-
-                    foreach (var model in minor)
-                    {
-                        MinorGraph.Readings.Enqueue(new Tuple<DateTime, double>(model.Reading.Time, model.Reading.LAeq));
-                    }
-                    foreach (var model in major)
-                    {
-                        MajorGraph.Readings.Enqueue(new Tuple<DateTime, double>(model.Reading.Time, model.Reading.LAeq));
-                    }
-
-                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                    {
-                        MajorGraph.IsCustomSpan = true;
-                        MajorGraph.MinHeight = min;
-                        MajorGraph.MaxHeight = max;
-
-                        MinorGraph.IsCustomSpan = true;
-                        MinorGraph.MinHeight = min;
-                        MinorGraph.MaxHeight = max;
-
-                        LeftBound = 800;
-                        RightBound = 1000;
-                    });
-                });
+                loadGraph(major, minor);
 
                 _readingsMinor = new List<HistoryReadingViewModel>();
                 _readingsMajor = new List<HistoryReadingViewModel>();
@@ -242,6 +212,59 @@ namespace AudioView.ViewModels
                     OnPropertyChanged("ReadingsMinor");
                     OnPropertyChanged("ReadingsMajor");
                     IsLoading = false;
+                });
+            });
+        }
+
+        private Task loadGraph(List<HistoryReadingViewModel> major, List<HistoryReadingViewModel> minor)
+        {
+            return Task.Run(() =>
+            {
+                var minMaxOrder = major.Union(minor).OrderBy(x => x.Reading.LAeq).Select(x => x.Reading.LAeq).ToList();
+                var min = minMaxOrder.FirstOrDefault();
+                var max = minMaxOrder.LastOrDefault();
+                if (min == 0) min = 50;
+                if (max == 0) max = 150;
+
+                var majorGraphTask = Task.Run(() =>
+                {
+                    while (!MajorGraph.Readings.IsEmpty)
+                    {
+                        Tuple<DateTime, double> result;
+                        MajorGraph.Readings.TryDequeue(out result);
+                    }
+                });
+                var minorGraphTask = Task.Run(() =>
+                {
+                    while (!MinorGraph.Readings.IsEmpty)
+                    {
+                        Tuple<DateTime, double> result;
+                        MinorGraph.Readings.TryDequeue(out result);
+                    }
+                });
+                Task.WaitAll(majorGraphTask, minorGraphTask);
+
+                foreach (var model in minor)
+                {
+                    MinorGraph.Readings.Enqueue(new Tuple<DateTime, double>(model.Reading.Time, model.Reading.LAeq));
+                }
+                foreach (var model in major)
+                {
+                    MajorGraph.Readings.Enqueue(new Tuple<DateTime, double>(model.Reading.Time, model.Reading.LAeq));
+                }
+
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    MajorGraph.IsCustomSpan = true;
+                    MajorGraph.MinHeight = min;
+                    MajorGraph.MaxHeight = max;
+
+                    MinorGraph.IsCustomSpan = true;
+                    MinorGraph.MinHeight = min;
+                    MinorGraph.MaxHeight = max;
+
+                    LeftBound = 800;
+                    RightBound = 1000;
                 });
             });
         }

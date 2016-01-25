@@ -1,0 +1,49 @@
+﻿<controls:MetroWindow x:Class="AudioView.DataTabelWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AudioView"
+        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:userControls="clr-namespace:AudioView.UserControls"
+        mc:Ignorable="d"
+        Topmost="{Binding StayOnTop, Mode=TwoWay}"
+        Title="{Binding Title}" Height="400" Width="600">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Icons.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <controls:MetroWindow.RightWindowCommands>
+        <controls:WindowCommands>
+            <Button Command="{Binding ToggleOnTop}">
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle Width="20" Height="20" Visibility="{Binding IsNotStayOnTop, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill"
+                         Visual="{StaticResource appbar_pin}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <Rectangle Width="20" Height="20" Visibility="{Binding StayOnTop, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill"
+                         Visual="{StaticResource appbar_pin_remove}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <TextBlock Margin="4 0 0 0"
+                   VerticalAlignment="Center"
+                   Text="Stay on top" />
+                </StackPanel>
+            </Button>
+        </controls:WindowCommands>
+    </controls:MetroWindow.RightWindowCommands>
+
+    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        <userControls:HistoryDataView />
+    </Grid>
+</controls:MetroWindow>
+

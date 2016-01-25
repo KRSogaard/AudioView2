@@ -34,6 +34,9 @@ namespace AudioView.ViewModels
             HistoryViewModel = new HistoryViewModel();
             MeasurementsViewModel = new MeasurementsViewModel(this);
 
+            // Debug for me
+            MeasurementsViewModel.NewViewModel = new NewMeasurementViewModel(MeasurementsViewModel);
+
             // Load offline files
             DataStorageMeterListener.UploadLocalFiles();
 

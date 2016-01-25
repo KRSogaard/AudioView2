@@ -150,7 +150,7 @@ namespace AudioView.ViewModels
                         try
                         {
                             _searchResults = new ObservableCollection<HistorySearchResult>();
-                            _searchResults.AddRange(results.OrderBy(x => x.Created).Select(x => new HistorySearchResult(this, x)));
+                            _searchResults.AddRange(results.OrderBy(x => x.Created).Select(x => new HistorySearchResult(x)));
                             OnPropertyChanged(nameof(SearchResults));
 
                             IsSearching = false;

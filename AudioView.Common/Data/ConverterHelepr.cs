@@ -32,6 +32,18 @@ namespace AudioView.Common.Data
             };
         }
 
+        public static Reading ToInternal(this Tuple<DateTime, ReadingData> r, bool major)
+        {
+            return new Reading()
+            {
+                Id = Guid.Empty,
+                Major = major,
+                Project = Guid.Empty,
+                Time = r.Item1,
+                LAeq = r.Item2.LAeq
+            };
+        }
+
         public static User ToInternal(this DataAccess.User u)
         {
             return new User()

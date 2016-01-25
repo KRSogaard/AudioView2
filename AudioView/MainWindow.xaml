@@ -52,7 +52,13 @@
             <TabItem Header="Measurements">
                 <measurement:MeasurementsView DataContext="{Binding MeasurementsViewModel}" />
             </TabItem>
-            <TabItem Header="New">
+            <TabItem Header="History">
+                <UserControls:HistoryControl DataContext="{Binding HistoryViewModel}" />
+            </TabItem>
+            <TabItem Header="Settings">
+                <UserControls:SettingsView DataContext="{Binding SettingsViewModel}" />
+            </TabItem>
+            <TabItem Header="New (Temp)" DataContext="{Binding MeasurementsViewModel}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -78,12 +84,6 @@
                     </RichTextBox>
                     <UserControls:NewMeasurementControl Grid.Column="1" DataContext="{Binding NewViewModel}" />
                 </Grid>
-            </TabItem>
-            <TabItem Header="History">
-                <UserControls:HistoryControl DataContext="{Binding HistoryViewModel}" />
-            </TabItem>
-            <TabItem Header="Settings">
-                <UserControls:SettingsView DataContext="{Binding SettingsViewModel}" />
             </TabItem>
         </TabControl>
 
