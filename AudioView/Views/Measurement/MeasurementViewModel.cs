@@ -43,8 +43,7 @@ namespace AudioView.ViewModels
 
         private ConcurrentQueue<Tuple<DateTime,ReadingData>> MinorReadings;
         private ConcurrentQueue<Tuple<DateTime, ReadingData>> MajorReadings;
-
-
+        
         public MeasurementViewModel(Guid id, MeasurementSettings settings, IMeterReader reader)
         {
             MinorReadings = new ConcurrentQueue<Tuple<DateTime, ReadingData>>();
