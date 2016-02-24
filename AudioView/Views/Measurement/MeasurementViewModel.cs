@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -43,11 +44,47 @@ namespace AudioView.ViewModels
 
         private ConcurrentQueue<Tuple<DateTime,ReadingData>> MinorReadings;
         private ConcurrentQueue<Tuple<DateTime, ReadingData>> MajorReadings;
+        private ObservableCollection<Tuple<DateTime, double>> barMinorValues;
+        public ObservableCollection<Tuple<DateTime, double>> BarMinorValues
+        {
+            get { return barMinorValues; }
+            set { SetProperty(ref barMinorValues, value); }
+        }
+        private ObservableCollection<Tuple<DateTime, double>> barMajorValues;
+        public ObservableCollection<Tuple<DateTime, double>> BarMajorValues
+        {
+            get { return barMajorValues; }
+            set { SetProperty(ref barMajorValues, value); }
+        }
+        private ObservableCollection<Tuple<DateTime, double>> lineValues;
+        public ObservableCollection<Tuple<DateTime, double>> LineValues
+        {
+            get { return lineValues; }
+            set { SetProperty(ref lineValues, value); }
+        }
+        private TimeSpan minorSpan;
+        public TimeSpan MinorSpan
+        {
+            get { return minorSpan; }
+            set { SetProperty(ref minorSpan, value); }
+        }
+        private TimeSpan majorSpan;
+        public TimeSpan MajorSpan
+        {
+            get { return majorSpan; }
+            set { SetProperty(ref majorSpan, value); }
+        }
         
         public MeasurementViewModel(Guid id, MeasurementSettings settings, IMeterReader reader)
         {
             MinorReadings = new ConcurrentQueue<Tuple<DateTime, ReadingData>>();
             MajorReadings = new ConcurrentQueue<Tuple<DateTime, ReadingData>>();
+            BarMajorValues = new ObservableCollection<Tuple<DateTime, double>>();
+            BarMinorValues = new ObservableCollection<Tuple<DateTime, double>>();
+            LineValues = new ObservableCollection<Tuple<DateTime, double>>();
+            MinorSpan = TimeSpan.FromTicks(settings.MinorInterval.Ticks * 15);
+            MajorSpan = TimeSpan.FromTicks(settings.MajorInterval.Ticks * 15);
+
 
             started = DateTime.Now;
             popOutWindows = new LinkedList<MetroWindow>();
@@ -90,21 +127,6 @@ namespace AudioView.ViewModels
                     settings.MajorDBLimit,
                     settings.MajorClockMainItemId,
                     settings.MajorClockSecondaryItemId);
-            MinorGraph = new AudioViewGraphViewModel(false,
-                    settings.BarsDisplayed,
-                    settings.MinorDBLimit,
-                    settings.MinorInterval,
-                    settings.GraphLowerBound,
-                    settings.GraphUpperBound);
-            MajorGraph = new AudioViewGraphViewModel(true,
-                    settings.BarsDisplayed,
-                    settings.MajorDBLimit,
-                    settings.MajorInterval,
-                    settings.GraphLowerBound,
-                    settings.GraphUpperBound);
-
-            this.engine.RegisterListener(MinorGraph);
-            this.engine.RegisterListener(MajorGraph);
             this.engine.RegisterListener(MinorClock);
             this.engine.RegisterListener(MajorClock);
             this.engine.RegisterListener(this);
@@ -194,20 +216,6 @@ namespace AudioView.ViewModels
         {
             get { return majorClockViewModel; }
             set { SetProperty(ref majorClockViewModel, value); }
-        }
-
-        private AudioViewGraphViewModel minorGraph;
-        public AudioViewGraphViewModel MinorGraph
-        {
-            get { return minorGraph; }
-            set { SetProperty(ref minorGraph, value); }
-        }
-
-        private AudioViewGraphViewModel majorGraph;
-        public AudioViewGraphViewModel MajorGraph
-        {
-            get { return majorGraph; }
-            set { SetProperty(ref majorGraph, value); }
         }
 
         public void NewLiveReadingsPopUp(bool isMajor, int mainClockItemId, int secondayClockItemId)
@@ -312,10 +320,6 @@ namespace AudioView.ViewModels
                     MinorClock.IsEnabled = value;
                 if (MajorClock != null)
                     MajorClock.IsEnabled = value;
-                if (MinorGraph != null)
-                    MinorGraph.IsEnabled = value;
-                if (MajorGraph != null)
-                    MajorGraph.IsEnabled = value;
             }
         }
 
@@ -443,6 +447,10 @@ namespace AudioView.ViewModels
             return Task.Run(() =>
             {
                 MinorReadings.Enqueue(new Tuple<DateTime, ReadingData>(time, data));
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    BarMinorValues.Add(new Tuple<DateTime, double>(time, data.LAeq));
+                });
             });
         }
 
@@ -451,12 +459,22 @@ namespace AudioView.ViewModels
             return Task.Run(() =>
             {
                 MajorReadings.Enqueue(new Tuple<DateTime, ReadingData>(time, data));
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    BarMajorValues.Add(new Tuple<DateTime, double>(time, data.LAeq));
+                });
             });
         }
 
         public Task OnSecond(DateTime time, ReadingData data, ReadingData minorData, ReadingData majorData)
         {
-            return Task.FromResult<object>(null);
+            return Task.Run(() =>
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    LineValues.Add(new Tuple<DateTime, double>(time, data.LAeq));
+                });
+            });
         }
 
         public Task NextMinor(DateTime time)

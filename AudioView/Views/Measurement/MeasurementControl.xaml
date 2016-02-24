@@ -6,6 +6,7 @@
              xmlns:audioView="clr-namespace:AudioView"
              xmlns:userControls="clr-namespace:AudioView.UserControls"
              xmlns:CountDown="clr-namespace:AudioView.UserControls.CountDown"
+             xmlns:graphs="clr-namespace:AudioView.UserControls.Graphs"
              mc:Ignorable="d" 
              MinHeight="400" MinWidth="600"
              d:DesignHeight="600" d:DesignWidth="600">
@@ -26,14 +27,18 @@
                 <RotateTransform Angle="-90" />
             </TextBlock.LayoutTransform>
         </TextBlock>
-        <userControls:AudioViewGraph Grid.Column="1"
-                                     HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                                     MinHeight="100" MinWidth="100" 
-                                     DataContext="{Binding MinorGraph}"
-                                     LimitColor="{StaticResource ControlsValidationBrush}"
-                                     BarWarrningColor="{StaticResource ValidationSummaryColor5}"
-                                     AxisColor="{StaticResource SeperatorBrush}"
-                                     LineColor="{StaticResource HighlightBrush}"/>
+        <graphs:TimeLineGraph Grid.Column="1"
+                              HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                              MinHeight="100" MinWidth="100"
+                              TimeSpan="{Binding MinorSpan}"
+                              ReadingBoundMin="{Binding Settings.GraphLowerBound}"
+                              ReadingBoundMax="{Binding Settings.GraphUpperBound}"
+                              ReadingLimit="{Binding Settings.MinorDBLimit}"
+                              BarSize="{Binding Settings.MinorInterval}"
+                              LineValues="{Binding LineValues}"
+                              BarValues="{Binding BarMinorValues}"
+                              LineValuesPenColor="{StaticResource HighlightBrush}"
+                              LineValuesPenSize="2.0" />
         <CountDown:AudioViewCountDown 
              Grid.Column="2"
             MinHeight="100"
@@ -48,14 +53,15 @@
                 <RotateTransform Angle="-90" />
             </TextBlock.LayoutTransform>
         </TextBlock>
-        <userControls:AudioViewGraph Grid.Row="2" Grid.Column="1" 
-                                     HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                                     MinHeight="100" MinWidth="100" 
-                                     DataContext="{Binding MajorGraph}"
-                                     LimitColor="{StaticResource ControlsValidationBrush}"
-                                     BarWarrningColor="{StaticResource ValidationSummaryColor5}"
-                                     AxisColor="{StaticResource SeperatorBrush}"
-                                     LineColor="{StaticResource HighlightBrush}"/>
+        <graphs:TimeLineGraph Grid.Row="2" Grid.Column="1" 
+                              HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                              MinHeight="100" MinWidth="100"
+                              TimeSpan="{Binding MajorSpan}"
+                              ReadingBoundMin="{Binding Settings.GraphLowerBound}"
+                              ReadingBoundMax="{Binding Settings.GraphUpperBound}"
+                              ReadingLimit="{Binding Settings.MajorDBLimit}"
+                              BarSize="{Binding Settings.MajorInterval}"
+                              BarValues="{Binding BarMajorValues}" />
         <CountDown:AudioViewCountDown 
             Grid.Row="2" Grid.Column="2"
             MinHeight="100"
