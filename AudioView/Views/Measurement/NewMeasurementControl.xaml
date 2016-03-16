@@ -72,7 +72,7 @@
                                     <TextBox Grid.Column="4" Text="{Binding MinorIntervalSeconds}" />
                                 </Grid>
 
-                                <Label Content="Minor dB Limit:" />
+                                <Label Content="Minor dB Trigger:" />
                                 <TextBox Text="{Binding MinorDBLimit}" Margin="0,0,0,5" />
 
                                 <Label Content="MaJor Interval:" />
@@ -92,7 +92,7 @@
                                     <TextBox Grid.Column="4" Text="{Binding MajorIntervalSeconds}" />
                                 </Grid>
                             
-                                <Label Content="Major dB Limit:" />
+                                <Label Content="Major dB Trigger:" />
                                 <TextBox Text="{Binding MajorDBLimit}" Margin="0,0,0,5" />
                             
                                 <Label Content="Listen Port: (For remote connections)" />

@@ -50,8 +50,8 @@ namespace AudioView.ViewModels
             GraphBoundUpper = 120.ToString();
             GraphBoundLower = 60.ToString();
 
-            MinorDBLimit = 90.ToString();
-            MajorDBLimit = 90.ToString();
+            MinorDBLimit = 98.ToString();
+            MajorDBLimit = 95.ToString();
             ClockItems = UserControls.CountDown.ClockItems.Get;
 
             MinorClockMainItem = ClockItems.FirstOrDefault(x => x.Id == 3);
