@@ -97,6 +97,8 @@ namespace AudioView.UserControls.CountDown
         {
             switch (displayId)
             {
+                case -1: // Inactive
+                    return "";
                 case 1: // Latests interval
                     return ((int)Math.Ceiling(LastInterval.LAeq)).ToString();
                 case 2: // Time to next interval

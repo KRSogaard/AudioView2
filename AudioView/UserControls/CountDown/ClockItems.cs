@@ -16,6 +16,11 @@ namespace AudioView.UserControls.CountDown
                 {
                     new ClockItem()
                     {
+                        Id = -1,
+                        Name = "Inactive"
+                    },
+                    new ClockItem()
+                    {
                         Id = 0,
                         Name = "Live readings"
                     },
