@@ -55,9 +55,9 @@ namespace AudioView.ViewModels
             ClockItems = UserControls.CountDown.ClockItems.Get;
 
             MinorClockMainItem = ClockItems.FirstOrDefault(x => x.Id == 3);
-            MinorClockSecondaryItem = ClockItems.FirstOrDefault(x => x.Id == 0);
+            MinorClockSecondaryItem = ClockItems.FirstOrDefault(x => x.Id == -1);
             MajorClockMainItem = ClockItems.FirstOrDefault(x => x.Id == 3);
-            MajorClockSecondaryItem = ClockItems.FirstOrDefault(x => x.Id == 2);
+            MajorClockSecondaryItem = ClockItems.FirstOrDefault(x => x.Id == -1);
 
             RemoteIpAddress = "localhost";
             RemotePort = DefaultPort.ToString();
