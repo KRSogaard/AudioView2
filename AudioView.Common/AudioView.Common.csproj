@@ -46,6 +46,10 @@
     <Reference Include="NLog">
       <HintPath>..\AudioView\packages\NLog.4.2.3\lib\net45\NLog.dll</HintPath>
     </Reference>
+    <Reference Include="RJCP.SerialPortStream, Version=1.1.4.0, Culture=neutral, PublicKeyToken=5f5e7b70c6a74deb, processorArchitecture=MSIL">
+      <HintPath>..\AudioView\packages\SerialPortStream.1.1.4.0\lib\net45\RJCP.SerialPortStream.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -86,6 +90,7 @@
     <Compile Include="Data\Project.cs" />
     <Compile Include="Data\Reading.cs" />
     <Compile Include="Data\User.cs" />
+    <Compile Include="Engine\NTIXL2MeterReader.cs" />
     <Compile Include="Engine\RemoteMeterReader.cs" />
     <Compile Include="Listeners\DataStorageMeterListener.cs" />
     <Compile Include="Engine\AudioViewEngine.cs" />

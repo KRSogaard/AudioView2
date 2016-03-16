@@ -38,6 +38,7 @@ namespace AudioView.ViewModels
             UseLocal = true;
             IsRemoteTested = false;
             LocalDevices = new ObservableCollection<string>();
+            LocalDeviceTimeOut = 800;
 
             MajorIntervalSeconds = 0.ToString();
             MinorIntervalSeconds = 0.ToString();
@@ -224,6 +225,17 @@ namespace AudioView.ViewModels
                         tryParse = 0;
                     SetProperty(ref _minorIntervalSeconds, tryParse);
                 }
+            }
+        }
+
+        private int _localDeviceTimeOut;
+
+        public int LocalDeviceTimeOut
+        {
+            get { return _localDeviceTimeOut; }
+            set
+            {
+                SetProperty(ref _localDeviceTimeOut, value);
             }
         }
 
@@ -471,7 +483,7 @@ namespace AudioView.ViewModels
                             IMeterReader reader;
                             if (UseLocal)
                             {
-                                reader = new MockMeterReader();
+                                reader = new NTIXL2MeterReader(SelectedLocalDevice, LocalDeviceTimeOut);
                             }
                             else
                             {
@@ -539,12 +551,7 @@ namespace AudioView.ViewModels
             return Task.Run(async () =>
             {
                 logger.Debug("Get connect local devices.");
-                await Task.Delay(new TimeSpan(0, 0, 1)).ConfigureAwait(false);
-                return new List<string>()
-                {
-                    "Test Device 1",
-                    "Test Device 2"
-                };
+                return await NTIXL2MeterReader.FindPorts();
             });
         }
         private void GotDevices(List<string> devices)

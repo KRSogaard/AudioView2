@@ -22,7 +22,7 @@ namespace AudioView.Common.Engine
         private List<IMeterListener> listeners;
         private DateTime nextMajor;
         private DateTime nextMinor;
-
+        
         public AudioViewEngine(IMeterReader reader)
             : this(new TimeSpan(0,1,0), new TimeSpan(0, 15, 0), reader)
         {
@@ -132,7 +132,7 @@ namespace AudioView.Common.Engine
                     logger.Trace("Fetching major reading, next fetch is at {0}.", nextMajor);
                     DateTime start = DateTime.Now;
                     var reading = await this.reader.GetMajorReading();
-                    if (reading == null)
+                    if (reading == null || reading.LAeq < 0)
                     {
                         logger.Warn("Got null as major reading.");
                         return;
@@ -170,7 +170,7 @@ namespace AudioView.Common.Engine
                     logger.Trace("Fetching minor reading, next fetch is at {0}.", nextMinor);
                     DateTime start = DateTime.Now;
                     var reading = await this.reader.GetMinorReading();
-                    if (reading == null)
+                    if (reading == null || reading.LAeq < 0)
                     {
                         logger.Warn("Got null as minor reading.");
                         return;
@@ -211,17 +211,12 @@ namespace AudioView.Common.Engine
                     var readingMajor = this.reader.GetMajorReading();
                     await Task.WhenAll(readingSecond, readingMinor, readingMajor).ConfigureAwait(false);
 
-                    if (readingSecond.Result == null)
+                    if (readingSecond.Result == null || readingSecond.Result.LAeq < 0)
                     {
                         logger.Warn("Got null as second reading.");
                         return;
                     }
-
-                    if (readingMinor.Result.LAeq < 50 || readingMajor.Result.LAeq < 50)
-                    {
-                        Console.WriteLine("Something went wrong!");
-                    }
-
+                    
                     DateTime end = DateTime.Now;
                     logger.Trace("Got second reading \"{0}\" in {1} ms.", readingSecond.Result.LAeq, (end - start).TotalMilliseconds);
 

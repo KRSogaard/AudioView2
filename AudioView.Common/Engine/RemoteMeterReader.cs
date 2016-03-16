@@ -78,8 +78,7 @@ namespace AudioView.Common.Engine
                                         this.engine.OnMinorInterval(DateTime.Now);
                                     }
                                     else if (
-                                        line.StartsWith(TCPServerListener.TcpMessages.OnMajorResponse.Replace(
-                                            "{0}", "")))
+                                        line.StartsWith(TCPServerListener.TcpMessages.OnMajorResponse.Replace("{0}", "")))
                                     {
                                         var json =
                                             line.Substring(
@@ -89,8 +88,7 @@ namespace AudioView.Common.Engine
                                         this.engine.OnMajorInterval(DateTime.Now);
                                     }
                                     else if (
-                                        line.StartsWith(TCPServerListener.TcpMessages.OnSecondResponse.Replace(
-                                            "{0}", "")))
+                                        line.StartsWith(TCPServerListener.TcpMessages.OnSecondResponse.Replace("{0}", "")))
                                     {
                                         var json =
                                             line.Substring(

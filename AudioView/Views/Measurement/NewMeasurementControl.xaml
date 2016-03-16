@@ -97,9 +97,16 @@
                             
                                 <Label Content="Listen Port: (For remote connections)" />
                                 <TextBox Text="{Binding ListenPort}" />
-                            
+
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Reading Timeout:" />
+                                    <Label Margin="5,0,0,0" Content="{Binding LocalDeviceTimeOut}" />
+                                    <Label Margin="5,0,0,0" Content="ms." />
+                                </StackPanel>
+                                <Slider Minimum="500" Maximum="900" Value="{Binding LocalDeviceTimeOut}"></Slider>
+                                
                                 <Label Content="Port:" />
-                                <ListBox x:Name="listBox" Height="100" ItemsSource="{Binding DevicePortList}" />
+                                <ListBox Height="100" ItemsSource="{Binding LocalDevices}" SelectedItem="{Binding SelectedLocalDevice}" />
                             </StackPanel>
                             <Border Background="{StaticResource ControlBackgroundBrush}" Opacity="0.50" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
                                 <Controls:ProgressRing Width="90" Height="90" IsActive="True" />

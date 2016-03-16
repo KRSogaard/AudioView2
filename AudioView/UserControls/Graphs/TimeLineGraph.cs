@@ -514,6 +514,7 @@ namespace AudioView.UserControls.Graphs
         private double getY(double value)
         {
             value = Math.Min(graphBounds.Item2, value);
+            value = Math.Max(value, graphBounds.Item1);
             var v = value - graphBounds.Item1;
             return workingHeight - v * yValuePr;
         }

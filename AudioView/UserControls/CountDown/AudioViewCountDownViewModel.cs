@@ -102,9 +102,13 @@ namespace AudioView.UserControls.CountDown
                 case 2: // Time to next interval
                     return (NextReadingTime - DateTime.Now).ToString(@"mm\:ss\.f", null);
                 case 3: // Latests building interval
+                    if (LastBuildingInterval == null)
+                        return "N/A";
                     return ((int)Math.Ceiling(LastBuildingInterval.LAeq)).ToString();
                 case 0: // Lastest reading (live data)
                 default:
+                    if (LastReading == null)
+                        return "N/A";
                     return ((int)Math.Ceiling(LastReading.LAeq)).ToString();
             }
         }
@@ -113,6 +117,8 @@ namespace AudioView.UserControls.CountDown
         {
             get
             {
+                if (LastReading == null)
+                    return BarBrush;
                 return LastReading.LAeq >= limitDb ? BarOverBrush : BarBrush;
             }
         }
