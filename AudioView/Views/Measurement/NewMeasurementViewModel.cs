@@ -216,6 +216,10 @@ namespace AudioView.ViewModels
             get { return _minorIntervalSeconds.ToString(); }
             set
             {
+                if (String.IsNullOrWhiteSpace(value))
+                {
+                    value = "0";
+                }
                 int tryParse;
                 if (int.TryParse(value, out tryParse) && tryParse >= 0)
                 {
@@ -245,6 +249,10 @@ namespace AudioView.ViewModels
             get { return _majorIntervalSeconds.ToString(); }
             set
             {
+                if (String.IsNullOrWhiteSpace(value))
+                {
+                    value = "0";
+                }
                 int tryParse;
                 if (int.TryParse(value, out tryParse) && tryParse >= 0)
                 {
@@ -263,6 +271,10 @@ namespace AudioView.ViewModels
             get { return _minorIntervalMinutes.ToString(); }
             set
             {
+                if (String.IsNullOrWhiteSpace(value))
+                {
+                    value = "0";
+                }
                 int tryParse;
                 if (int.TryParse(value, out tryParse) && tryParse >= 0)
                 {
@@ -281,6 +293,10 @@ namespace AudioView.ViewModels
             get { return _majorIntervalMinutes.ToString(); }
             set
             {
+                if (String.IsNullOrWhiteSpace(value))
+                {
+                    value = "0";
+                }
                 int tryParse;
                 if (int.TryParse(value, out tryParse) && tryParse >= 0)
                 {
@@ -299,6 +315,10 @@ namespace AudioView.ViewModels
             get { return _minorIntervalHours.ToString(); }
             set
             {
+                if (String.IsNullOrWhiteSpace(value))
+                {
+                    value = "0";
+                }
                 int tryParse;
                 if (int.TryParse(value, out tryParse) && tryParse >= 0)
                 {
@@ -317,6 +337,10 @@ namespace AudioView.ViewModels
             get { return _majorIntervalHours.ToString(); }
             set
             {
+                if (String.IsNullOrWhiteSpace(value))
+                {
+                    value = "0";
+                }
                 int tryParse;
                 if (int.TryParse(value, out tryParse) && tryParse >= 0)
                 {
@@ -335,6 +359,10 @@ namespace AudioView.ViewModels
             get { return _graphBoundLower.ToString(); }
             set
             {
+                if (String.IsNullOrWhiteSpace(value))
+                {
+                    value = "0";
+                }
                 int tryParse;
                 if (int.TryParse(value, out tryParse) && tryParse < _graphBoundUpper)
                 {
@@ -351,6 +379,10 @@ namespace AudioView.ViewModels
             get { return _graphBoundUpper.ToString(); }
             set
             {
+                if (String.IsNullOrWhiteSpace(value))
+                {
+                    value = "0";
+                }
                 int tryParse;
                 if (int.TryParse(value, out tryParse) && tryParse > _graphBoundLower)
                 {
@@ -506,6 +538,14 @@ namespace AudioView.ViewModels
                         }
                     }, () =>
                     {
+                        var settings = GetSettings();
+
+                        if (settings.MinorInterval.TotalSeconds < 10 ||
+                            settings.MajorInterval.TotalSeconds < 10)
+                            return false;
+                        if (settings.MinorInterval.TotalSeconds > settings.MajorInterval.TotalSeconds)
+                            return false;
+
                         if (UseLocal && (IsLoading || SelectedLocalDevice == null))
                             return false;
                         if (UseRemote && (IsTesting || !IsRemoteTested))
@@ -514,6 +554,12 @@ namespace AudioView.ViewModels
                     })
                     .ObservesProperty(() => UseRemote)
                     .ObservesProperty(() => UseLocal)
+                    .ObservesProperty(() => MinorIntervalSeconds)
+                    .ObservesProperty(() => MinorIntervalMinutes)
+                    .ObservesProperty(() => MinorIntervalHours)
+                    .ObservesProperty(() => MajorIntervalSeconds)
+                    .ObservesProperty(() => MajorIntervalMinutes)
+                    .ObservesProperty(() => MajorIntervalHours)
                     .ObservesProperty(() => IsLoading)
                     .ObservesProperty(() => SelectedLocalDevice)
                     .ObservesProperty(() => IsTesting)
