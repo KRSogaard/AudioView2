@@ -14,9 +14,8 @@ namespace AudioView.Common.Services
 {
     public class DatabaseService : IDatabaseService
     {
-        public async Task<IList<Project>> SearchProjects(string name, DateTime? leftTime, DateTime? rightTime)
+        public async Task<IList<Project>> SearchProjects(string name, string number, DateTime? leftTime, DateTime? rightTime)
         {
-            IList < Project > projects = new List<Project>();
             using (var audioViewEntities = new AudioViewEntities())
             {
                 var request = audioViewEntities.Projects.Where(x=>true);
@@ -24,6 +23,10 @@ namespace AudioView.Common.Services
                 if (!string.IsNullOrWhiteSpace(name))
                 {
                     request = request.Where(x => x.Name.ToLower().Contains(name.Trim().ToLower()));
+                }
+                if (!string.IsNullOrWhiteSpace(number))
+                {
+                    request = request.Where(x => x.Number.ToLower().Contains(number.Trim().ToLower()));
                 }
                 if (leftTime != null)
                 {
@@ -44,7 +47,6 @@ namespace AudioView.Common.Services
                 .ToListAsync().ConfigureAwait(false))
                 .Select(x=>x.Project.ToInternal(x.Readings)).ToList();
             }
-            return projects;
         }
 
         public async Task<IList<Reading>> GetReading(Guid projectId)

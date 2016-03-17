@@ -15,10 +15,14 @@ namespace AudioView.ViewModels
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
         private string _title;
+        private string _readingType;
 
         public string Title
         {
-            get { return "AudioView - Live Readings - " + _title; }
+            get
+            {
+                return "AudioView - "+ (this.isMajor ? "Major" : "Minor") +" - "+ _readingType + " - " + _title;
+            }
             set { _title = value; OnPropertyChanged(); }
         }
 
@@ -47,6 +51,7 @@ namespace AudioView.ViewModels
         public LiveReadingViewModel(bool isMajor, TimeSpan interval, int limitDb, int mainItem, int secondItem) : 
             base(isMajor, interval, limitDb, mainItem, secondItem, true)
         {
+            _readingType = ClockItems.Get.Where(x => x.Id == mainItem).Select(x => x.Name).First();
             StayOnTop = false;
             IsEnabled = true; // Always true for this control
         }

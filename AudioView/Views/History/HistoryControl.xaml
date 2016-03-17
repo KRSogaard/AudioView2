@@ -47,36 +47,38 @@
                             </StackPanel>
                             <Label Content="Project Name:" />
                             <TextBox controls:TextBoxHelper.Watermark="Enter project name..." Text="{Binding SearchName}" />
+                            <Label Content="Project Number:" />
+                            <TextBox controls:TextBoxHelper.Watermark="Enter project number..." MaxLength="6" Text="{Binding SearchNumber}" />
                             <Button Margin="0,5,0,0" Content="Search" Command="{Binding ExecuteSearch}" />
                         </StackPanel>
                     </Expander>
                     <DataGrid
                         Grid.Row="1"
                         Margin="0,5,0,0"
-                        ItemsSource="{Binding SearchResults}"
+                        ItemsSource="{Binding SearchResults, Mode=OneWay}"
                         SelectedItem="{Binding SelectedSearch}"
                         AutoGenerateColumns="False">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Name"
-                                    Binding="{Binding ProjectName}" />
+                                    Binding="{Binding ProjectName, Mode=OneWay}" />
                             <DataGridTextColumn Header="Number"
-                                    Binding="{Binding ProjectNumber}" />
+                                    Binding="{Binding ProjectNumber, Mode=OneWay}" />
                             <DataGridTextColumn Header="Date"
-                                    Binding="{Binding Date}" />
+                                    Binding="{Binding Date, Mode=OneWay}" />
                                 <DataGridTextColumn Header="Minor dB limit"
-                                    Binding="{Binding MinorDBLimit}" />
+                                    Binding="{Binding MinorDBLimit, Mode=OneWay}" />
                                 <DataGridTextColumn Header="Minor Interval"
-                                    Binding="{Binding MinorInterval}" />
+                                    Binding="{Binding MinorInterval, Mode=OneWay}" />
                                 <DataGridTextColumn Header="Major dB limit"
-                                    Binding="{Binding MajorDBLimit}" />
+                                    Binding="{Binding MajorDBLimit, Mode=OneWay}" />
                                 <DataGridTextColumn Header="Major Interval"
-                                    Binding="{Binding MajorInterval}" />
+                                    Binding="{Binding MajorInterval, Mode=OneWay}" />
                                 <DataGridTextColumn Header="Measurements"
-                                    Binding="{Binding MeasurementsCount}" />
+                                    Binding="{Binding MeasurementsCount, Mode=OneWay}" />
                                 <DataGridTemplateColumn Header="Download">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <Button Command="{Binding DownloadCSV}">Download CSV</Button>
+                                            <Button Command="{Binding DownloadCSV}">Export CSV</Button>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>

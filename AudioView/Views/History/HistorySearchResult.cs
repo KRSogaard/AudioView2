@@ -29,6 +29,12 @@ namespace AudioView.ViewModels
         private Task resultDownloadTask;
         private Project project;
 
+        public HistorySearchResult()
+        {
+            MinorGraphValues = new ObservableCollection<Tuple<DateTime, double>>();
+            MajorGraphValues = new ObservableCollection<Tuple<DateTime, double>>();
+        }
+
         public string ProjectName
         {
             get { return project.Name; }
@@ -64,6 +70,11 @@ namespace AudioView.ViewModels
             get { return project.MajorInterval.ToString(); }
         }
 
+        public Project Project
+        {
+            get { return project; }
+        }
+
         public string MeasurementsCount
         {
             get { return project.Readings.ToString(); }
@@ -84,8 +95,7 @@ namespace AudioView.ViewModels
             {
                 SetProperty(ref _leftBound, value); 
                 OnPropertyChanged("LeftBoundText");
-                MajorGraph.LeftDate = GetLeftDate();
-                MinorGraph.LeftDate = GetLeftDate();
+                GraphSpan = RightTime - GetLeftDate();
             }
         }
 
@@ -96,8 +106,8 @@ namespace AudioView.ViewModels
             set {
                 SetProperty(ref _rightBound, value);
                 OnPropertyChanged("RightBoundText");
-                MajorGraph.RightDate = GetRightDate();
-                MinorGraph.RightDate = GetRightDate();
+                RightTime = GetRightDate();
+                GraphSpan = RightTime - GetLeftDate();
             }
         }
 
@@ -150,8 +160,63 @@ namespace AudioView.ViewModels
             databaseService = new DatabaseService();
         }
 
-        public AudioViewGraphViewModel MajorGraph { get; set; }
-        public AudioViewGraphViewModel MinorGraph { get; set; }
+        private double _graphYMin;
+        public double GraphYMin
+        {
+            get { return _graphYMin; }
+            set
+            {
+                SetProperty(ref _graphYMin, value);
+            }
+        }
+
+        private double _graphYMax;
+        public double GraphYMax
+        {
+            get { return _graphYMax; }
+            set
+            {
+                SetProperty(ref _graphYMax, value);
+            }
+        }
+
+        private DateTime _rightTime;
+        public DateTime RightTime
+        {
+            get { return _rightTime; }
+            set
+            {
+                SetProperty(ref _rightTime, value);
+            }
+        }
+
+        private TimeSpan _graphSpan;
+        public TimeSpan GraphSpan
+        {
+            get { return _graphSpan; }
+            set
+            {
+                SetProperty(ref _graphSpan, value);
+            }
+        }
+
+        private ObservableCollection<Tuple<DateTime, double>> _minorGraphValues;
+        public ObservableCollection<Tuple<DateTime, double>> MinorGraphValues {
+            get { return _minorGraphValues; }
+            set
+            {
+                SetProperty(ref _minorGraphValues, value);
+            }
+        }
+        private ObservableCollection<Tuple<DateTime, double>> _majorGraphValues;
+        public ObservableCollection<Tuple<DateTime, double>> MajorGraphValues
+        {
+            get { return _majorGraphValues; }
+            set
+            {
+                SetProperty(ref _majorGraphValues, value);
+            }
+        }
 
         public async Task Preloadreadings(IList<Reading> majorReadings, IList<Reading> minoReadings)
         {
@@ -220,48 +285,32 @@ namespace AudioView.ViewModels
         {
             return Task.Run(() =>
             {
-                var minMaxOrder = major.Union(minor).OrderBy(x => x.Reading.LAeq).Select(x => x.Reading.LAeq).ToList();
+                var minMaxOrder = major.Union(minor).OrderBy(x => x.Reading.Data.LAeq).Select(x => x.Reading.Data.LAeq).ToList();
                 var min = minMaxOrder.FirstOrDefault();
                 var max = minMaxOrder.LastOrDefault();
                 if (min == 0) min = 50;
                 if (max == 0) max = 150;
 
-                var majorGraphTask = Task.Run(() =>
-                {
-                    while (!MajorGraph.Readings.IsEmpty)
-                    {
-                        Tuple<DateTime, double> result;
-                        MajorGraph.Readings.TryDequeue(out result);
-                    }
-                });
-                var minorGraphTask = Task.Run(() =>
-                {
-                    while (!MinorGraph.Readings.IsEmpty)
-                    {
-                        Tuple<DateTime, double> result;
-                        MinorGraph.Readings.TryDequeue(out result);
-                    }
-                });
-                Task.WaitAll(majorGraphTask, minorGraphTask);
-
-                foreach (var model in minor)
-                {
-                    MinorGraph.Readings.Enqueue(new Tuple<DateTime, double>(model.Reading.Time, model.Reading.LAeq));
-                }
-                foreach (var model in major)
-                {
-                    MajorGraph.Readings.Enqueue(new Tuple<DateTime, double>(model.Reading.Time, model.Reading.LAeq));
-                }
-
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    MajorGraph.IsCustomSpan = true;
-                    MajorGraph.MinHeight = min;
-                    MajorGraph.MaxHeight = max;
+                    if (MinorGraphValues == null)
+                    {
+                        MinorGraphValues = new ObservableCollection<Tuple<DateTime, double>>();
+                    }
+                    if (MajorGraphValues == null)
+                    {
+                        MajorGraphValues = new ObservableCollection<Tuple<DateTime, double>>();
+                    }
+                    MinorGraphValues.Clear();
+                    MajorGraphValues.Clear();
 
-                    MinorGraph.IsCustomSpan = true;
-                    MinorGraph.MinHeight = min;
-                    MinorGraph.MaxHeight = max;
+                    MinorGraphValues.AddRange(minor.Select(model =>
+                    new Tuple<DateTime, double>(model.Reading.Time, model.Reading.Data.LAeq)));
+                    MajorGraphValues.AddRange(major.Select(model =>
+                    new Tuple<DateTime, double>(model.Reading.Time, model.Reading.Data.LAeq)));
+
+                    GraphYMin = min;
+                    GraphYMax = max;
 
                     LeftBound = 800;
                     RightBound = 1000;
@@ -311,32 +360,6 @@ namespace AudioView.ViewModels
 
         public void OnSelected()
         {
-            if (MinorGraph == null)
-            {
-                MinorGraph = new AudioViewGraphViewModel(false,
-                    10, // Ignored
-                    project.MinorDBLimit,
-                    project.MinorInterval,
-                    50,
-                    150)
-                {
-                    IsEnabled = true
-                };
-                OnPropertyChanged(nameof(MinorGraph));
-            }
-            if (MajorGraph == null)
-            {
-                MajorGraph = new AudioViewGraphViewModel(true,
-                        10,
-                        project.MajorDBLimit,
-                        project.MajorInterval,
-                        50,
-                        150)
-                {
-                    IsEnabled = true
-                };
-                OnPropertyChanged(nameof(MajorGraph));
-            }
         }
     }
 }

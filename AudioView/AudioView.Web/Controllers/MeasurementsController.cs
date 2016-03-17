@@ -55,6 +55,10 @@ namespace AudioView.Web.Controllers
             {
                 model.ProjectName = Request.Form["ProjectName"];
             }
+            if (model.ProjectNumber == null && keys.Contains("ProjectNumber"))
+            {
+                model.ProjectNumber = Request.Form["ProjectNumber"];
+            }
 
             if (ModelState.IsValid)
             {
@@ -91,7 +95,7 @@ namespace AudioView.Web.Controllers
                     }
                 }
             }
-            model.Projects = await databaseService.SearchProjects(model.ProjectName, from, to);
+            model.Projects = await databaseService.SearchProjects(model.ProjectName, model.ProjectNumber, from, to);
             return View(model);
         }
 

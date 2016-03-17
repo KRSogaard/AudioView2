@@ -11,7 +11,10 @@ namespace AudioView.Web.Models
     {
         [Display(Name = "Project Name")]
         public string ProjectName;
-        
+
+        [Display(Name = "Project Number")]
+        public string ProjectNumber;
+
         [Display(Name = "From")]
         public string From;
         

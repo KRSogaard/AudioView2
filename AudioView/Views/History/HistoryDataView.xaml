@@ -34,14 +34,61 @@
                             RenderOptions.ClearTypeHint="Enabled"
                             TextOptions.TextFormattingMode="Display"
                             Margin="0,5,0,0"
-                            ItemsSource="{Binding ReadingsMinor}"
+                            ItemsSource="{Binding ReadingsMinor, Mode=OneWay}"
                             Style="{DynamicResource AzureDataGrid}"
+                            IsReadOnly="True"
                             AutoGenerateColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Time"
-                                        Binding="{Binding Reading.Time}" />
+                                        Binding="{Binding Reading.Time, Mode=OneWay}" />
                 <DataGridTextColumn Header="LAeq"
-                                        Binding="{Binding Reading.LAeq}" />
+                                        Binding="{Binding Reading.Data.LAeq, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="LAmax"
+                                        Binding="{Binding Reading.Data.LAMax, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="LAmin"
+                                        Binding="{Binding Reading.Data.LAMin, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="LZMax"
+                                        Binding="{Binding Reading.Data.LZMax, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="LZMin"
+                                        Binding="{Binding Reading.Data.LZMin, StringFormat=#.00, Mode=OneWay}" />
+
+                <!-- Octave Band -->
+                <DataGridTextColumn Header="6.3Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz6_3, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="8Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz8, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="10Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz10, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="12.5Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz12_5, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="16Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz16, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="20Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz20, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="25Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz25, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="31.5Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz31_5, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="40Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz40, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="50Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz50, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="63Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz63, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="80Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz80, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="100Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz100, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="125Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz125, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="160Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz160, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="200Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz200, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="250Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz250, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="315Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz315, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="400Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz400, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="500Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz500, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="630Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz630, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="800Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz800, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="1000Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz1000, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="1250Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz1250, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="1600Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz1600, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="2000Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz2000, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="2500Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz2500, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="3150Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz3150, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="4000Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz4000, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="5000Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz5000, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="6300Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz6300, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="8000Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz8000, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="10000Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz10000, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="12500Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz12500, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="16000Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz16000, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="20000Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz20000, StringFormat=#.00, Mode=OneWay}" />
             </DataGrid.Columns>
         </DataGrid>
 
@@ -50,14 +97,60 @@
                             RenderOptions.ClearTypeHint="Enabled"
                             TextOptions.TextFormattingMode="Display"
                             Margin="0,5,0,0"
-                            ItemsSource="{Binding ReadingsMajor}"
+                            ItemsSource="{Binding ReadingsMajor, Mode=OneWay}"
                             Style="{DynamicResource AzureDataGrid}"
                             AutoGenerateColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Time"
-                                        Binding="{Binding Reading.Time}" />
+                                        Binding="{Binding Reading.Time, Mode=OneWay}" />
                 <DataGridTextColumn Header="LAeq"
-                                        Binding="{Binding Reading.LAeq}" />
+                                        Binding="{Binding Reading.Data.LAeq, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="LAmax"
+                                        Binding="{Binding Reading.Data.LAMax, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="LAmin"
+                                        Binding="{Binding Reading.Data.LAMin, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="LZMax"
+                                        Binding="{Binding Reading.Data.LZMax, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="LZMin"
+                                        Binding="{Binding Reading.Data.LZMin, StringFormat=#.00, Mode=OneWay}" />
+
+                <!-- Octave Band -->
+                <DataGridTextColumn Header="6.3Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz6_3, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="8Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz8, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="10Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz10, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="12.5Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz12_5, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="16Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz16, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="20Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz20, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="25Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz25, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="31.5Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz31_5, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="40Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz40, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="50Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz50, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="63Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz63, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="80Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz80, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="100Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz100, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="125Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz125, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="160Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz160, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="200Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz200, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="250Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz250, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="315Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz315, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="400Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz400, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="500Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz500, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="630Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz630, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="800Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz800, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="1000Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz1000, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="1250Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz1250, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="1600Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz1600, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="2000Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz2000, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="2500Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz2500, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="3150Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz3150, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="4000Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz4000, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="5000Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz5000, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="6300Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz6300, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="8000Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz8000, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="10000Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz10000, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="12500Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz12500, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="16000Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz16000, StringFormat=#.00, Mode=OneWay}" />
+                <DataGridTextColumn Header="20000Hz" Binding="{Binding Reading.Data.LAeqOctaveBand.Hz20000, StringFormat=#.00, Mode=OneWay}" />
             </DataGrid.Columns>
         </DataGrid>
 

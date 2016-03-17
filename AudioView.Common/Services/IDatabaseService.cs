@@ -7,7 +7,7 @@ namespace AudioView.Common.Services
 {
     public interface IDatabaseService
     {
-        Task<IList<Project>> SearchProjects(string name, DateTime? leftTime, DateTime? rightTime);
+        Task<IList<Project>> SearchProjects(string name, string number, DateTime? leftTime, DateTime? rightTime);
         Task<IList<Reading>> GetReading(Guid projectId);
         Task DeleteProject(Guid ProjectId);
         Task DeleteReading(Guid readingId);

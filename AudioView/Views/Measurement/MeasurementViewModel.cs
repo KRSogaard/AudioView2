@@ -341,6 +341,7 @@ namespace AudioView.ViewModels
                         window.SetResourceReference(MetroWindow.BorderBrushProperty, "AccentColorBrush");
                         popOutWindows.AddLast(window);
                         var model = new DataTabelViewModel(GetProject());
+                        model.OnSelected();
                         model.Preloadreadings(MajorReadings.Select(x => x.ToInternal(true)).ToList(), MinorReadings.Select(x => x.ToInternal(false)).ToList());
                         model.Title = Title;
                         window.DataContext = model;
@@ -375,6 +376,7 @@ namespace AudioView.ViewModels
                         window.SetResourceReference(MetroWindow.BorderBrushProperty, "AccentColorBrush");
                         popOutWindows.AddLast(window);
                         var model = new DataTabelViewModel(GetProject());
+                        model.OnSelected();
                         model.Preloadreadings(MajorReadings.Select(x => x.ToInternal(true)).ToList(), MinorReadings.Select(x => x.ToInternal(false)).ToList());
                         model.Title = Title;
                         model.OnSelected();

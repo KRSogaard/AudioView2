@@ -28,7 +28,53 @@ namespace AudioView.Common.Data
                 Id = r.Id,
                 Time = r.Time,
                 Major = r.Major == 1,
-                LAeq = r.LAeq
+                Data = new ReadingData()
+                {
+                    LAeq = r.LAeq,
+                    LAMax = r.LAMax,
+                    LAMin = r.LAMin,
+                    LZMax = r.LZMax,
+                    LZMin = r.LZMin,
+                    LAeqOctaveBand = new ReadingData.OctaveBand()
+                    {
+                        Hz6_3 = r.Hz6_3,
+                        Hz8 = r.Hz8,
+                        Hz10 = r.Hz10,
+                        Hz12_5 = r.Hz12_5,
+                        Hz16 = r.Hz16,
+                        Hz20 = r.Hz20,
+                        Hz25 = r.Hz25,
+                        Hz31_5 = r.Hz31_5,
+                        Hz40 = r.Hz40,
+                        Hz50 = r.Hz50,
+                        Hz63 = r.Hz63,
+                        Hz80 = r.Hz80,
+                        Hz100 = r.Hz100,
+                        Hz125 = r.Hz125,
+                        Hz160 = r.Hz160,
+                        Hz200 = r.Hz200,
+                        Hz250 = r.Hz250,
+                        Hz315 = r.Hz315,
+                        Hz400 = r.Hz400,
+                        Hz500 = r.Hz500,
+                        Hz630 = r.Hz630,
+                        Hz800 = r.Hz800,
+                        Hz1000 = r.Hz1000,
+                        Hz1250 = r.Hz1250,
+                        Hz1600 = r.Hz1600,
+                        Hz2000 = r.Hz2000,
+                        Hz2500 = r.Hz2500,
+                        Hz3150 = r.Hz3150,
+                        Hz4000 = r.Hz4000,
+                        Hz5000 = r.Hz5000,
+                        Hz6300 = r.Hz6300,
+                        Hz8000 = r.Hz8000,
+                        Hz10000 = r.Hz10000,
+                        Hz12500 = r.Hz12500,
+                        Hz16000 = r.Hz16000,
+                        Hz20000 = r.Hz20000
+                    }
+                }
             };
         }
 
@@ -37,10 +83,9 @@ namespace AudioView.Common.Data
             return new Reading()
             {
                 Id = Guid.Empty,
-                Major = major,
-                Project = Guid.Empty,
                 Time = r.Item1,
-                LAeq = r.Item2.LAeq
+                Major = major,
+                Data = r.Item2
             };
         }
 

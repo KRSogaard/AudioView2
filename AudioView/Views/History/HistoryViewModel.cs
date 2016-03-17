@@ -58,6 +58,13 @@ namespace AudioView.ViewModels
             set { SetProperty(ref _searchName, value); }
         }
 
+        private string _searchNumber;
+        public string SearchNumber
+        {
+            get { return _searchNumber; }
+            set { SetProperty(ref _searchNumber, value); }
+        }
+        
         private DateTime? _searchRightDate;
         public DateTime? SearchRightDate
         {
@@ -98,7 +105,8 @@ namespace AudioView.ViewModels
                     })
                     .ObservesProperty(() => SearchLeftDate)
                     .ObservesProperty(() => SearchRightDate)
-                    .ObservesProperty(() => SearchName);
+                    .ObservesProperty(() => SearchName)
+                    .ObservesProperty(() => SearchNumber);
                 }
                 return _executeSearch;
             }
@@ -141,7 +149,7 @@ namespace AudioView.ViewModels
                 logger.Debug("Searching for projects with Name=\"{0}\" Left=\"{1}\" Right=\"{2}\"", SearchName, SearchLeftDate, SearchRightDate);
                 SearchHeader = "Search Settings - Searching";
                 logger.Info("Starting the search!");
-                databaseService.SearchProjects(SearchName, SearchLeftDate, SearchRightDate).ContinueWith((Task<IList<Project>> task) =>
+                databaseService.SearchProjects(SearchName, SearchNumber, SearchLeftDate, SearchRightDate).ContinueWith((Task<IList<Project>> task) =>
                 {
                     logger.Info("Search finished!");
                     var results = task.Result;

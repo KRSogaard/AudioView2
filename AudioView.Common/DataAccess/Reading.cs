@@ -19,6 +19,46 @@ namespace AudioView.Common.DataAccess
         public System.DateTime Time { get; set; }
         public byte Major { get; set; }
         public double LAeq { get; set; }
+        public double LAMax { get; set; }
+        public double LAMin { get; set; }
+        public double LZMax { get; set; }
+        public double LZMin { get; set; }
+        public double Hz6_3 { get; set; }
+        public double Hz8 { get; set; }
+        public double Hz10 { get; set; }
+        public double Hz12_5 { get; set; }
+        public double Hz16 { get; set; }
+        public double Hz20 { get; set; }
+        public double Hz25 { get; set; }
+        public double Hz31_5 { get; set; }
+        public double Hz40 { get; set; }
+        public double Hz50 { get; set; }
+        public double Hz63 { get; set; }
+        public double Hz80 { get; set; }
+        public double Hz100 { get; set; }
+        public double Hz125 { get; set; }
+        public double Hz160 { get; set; }
+        public double Hz200 { get; set; }
+        public double Hz250 { get; set; }
+        public double Hz315 { get; set; }
+        public double Hz400 { get; set; }
+        public double Hz500 { get; set; }
+        public double Hz630 { get; set; }
+        public double Hz800 { get; set; }
+        public double Hz1000 { get; set; }
+        public double Hz1250 { get; set; }
+        public double Hz1600 { get; set; }
+        public double Hz2000 { get; set; }
+        public double Hz2500 { get; set; }
+        public double Hz3150 { get; set; }
+        public double Hz4000 { get; set; }
+        public double Hz5000 { get; set; }
+        public double Hz6300 { get; set; }
+        public double Hz8000 { get; set; }
+        public double Hz10000 { get; set; }
+        public double Hz12500 { get; set; }
+        public double Hz16000 { get; set; }
+        public double Hz20000 { get; set; }
     
         public virtual Project Project1 { get; set; }
     }

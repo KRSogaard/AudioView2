@@ -27,6 +27,46 @@
           <Property Name="Time" Type="datetime" Nullable="false" />
           <Property Name="Major" Type="tinyint" Nullable="false" />
           <Property Name="LAeq" Type="float" Nullable="false" />
+          <Property Name="LAMax" Type="float" Nullable="false" />
+          <Property Name="LAMin" Type="float" Nullable="false" />
+          <Property Name="LZMax" Type="float" Nullable="false" />
+          <Property Name="LZMin" Type="float" Nullable="false" />
+          <Property Name="Hz6_3" Type="float" Nullable="false" />
+          <Property Name="Hz8" Type="float" Nullable="false" />
+          <Property Name="Hz10" Type="float" Nullable="false" />
+          <Property Name="Hz12_5" Type="float" Nullable="false" />
+          <Property Name="Hz16" Type="float" Nullable="false" />
+          <Property Name="Hz20" Type="float" Nullable="false" />
+          <Property Name="Hz25" Type="float" Nullable="false" />
+          <Property Name="Hz31_5" Type="float" Nullable="false" />
+          <Property Name="Hz40" Type="float" Nullable="false" />
+          <Property Name="Hz50" Type="float" Nullable="false" />
+          <Property Name="Hz63" Type="float" Nullable="false" />
+          <Property Name="Hz80" Type="float" Nullable="false" />
+          <Property Name="Hz100" Type="float" Nullable="false" />
+          <Property Name="Hz125" Type="float" Nullable="false" />
+          <Property Name="Hz160" Type="float" Nullable="false" />
+          <Property Name="Hz200" Type="float" Nullable="false" />
+          <Property Name="Hz250" Type="float" Nullable="false" />
+          <Property Name="Hz315" Type="float" Nullable="false" />
+          <Property Name="Hz400" Type="float" Nullable="false" />
+          <Property Name="Hz500" Type="float" Nullable="false" />
+          <Property Name="Hz630" Type="float" Nullable="false" />
+          <Property Name="Hz800" Type="float" Nullable="false" />
+          <Property Name="Hz1000" Type="float" Nullable="false" />
+          <Property Name="Hz1250" Type="float" Nullable="false" />
+          <Property Name="Hz1600" Type="float" Nullable="false" />
+          <Property Name="Hz2000" Type="float" Nullable="false" />
+          <Property Name="Hz2500" Type="float" Nullable="false" />
+          <Property Name="Hz3150" Type="float" Nullable="false" />
+          <Property Name="Hz4000" Type="float" Nullable="false" />
+          <Property Name="Hz5000" Type="float" Nullable="false" />
+          <Property Name="Hz6300" Type="float" Nullable="false" />
+          <Property Name="Hz8000" Type="float" Nullable="false" />
+          <Property Name="Hz10000" Type="float" Nullable="false" />
+          <Property Name="Hz12500" Type="float" Nullable="false" />
+          <Property Name="Hz16000" Type="float" Nullable="false" />
+          <Property Name="Hz20000" Type="float" Nullable="false" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
@@ -97,6 +137,46 @@
           <Property Name="Major" Type="Byte" Nullable="false" />
           <Property Name="LAeq" Type="Double" Nullable="false" />
           <NavigationProperty Name="Project1" Relationship="AudioViewModel.FK_Readings_Projects" FromRole="Reading" ToRole="Project" />
+          <Property Name="LAMax" Type="Double" Nullable="false" />
+          <Property Name="LAMin" Type="Double" Nullable="false" />
+          <Property Name="LZMax" Type="Double" Nullable="false" />
+          <Property Name="LZMin" Type="Double" Nullable="false" />
+          <Property Name="Hz6_3" Type="Double" Nullable="false" />
+          <Property Name="Hz8" Type="Double" Nullable="false" />
+          <Property Name="Hz10" Type="Double" Nullable="false" />
+          <Property Name="Hz12_5" Type="Double" Nullable="false" />
+          <Property Name="Hz16" Type="Double" Nullable="false" />
+          <Property Name="Hz20" Type="Double" Nullable="false" />
+          <Property Name="Hz25" Type="Double" Nullable="false" />
+          <Property Name="Hz31_5" Type="Double" Nullable="false" />
+          <Property Name="Hz40" Type="Double" Nullable="false" />
+          <Property Name="Hz50" Type="Double" Nullable="false" />
+          <Property Name="Hz63" Type="Double" Nullable="false" />
+          <Property Name="Hz80" Type="Double" Nullable="false" />
+          <Property Name="Hz100" Type="Double" Nullable="false" />
+          <Property Name="Hz125" Type="Double" Nullable="false" />
+          <Property Name="Hz160" Type="Double" Nullable="false" />
+          <Property Name="Hz200" Type="Double" Nullable="false" />
+          <Property Name="Hz250" Type="Double" Nullable="false" />
+          <Property Name="Hz315" Type="Double" Nullable="false" />
+          <Property Name="Hz400" Type="Double" Nullable="false" />
+          <Property Name="Hz500" Type="Double" Nullable="false" />
+          <Property Name="Hz630" Type="Double" Nullable="false" />
+          <Property Name="Hz800" Type="Double" Nullable="false" />
+          <Property Name="Hz1000" Type="Double" Nullable="false" />
+          <Property Name="Hz1250" Type="Double" Nullable="false" />
+          <Property Name="Hz1600" Type="Double" Nullable="false" />
+          <Property Name="Hz2000" Type="Double" Nullable="false" />
+          <Property Name="Hz2500" Type="Double" Nullable="false" />
+          <Property Name="Hz3150" Type="Double" Nullable="false" />
+          <Property Name="Hz4000" Type="Double" Nullable="false" />
+          <Property Name="Hz5000" Type="Double" Nullable="false" />
+          <Property Name="Hz6300" Type="Double" Nullable="false" />
+          <Property Name="Hz8000" Type="Double" Nullable="false" />
+          <Property Name="Hz10000" Type="Double" Nullable="false" />
+          <Property Name="Hz12500" Type="Double" Nullable="false" />
+          <Property Name="Hz16000" Type="Double" Nullable="false" />
+          <Property Name="Hz20000" Type="Double" Nullable="false" />
         </EntityType>
         <Association Name="FK_Readings_Projects">
           <End Type="AudioViewModel.Project" Role="Project" Multiplicity="1">
@@ -144,6 +224,46 @@
           <EntitySetMapping Name="Readings">
             <EntityTypeMapping TypeName="AudioViewModel.Reading">
               <MappingFragment StoreEntitySet="Readings">
+                <ScalarProperty Name="Hz20000" ColumnName="Hz20000" />
+                <ScalarProperty Name="Hz16000" ColumnName="Hz16000" />
+                <ScalarProperty Name="Hz12500" ColumnName="Hz12500" />
+                <ScalarProperty Name="Hz10000" ColumnName="Hz10000" />
+                <ScalarProperty Name="Hz8000" ColumnName="Hz8000" />
+                <ScalarProperty Name="Hz6300" ColumnName="Hz6300" />
+                <ScalarProperty Name="Hz5000" ColumnName="Hz5000" />
+                <ScalarProperty Name="Hz4000" ColumnName="Hz4000" />
+                <ScalarProperty Name="Hz3150" ColumnName="Hz3150" />
+                <ScalarProperty Name="Hz2500" ColumnName="Hz2500" />
+                <ScalarProperty Name="Hz2000" ColumnName="Hz2000" />
+                <ScalarProperty Name="Hz1600" ColumnName="Hz1600" />
+                <ScalarProperty Name="Hz1250" ColumnName="Hz1250" />
+                <ScalarProperty Name="Hz1000" ColumnName="Hz1000" />
+                <ScalarProperty Name="Hz800" ColumnName="Hz800" />
+                <ScalarProperty Name="Hz630" ColumnName="Hz630" />
+                <ScalarProperty Name="Hz500" ColumnName="Hz500" />
+                <ScalarProperty Name="Hz400" ColumnName="Hz400" />
+                <ScalarProperty Name="Hz315" ColumnName="Hz315" />
+                <ScalarProperty Name="Hz250" ColumnName="Hz250" />
+                <ScalarProperty Name="Hz200" ColumnName="Hz200" />
+                <ScalarProperty Name="Hz160" ColumnName="Hz160" />
+                <ScalarProperty Name="Hz125" ColumnName="Hz125" />
+                <ScalarProperty Name="Hz100" ColumnName="Hz100" />
+                <ScalarProperty Name="Hz80" ColumnName="Hz80" />
+                <ScalarProperty Name="Hz63" ColumnName="Hz63" />
+                <ScalarProperty Name="Hz50" ColumnName="Hz50" />
+                <ScalarProperty Name="Hz40" ColumnName="Hz40" />
+                <ScalarProperty Name="Hz31_5" ColumnName="Hz31_5" />
+                <ScalarProperty Name="Hz25" ColumnName="Hz25" />
+                <ScalarProperty Name="Hz20" ColumnName="Hz20" />
+                <ScalarProperty Name="Hz16" ColumnName="Hz16" />
+                <ScalarProperty Name="Hz12_5" ColumnName="Hz12_5" />
+                <ScalarProperty Name="Hz10" ColumnName="Hz10" />
+                <ScalarProperty Name="Hz8" ColumnName="Hz8" />
+                <ScalarProperty Name="Hz6_3" ColumnName="Hz6_3" />
+                <ScalarProperty Name="LZMin" ColumnName="LZMin" />
+                <ScalarProperty Name="LZMax" ColumnName="LZMax" />
+                <ScalarProperty Name="LAMin" ColumnName="LAMin" />
+                <ScalarProperty Name="LAMax" ColumnName="LAMax" />
                 <ScalarProperty Name="LAeq" ColumnName="LAeq" />
                 <ScalarProperty Name="Major" ColumnName="Major" />
                 <ScalarProperty Name="Time" ColumnName="Time" />

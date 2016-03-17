@@ -49,6 +49,13 @@
         </div>
     </div>
 
+    <div class="form-group">
+        <label class="control-label col-md-2" style="padding-top: 0px;"></label>
+        <div class="col-md-10">
+            @Html.ActionLink("Download CSV", "Download", new { id = Model.Project.Id })
+        </div>
+    </div>
+
     <hr/>
 
     <div class="row">
@@ -76,6 +83,10 @@
             <tr>
                 <th>Time</th>
                 <th>Laeq</th>
+                <th>LaMax</th>
+                <th>LaMin</th>
+                <th>LzMax</th>
+                <th>LzMin</th>
             </tr>
             </thead>
             <tbody>
@@ -83,11 +94,16 @@
             {
                 <tr>
                     <td>@reading.Time</td>
-                    <td>@Math.Round(reading.LAeq, 1)</td>
+                    <td>@Math.Round(reading.Data.LAeq, 1)</td>
+                    <td>@Math.Round(reading.Data.LAMax, 1)</td>
+                    <td>@Math.Round(reading.Data.LAMin, 1)</td>
+                    <td>@Math.Round(reading.Data.LZMax, 1)</td>
+                    <td>@Math.Round(reading.Data.LZMin, 1)</td>
                 </tr>
             }
             </tbody>
         </table>
+        <a href=javascript:void(0); onclick=gotoTop();>Back to Top</a>
     </div>
 
     <h2 id="Minor">Minor readings</h2>
@@ -97,6 +113,10 @@
             <tr>
                 <th>Time</th>
                 <th>Laeq</th>
+                <th>LaMax</th>
+                <th>LaMin</th>
+                <th>LzMax</th>
+                <th>LzMin</th>
             </tr>
             </thead>
             <tbody>
@@ -104,12 +124,17 @@
             {
                 <tr>
                     <td>@reading.Time</td>
-                    <td>@Math.Round(reading.LAeq, 1)</td>
+                    <td>@Math.Round(reading.Data.LAeq, 1)</td>
+                    <td>@Math.Round(reading.Data.LAMax, 1)</td>
+                    <td>@Math.Round(reading.Data.LAMin, 1)</td>
+                    <td>@Math.Round(reading.Data.LZMax, 1)</td>
+                    <td>@Math.Round(reading.Data.LZMin, 1)</td>
                 </tr>
             }
             </tbody>
         </table>
     </div>
+    <a href=javascript:void(0); onclick=gotoTop();>Back to Top</a>
 </div>
 
 
@@ -127,7 +152,7 @@
                 ['Time', 'Reading', { role: 'style' }],
             @foreach (var reading in Model.MinorReadings.OrderBy(x=>x.Time))
             {
-                <text>['@reading.Time.ToString("hh:mm")', @reading.LAeq, 'color: @if(reading.LAeq >= Model.Project.MinorDBLimit) { <text>#dc3912</text> } else {<text>#3366cc</text>}'],</text>
+                <text>['@reading.Time.ToString("hh:mm")', @reading.Data.LAeq, 'color: @if(reading.Data.LAeq >= Model.Project.MinorDBLimit) { <text>#dc3912</text> } else {<text>#3366cc</text>}'],</text>
             }
             ]);
 
@@ -151,7 +176,7 @@
                 ['Time', 'Reading', { role: 'style' }],
             @foreach (var reading in Model.MajorReadings.OrderBy(x=>x.Time))
             {
-                <text>['@reading.Time.ToString("hh:mm")', @reading.LAeq, 'color: @if(reading.LAeq >= Model.Project.MinorDBLimit) { <text>#dc3912</text> } else {<text>#3366cc</text>}'],</text>
+                <text>['@reading.Time.ToString("hh:mm")', @reading.Data.LAeq, 'color: @if(reading.Data.LAeq >= Model.Project.MinorDBLimit) { <text>#dc3912</text> } else {<text>#3366cc</text>}'],</text>
             }
             ]);
 
@@ -167,6 +192,10 @@
 
             var chart = new google.visualization.ColumnChart(document.getElementById('chart_major_div'));
             chart.draw(data, options);
+        }
+
+        function gotoTop() {
+            $('body,html').animate({ scrollTop: 0 }, 800);
         }
     </script>
 }

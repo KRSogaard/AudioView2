@@ -20,7 +20,7 @@ namespace AudioView.UserControls.CountDown
     public class AudioViewCountDownViewModel : INotifyPropertyChanged, IMeterListener
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
-        private bool isMajor;
+        protected bool isMajor;
         private int mainItem;
         private int secondItem;
         private int limitDb;
@@ -34,6 +34,11 @@ namespace AudioView.UserControls.CountDown
             this.mainItem = mainItem;
             this.secondItem = secondItem;
             this.isPopOut = isPopOut;
+
+            if (isPopOut)
+            {
+                Angle = 0;
+            }
         }
         
         public TimeSpan Interval { get; set; }
@@ -53,7 +58,10 @@ namespace AudioView.UserControls.CountDown
         {
             get { return 360 - _angle; }
             set {
-                _angle = value;
+                if (!isPopOut)
+                {
+                    _angle = value;
+                }
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(MainItemText));
                 OnPropertyChanged(nameof(SecondItemText));
@@ -100,10 +108,12 @@ namespace AudioView.UserControls.CountDown
                 case -1: // Inactive
                     return "";
                 case 1: // Latests interval
+                    if (LastInterval == null)
+                        return "N/A";
                     return ((int)Math.Ceiling(LastInterval.LAeq)).ToString();
                 case 2: // Time to next interval
                     return (NextReadingTime - DateTime.Now).ToString(@"mm\:ss\.f", null);
-                case 3: // Latests building interval
+                case 3: // Latests building reading
                     if (LastBuildingInterval == null)
                         return "N/A";
                     return ((int)Math.Ceiling(LastBuildingInterval.LAeq)).ToString();

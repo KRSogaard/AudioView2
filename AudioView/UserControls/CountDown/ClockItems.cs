@@ -37,7 +37,7 @@ namespace AudioView.UserControls.CountDown
                     new ClockItem()
                     {
                         Id = 3,
-                        Name = "Latest building interval"
+                        Name = "Latest building reading"
                     },
                 };
             }

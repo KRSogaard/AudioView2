@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:AudioView.UserControls"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:graphs="clr-namespace:AudioView.UserControls.Graphs"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
@@ -23,30 +24,32 @@
                 <RotateTransform Angle="-90" />
             </TextBlock.LayoutTransform>
         </TextBlock>
-        <local:AudioViewGraph Grid.Row="0" Grid.Column="1" 
+        <graphs:TimeLineGraph Grid.Column="1"
                               HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                              MinHeight="100" MinWidth="100" 
-                              DataContext="{Binding MinorGraph}"
-                              LimitColor="{StaticResource ControlsValidationBrush}"
-                              BarWarrningColor="{StaticResource ValidationSummaryColor5}"
-                              AxisColor="{StaticResource SeperatorBrush}"
-                              LineColor="{StaticResource HighlightBrush}"/>
-        
+                              MinHeight="100" MinWidth="100"
+                              TimeSpan="{Binding GraphSpan}"
+                              TimeEnd="{Binding RightTime}"
+                              ReadingLimit="{Binding Project.MinorDBLimit}"
+                              BarSize="{Binding Project.MinorInterval}"
+                              BarValues="{Binding MinorGraphValues}"
+                              LineValuesPenColor="{StaticResource HighlightBrush}"
+                              LineValuesPenSize="2.0" />
 
         <TextBlock Grid.Column="0" Grid.Row="1" Foreground="{StaticResource GrayBrush3}" FontSize="{StaticResource HeaderFontSize}" Text="Major interval"  HorizontalAlignment="Stretch" TextAlignment="Center">
             <TextBlock.LayoutTransform>
                 <RotateTransform Angle="-90" />
             </TextBlock.LayoutTransform>
         </TextBlock>
-        <local:AudioViewGraph Grid.Row="1" Grid.Column="1" 
+        <graphs:TimeLineGraph Grid.Column="1" Grid.Row="1"
                               HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                              MinHeight="100" MinWidth="100" 
-                              DataContext="{Binding MajorGraph}"
-                              LimitColor="{StaticResource ControlsValidationBrush}"
-                              BarWarrningColor="{StaticResource ValidationSummaryColor5}"
-                              AxisColor="{StaticResource SeperatorBrush}"
-                              LineColor="{StaticResource HighlightBrush}"/>
-
+                              MinHeight="100" MinWidth="100"
+                              TimeSpan="{Binding GraphSpan}"
+                              TimeEnd="{Binding RightTime}"
+                              ReadingLimit="{Binding Project.MajorDBLimit}"
+                              BarSize="{Binding Project.MajorInterval}"
+                              BarValues="{Binding MajorGraphValues}"
+                              LineValuesPenColor="{StaticResource HighlightBrush}"
+                              LineValuesPenSize="2.0" />
 
         <Grid Grid.Row="2" Grid.ColumnSpan="2">
             <Grid.RowDefinitions>

@@ -156,7 +156,7 @@ namespace AudioView.Views.Measurement
                 {
                     _readingsPopUpLatestMajor = new DelegateCommand(() =>
                     {
-                        SelectedMeasurement.NewLiveReadingsPopUp(true, 1, 2);
+                        SelectedMeasurement.NewLiveReadingsPopUp(true, 1, -1);
                     }, () =>
                     {
                         return SelectedMeasurement != null;
@@ -171,55 +171,55 @@ namespace AudioView.Views.Measurement
         {
             get
             {
-                if (_readingsPopUpLatestMajor == null)
+                if (_readingsPopUpLatestMinor == null)
                 {
-                    _readingsPopUpLatestMajor = new DelegateCommand(() =>
+                    _readingsPopUpLatestMinor = new DelegateCommand(() =>
                     {
-                        SelectedMeasurement.NewLiveReadingsPopUp(false, 1, 2);
+                        SelectedMeasurement.NewLiveReadingsPopUp(false, 1, -1);
                     }, () =>
                     {
                         return SelectedMeasurement != null;
                     }).ObservesProperty(() => SelectedMeasurement);
                 }
-                return _readingsPopUpLatestMajor;
+                return _readingsPopUpLatestMinor;
             }
         }
 
-        private ICommand _graphPopUpMajor;
-        public ICommand GraphPopUpMajor
+        private ICommand _readingsPopUpLatestBuildingMajor;
+        public ICommand ReadingsPopUpLatestBuildingMajor
         {
             get
             {
-                if (_graphPopUpMajor == null)
+                if (_readingsPopUpLatestBuildingMajor == null)
                 {
-                    _graphPopUpMajor = new DelegateCommand(() =>
+                    _readingsPopUpLatestBuildingMajor = new DelegateCommand(() =>
                     {
-                        SelectedMeasurement.NewGraphReadingsPopUp(true);
+                        SelectedMeasurement.NewLiveReadingsPopUp(true, 3, -1);
                     }, () =>
                     {
                         return SelectedMeasurement != null;
                     }).ObservesProperty(() => SelectedMeasurement);
                 }
-                return _graphPopUpMajor;
+                return _readingsPopUpLatestBuildingMajor;
             }
         }
 
-        private ICommand _graphPopUpMinor;
-        public ICommand GraphPopUpMinor
+        private ICommand _readingsPopUpLatestBuildingMinor;
+        public ICommand ReadingsPopUpLatestBuildingMinor
         {
             get
             {
-                if (_graphPopUpMinor == null)
+                if (_readingsPopUpLatestBuildingMinor == null)
                 {
-                    _graphPopUpMinor = new DelegateCommand(() =>
+                    _readingsPopUpLatestBuildingMinor = new DelegateCommand(() =>
                     {
-                        SelectedMeasurement.NewGraphReadingsPopUp(false);
+                        SelectedMeasurement.NewLiveReadingsPopUp(false, 3, -1);
                     }, () =>
                     {
                         return SelectedMeasurement != null;
                     }).ObservesProperty(() => SelectedMeasurement);
                 }
-                return _graphPopUpMinor;
+                return _readingsPopUpLatestBuildingMinor;
             }
         }
 

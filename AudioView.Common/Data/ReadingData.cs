@@ -9,6 +9,11 @@
         public double LZMin { get; set; }
         public OctaveBand LAeqOctaveBand { get; set; }
 
+        public ReadingData()
+        {
+            LAeqOctaveBand = new OctaveBand();
+        }
+
         public string SerializeToOneLine(string splitter)
         {
             return LAeq.ToString();

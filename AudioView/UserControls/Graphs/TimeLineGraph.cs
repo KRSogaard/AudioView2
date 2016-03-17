@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Globalization;
@@ -155,11 +156,14 @@ namespace AudioView.UserControls.Graphs
             {
                 if (e.OldValue != null)
                 {
-                    ((ObservableCollection<Tuple<DateTime, double>>)e.NewValue)
+                    ((ObservableCollection<Tuple<DateTime, double>>)e.OldValue)
                         .CollectionChanged -= OnBarsCollectionChanged;
                 }
-                ((ObservableCollection<Tuple<DateTime, double>>)e.NewValue)
-                    .CollectionChanged += OnBarsCollectionChanged;
+                if (e.NewValue != null)
+                {
+                    ((ObservableCollection<Tuple<DateTime, double>>) e.NewValue)
+                        .CollectionChanged += OnBarsCollectionChanged;
+                }
             }
             else if (e.Property == LineValuesProperty)
             {
@@ -353,12 +357,26 @@ namespace AudioView.UserControls.Graphs
 
             if (ReadingBoundMin == null || ReadingBoundMax == null)
             {
-                if (BarValues.Count == 0 && LineValues.Count == 0)
+                if ((BarValues == null || BarValues.Count == 0) && 
+                    (LineValues == null || LineValues.Count == 0))
                 {
                     return new Tuple<double, double>(0, 150);
                 }
 
-                foreach (var source in BarValues.Union(LineValues))
+                List<Tuple<DateTime, double>> values = new List<Tuple<DateTime, double>>();
+                if (BarValues == null)
+                {
+                    values.AddRange(LineValues);
+                } else if (LineValues == null)
+                {
+                    values.AddRange(BarValues);
+                }
+                else
+                {
+                    values.AddRange(BarValues.Union(LineValues));
+                }
+
+                foreach (var source in values)
                 {
                     if (ReadingBoundMin == null && source.Item2 < min)
                     {
@@ -406,6 +424,11 @@ namespace AudioView.UserControls.Graphs
 
         private void drawBars(DrawingContext drawingContext)
         {
+            if (BarValues == null)
+            {
+                return;
+            }
+
             var barWidth = BarSize.TotalMilliseconds * xValuePrMs / 2;
             var barWidthHalf = barWidth / 2;
             var barLeft = leftTime - (BarSize);
@@ -446,10 +469,11 @@ namespace AudioView.UserControls.Graphs
 
         private void drawBar(DrawingContext drawingContext, string text, Point location, double barWidth, Point barLocation, double reading)
         {
+            var barHeight = Math.Max(0, workingHeight - barLocation.Y);
             drawingContext.DrawRectangle(reading >= ReadingLimit ? BarOverFillBrush : BarFillBrush,
                                         reading >= ReadingLimit ? BarOverBorderPen : BarBorderPen,
                                         new Rect(new Point(barLocation.X, barLocation.Y),
-                                                    new Size(barWidth, Math.Max(0, workingHeight - barLocation.Y))));
+                                                    new Size(barWidth, barHeight)));
 
             var _text = new FormattedText(text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
                 fontTypeFace,
@@ -462,10 +486,34 @@ namespace AudioView.UserControls.Graphs
                 drawingContext.DrawText(_text, new Point(textLeftBound, workingHeight + buttomTextMargin));
                 lastLabelRightBound = location.X + _text.Width / 2;
             }
+
+            // Draw the bar value
+            _text = new FormattedText(Math.Round(reading, 2).ToString(), CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
+                fontTypeFace,
+                axisFontSize,
+                BarLabelBrush);
+
+            textLeftBound = location.X - _text.Width / 2;
+            if (textLeftBound > LeftMargin && barWidth > _text.Width)
+            {
+                if (barHeight > _text.Height*2)
+                {
+                    drawingContext.DrawText(_text, new Point(textLeftBound, barLocation.Y + _text.Height/2));
+                }
+                else
+                {
+                    drawingContext.DrawText(_text, new Point(textLeftBound, barLocation.Y - _text.Height * 1.5));
+                }
+            }
         }
 
         public void drawLines(DrawingContext drawingContext)
         {
+            if (LineValues == null)
+            {
+                return;
+            }
+
             for (int i = 1; i < LineValues.Count; i++)
             {
                 if (LineValues[i].Item1 < leftTime - (BarSize - BarSize) ||
