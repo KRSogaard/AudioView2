@@ -137,7 +137,7 @@ namespace AudioView.Views.Measurement
                 {
                     _readingsPopUpLive = new DelegateCommand(() =>
                     {
-                        SelectedMeasurement.NewLiveReadingsPopUp(false, 0, 2);
+                        SelectedMeasurement.NewLiveReadingsPopUp(false, 0, -1);
                     }, () =>
                     {
                         return SelectedMeasurement != null;

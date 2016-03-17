@@ -55,36 +55,6 @@
             <TabItem Header="History">
                 <UserControls:HistoryControl DataContext="{Binding HistoryViewModel}" />
             </TabItem>
-            <!--<TabItem Header="Settings">
-                <UserControls:SettingsView DataContext="{Binding SettingsViewModel}" />
-            </TabItem>-->
-            <TabItem Header="New (Temp)" DataContext="{Binding MeasurementsViewModel}">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="500" />
-                    </Grid.ColumnDefinitions>
-                    <RichTextBox
-                        IsReadOnly="True"
-                        IsDocumentEnabled="True">
-                        <FlowDocument>
-                            <Paragraph>
-                                <Run>Very long text here explaining how to use the new measurement.</Run>
-                                <LineBreak />
-                                <LineBreak />
-                                <Run>Very long text here explaining how to use the new measurement.</Run>
-                                <LineBreak />
-                                <LineBreak />
-                                <Run>Very long text here explaining how to use the new measurement.</Run>
-                                <LineBreak />
-                                <LineBreak />
-                                <Run>Very long text here explaining how to use the new measurement.</Run>
-                            </Paragraph>
-                        </FlowDocument>
-                    </RichTextBox>
-                    <UserControls:NewMeasurementControl Grid.Column="1" DataContext="{Binding NewViewModel}" />
-                </Grid>
-            </TabItem>
         </TabControl>
 
         <ProgressBar Grid.Row="1" Minimum="0" Maximum="1000" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Value="{Binding LagTest}" />

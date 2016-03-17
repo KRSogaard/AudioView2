@@ -34,11 +34,6 @@ namespace AudioView.UserControls.CountDown
             this.mainItem = mainItem;
             this.secondItem = secondItem;
             this.isPopOut = isPopOut;
-
-            if (isPopOut)
-            {
-                Angle = 0;
-            }
         }
         
         public TimeSpan Interval { get; set; }
@@ -58,10 +53,7 @@ namespace AudioView.UserControls.CountDown
         {
             get { return 360 - _angle; }
             set {
-                if (!isPopOut)
-                {
-                    _angle = value;
-                }
+                _angle = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(MainItemText));
                 OnPropertyChanged(nameof(SecondItemText));
