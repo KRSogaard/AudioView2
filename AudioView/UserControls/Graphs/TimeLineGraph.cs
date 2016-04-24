@@ -500,7 +500,7 @@ namespace AudioView.UserControls.Graphs
             }
 
             // Draw the bar value
-            _text = new FormattedText(Math.Round(reading, 2).ToString(), CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
+            _text = new FormattedText(Math.Round(reading, 1).ToString(), CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
                 fontTypeFace,
                 axisFontSize,
                 BarLabelBrush);
@@ -529,8 +529,7 @@ namespace AudioView.UserControls.Graphs
             for (int i = 1; i < LineValues.Count; i++)
             {
                 if (LineValues[i].Item1 < leftTime - (BarSize - BarSize) ||
-                    LineValues[i].Item1 > rightTime
-                   )
+                    LineValues[i].Item1 > rightTime)
                 {
                     continue;
                 }
