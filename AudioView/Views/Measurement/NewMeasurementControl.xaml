@@ -98,12 +98,14 @@
                                 <Label Content="Listen Port: (For remote connections)" />
                                 <TextBox Text="{Binding ListenPort}" />
 
+                                <!--
                                 <StackPanel Orientation="Horizontal">
                                     <Label Content="Reading Timeout:" />
                                     <Label Margin="5,0,0,0" Content="{Binding LocalDeviceTimeOut}" />
                                     <Label Margin="5,0,0,0" Content="ms." />
                                 </StackPanel>
                                 <Slider Minimum="500" Maximum="900" Value="{Binding LocalDeviceTimeOut}"></Slider>
+                                -->
                                 
                                 <Label Content="Port:" />
                                 <ListBox Height="100" ItemsSource="{Binding LocalDevices}" SelectedItem="{Binding SelectedLocalDevice}" />
