@@ -323,9 +323,11 @@ namespace AudioView.UserControls.Graphs
         private DateTime leftTime;
         private double workingWidth;
         private double workingHeight;
+        private List<Tuple<Point, FormattedText>> barTexts; 
         protected override void OnRender(DrawingContext drawingContext)
         {
             base.OnRender(drawingContext);
+            barTexts = new List<Tuple<Point, FormattedText>>();
             lastLabelRightBound = 0;
             workingWidth = this.ActualWidth - LeftMargin;
             workingHeight = this.ActualHeight - buttomMargin;
@@ -340,6 +342,7 @@ namespace AudioView.UserControls.Graphs
             drawBars(drawingContext);
             drawLines(drawingContext);
             drawLimit(drawingContext);
+            drawBarNumbers(drawingContext);
         }
 
         private Tuple<double, double> getGraphBound()
@@ -467,6 +470,15 @@ namespace AudioView.UserControls.Graphs
             }
         }
 
+        private void drawBarNumbers(DrawingContext drawingContext)
+        {
+            foreach (var barText in barTexts)
+            {
+
+                drawingContext.DrawText(barText.Item2, barText.Item1);
+            }
+        }
+
         private void drawBar(DrawingContext drawingContext, string text, Point location, double barWidth, Point barLocation, double reading)
         {
             var barHeight = Math.Max(0, workingHeight - barLocation.Y);
@@ -498,11 +510,11 @@ namespace AudioView.UserControls.Graphs
             {
                 if (barHeight > _text.Height*2)
                 {
-                    drawingContext.DrawText(_text, new Point(textLeftBound, barLocation.Y + _text.Height/2));
+                    barTexts.Add(new Tuple<Point, FormattedText>(new Point(textLeftBound, barLocation.Y + _text.Height / 2), _text));
                 }
                 else
                 {
-                    drawingContext.DrawText(_text, new Point(textLeftBound, barLocation.Y - _text.Height * 1.5));
+                    barTexts.Add(new Tuple<Point, FormattedText>(new Point(textLeftBound, barLocation.Y - _text.Height * 1.5), _text));
                 }
             }
         }
