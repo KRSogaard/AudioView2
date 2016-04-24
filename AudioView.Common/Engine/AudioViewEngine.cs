@@ -9,6 +9,9 @@ using NLog;
 
 namespace AudioView.Common.Engine
 {
+    public delegate void EngineStartDelayedDeligate(TimeSpan delay);
+    public delegate void EngineStartedDeligate();
+
     public class AudioViewEngine
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
@@ -89,13 +92,18 @@ namespace AudioView.Common.Engine
 
         public void Start()
         {
-            logger.Debug("Staring the engine.");
-            if (this.secondTimer != null)
-                this.secondTimer.Enabled = true;
-            if(this.minorTimer != null)
-                this.minorTimer.Enabled = true;
-            if (this.majorTimer != null)
-                this.majorTimer.Enabled = true;
+            logger.Debug("Preparing engine to start.");
+            GetNextFullMinute().ContinueWith((task) =>
+            {
+                logger.Debug("Staring the engine.");
+                if (this.secondTimer != null)
+                    this.secondTimer.Enabled = true;
+                if (this.minorTimer != null)
+                    this.minorTimer.Enabled = true;
+                if (this.majorTimer != null)
+                    this.majorTimer.Enabled = true;
+                EngineStartedEvent?.Invoke();
+            });
         }
 
         public void Stop()
@@ -256,6 +264,19 @@ namespace AudioView.Common.Engine
             });
         }
 
+        private Task GetNextFullMinute()
+        {
+            var nextFullMin = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0)
+                            .AddMinutes(1);
+            var waitTime = nextFullMin - DateTime.Now;
+
+            logger.Debug("Engine will start in " + waitTime);
+            EngineStartDelayedEvent?.Invoke(waitTime);
+            return Task.Delay(waitTime);
+        }
+
         public event ConnectionStatusUpdateDeligate ConnectionStatusEvent;
+        public event EngineStartDelayedDeligate EngineStartDelayedEvent;
+        public event EngineStartedDeligate EngineStartedEvent;
     }
 }

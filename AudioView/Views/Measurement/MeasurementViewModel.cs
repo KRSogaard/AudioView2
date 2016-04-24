@@ -117,20 +117,29 @@ namespace AudioView.ViewModels
                 this.engine.RegisterListener(dataStorage);
             }
 
-            MinorClock = new AudioViewCountDownViewModel(false,
-                    settings.MinorInterval,
-                    settings.MinorDBLimit,
-                    settings.MinorClockMainItemId,
-                    settings.MinorClockSecondaryItemId);
-            MajorClock = new AudioViewCountDownViewModel(true,
-                    settings.MajorInterval,
-                    settings.MajorDBLimit,
-                    settings.MajorClockMainItemId,
-                    settings.MajorClockSecondaryItemId);
-            this.engine.RegisterListener(MinorClock);
-            this.engine.RegisterListener(MajorClock);
             this.engine.RegisterListener(this);
-
+            this.engine.EngineStartDelayedEvent += (waitTime) =>
+            {
+                MinorClock = new AudioViewCountDownViewModel(false,
+                        settings.MinorInterval,
+                        settings.MinorDBLimit,
+                        settings.MinorClockMainItemId,
+                        settings.MinorClockSecondaryItemId);
+                MajorClock = new AudioViewCountDownViewModel(true,
+                        settings.MajorInterval,
+                        settings.MajorDBLimit,
+                        settings.MajorClockMainItemId,
+                        settings.MajorClockSecondaryItemId);
+                MinorClock.NextMinor(DateTime.Now + waitTime);
+                MinorClock.NextMajor(DateTime.Now + waitTime);
+                MajorClock.NextMinor(DateTime.Now + waitTime);
+                MajorClock.NextMajor(DateTime.Now + waitTime);
+            };
+            this.engine.EngineStartedEvent += () =>
+            {
+                this.engine.RegisterListener(MinorClock);
+                this.engine.RegisterListener(MajorClock);
+            };
             this.engine.Start();
 
             Title = settings.ProjectName;

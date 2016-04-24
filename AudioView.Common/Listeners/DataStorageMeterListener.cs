@@ -108,6 +108,7 @@ namespace AudioView.Common.Listeners
             var readingGuid = Guid.NewGuid();
             try
             {
+                throw new Exception("Test");
                 // Ensure the inital create have finished
                 if (initalCreate != null)
                 {
