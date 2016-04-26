@@ -10,12 +10,21 @@
              >
     <Grid Margin="10,10,10,10">
         <Grid.ContextMenu>
-            <ContextMenu ItemsSource="{Binding ClockSelections}">
-                <ContextMenu.ItemTemplate>
-                    <DataTemplate>
-                        <MenuItem Header="{Binding Name}" Command="{Binding switchCommand}"></MenuItem>
-                    </DataTemplate>
-                </ContextMenu.ItemTemplate>
+            <ContextMenu>
+                <MenuItem Header="Main Item" ItemsSource="{Binding ClockSelections}">
+                    <MenuItem.ItemTemplate>
+                        <DataTemplate>
+                            <MenuItem Header="{Binding Name}" Command="{Binding switchCommand}"></MenuItem>
+                        </DataTemplate>
+                    </MenuItem.ItemTemplate>
+                </MenuItem>
+                <MenuItem Header="Secondary Item" ItemsSource="{Binding ClockSelections}">
+                    <MenuItem.ItemTemplate>
+                        <DataTemplate>
+                            <MenuItem Header="{Binding Name}" Command="{Binding switchSecondayCommand}"></MenuItem>
+                        </DataTemplate>
+                    </MenuItem.ItemTemplate>
+                </MenuItem>
             </ContextMenu>
         </Grid.ContextMenu>
         <ed:Arc 

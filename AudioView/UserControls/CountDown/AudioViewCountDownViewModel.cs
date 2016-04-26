@@ -229,9 +229,13 @@ namespace AudioView.UserControls.CountDown
 
         #endregion
 
-        public void ChangeDisplayText(int displayId)
+        public void ChangeMainDisplayItem(int displayId)
         {
             mainItem = displayId;
+        }
+        public void ChangeSecondayDisplayItem(int displayId)
+        {
+            secondItem = displayId;
         }
     }
 
@@ -260,12 +264,30 @@ namespace AudioView.UserControls.CountDown
                 {
                     _switchCommand = new DelegateCommand(() =>
                     {
-                        parent.ChangeDisplayText(clockItem.Id);
+                        parent.ChangeMainDisplayItem(clockItem.Id);
                     });
                 }
                 return _switchCommand;
             }
         }
+
+        private ICommand _switchSecondayCommand;
+        public ICommand switchSecondayCommand
+        {
+            get
+            {
+                if (_switchSecondayCommand == null)
+                {
+                    _switchSecondayCommand = new DelegateCommand(() =>
+                    {
+                        parent.ChangeSecondayDisplayItem(clockItem.Id);
+                    });
+                }
+                return _switchSecondayCommand;
+            }
+        }
+
+        
 
         public event PropertyChangedEventHandler PropertyChanged;
 
