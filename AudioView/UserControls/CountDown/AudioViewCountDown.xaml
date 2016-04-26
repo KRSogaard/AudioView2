@@ -9,6 +9,15 @@
              d:DesignHeight="300" d:DesignWidth="300"
              >
     <Grid Margin="10,10,10,10">
+        <Grid.ContextMenu>
+            <ContextMenu ItemsSource="{Binding ClockSelections}">
+                <ContextMenu.ItemTemplate>
+                    <DataTemplate>
+                        <MenuItem Header="{Binding Name}" Command="{Binding switchCommand}"></MenuItem>
+                    </DataTemplate>
+                </ContextMenu.ItemTemplate>
+            </ContextMenu>
+        </Grid.ContextMenu>
         <ed:Arc 
             ArcThickness="99999" 
             ArcThicknessUnit="Pixel" 
@@ -27,13 +36,13 @@
             VerticalAlignment="Stretch" 
             Fill="{StaticResource AccentColorBrush}" 
             Stretch="None" />
-
+        
         <Grid Margin="20,20,20,20">
             <Grid.RowDefinitions>
                 <RowDefinition Height="2*" />
                 <RowDefinition Height="1*" />
             </Grid.RowDefinitions>
-
+            
             <Viewbox Grid.Row="0" >
                 <TextBlock 
                     VerticalAlignment="Center"
@@ -55,6 +64,19 @@
                     Foreground="{Binding TextColor}" />
             </Viewbox>
         </Grid>
+
+        <!--<Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Button></Button>
+            <Label Grid.Row="1" Content="{Binding MainItemName}"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                />
+        </Grid>-->
+        
         <Label x:Name="debugLabel" Content="{Binding RenderTime}"></Label>
     </Grid>
 </UserControl>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
@@ -7,6 +8,8 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using AudioView.Annotations;
 using AudioView.Common;
@@ -14,6 +17,7 @@ using AudioView.Common.Data;
 using AudioView.Common.Engine;
 using AudioView.ViewModels;
 using NLog;
+using Prism.Commands;
 
 namespace AudioView.UserControls.CountDown
 {
@@ -34,6 +38,12 @@ namespace AudioView.UserControls.CountDown
             this.mainItem = mainItem;
             this.secondItem = secondItem;
             this.isPopOut = isPopOut;
+
+            ClockSelections = new ObservableCollection<ClockSelectionViewModel>();
+            foreach (var clockItem in ClockItems.Get)
+            {
+                ClockSelections.Add(new ClockSelectionViewModel(this, clockItem));
+            }
         }
         
         public TimeSpan Interval { get; set; }
@@ -48,6 +58,8 @@ namespace AudioView.UserControls.CountDown
         public SolidColorBrush BarBrush { get; set; }
         public SolidColorBrush BarOverBrush { get; set; }
 
+        public ObservableCollection<ClockSelectionViewModel> ClockSelections { get; set; }
+
         private double _angle;
         public double Angle
         {
@@ -57,6 +69,8 @@ namespace AudioView.UserControls.CountDown
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(MainItemText));
                 OnPropertyChanged(nameof(SecondItemText));
+                OnPropertyChanged(nameof(MainItemName));
+                OnPropertyChanged(nameof(SecondItemName));
                 OnPropertyChanged(nameof(TextColor));
                 OnPropertyChanged(nameof(RenderTime));
             }
@@ -88,9 +102,19 @@ namespace AudioView.UserControls.CountDown
             get { return GetDisplayText(mainItem); }
         }
 
+        public string MainItemName
+        {
+            get { return GetDisplayName(mainItem); }
+        }
+
         public string SecondItemText
         {
             get { return GetDisplayText(secondItem); }
+        }
+
+        public string SecondItemName
+        {
+            get { return GetDisplayName(mainItem); }
         }
 
         private string GetDisplayText(int displayId)
@@ -115,6 +139,16 @@ namespace AudioView.UserControls.CountDown
                         return "N/A";
                     return ((int)Math.Ceiling(LastReading.LAeq)).ToString();
             }
+        }
+
+        private string GetDisplayName(int displayId)
+        {
+            ClockItem item = ClockItems.Get.Where(x => x.Id == displayId).FirstOrDefault();
+            if (item == null)
+            {
+                return "N/A";
+            }
+            return item.Name;
         }
 
         public Brush TextColor
@@ -194,5 +228,51 @@ namespace AudioView.UserControls.CountDown
         }
 
         #endregion
+
+        public void ChangeDisplayText(int displayId)
+        {
+            mainItem = displayId;
+        }
+    }
+
+    public class ClockSelectionViewModel : INotifyPropertyChanged
+    {
+        private AudioViewCountDownViewModel parent;
+        private ClockItem clockItem;
+
+        public ClockSelectionViewModel(AudioViewCountDownViewModel parent, ClockItem clockItem)
+        {
+            this.parent = parent;
+            this.clockItem = clockItem;
+        }
+
+        public string Name
+        {
+            get { return "Set to " + clockItem.Name; }
+        }
+
+        private ICommand _switchCommand;
+        public ICommand switchCommand
+        {
+            get
+            {
+                if (_switchCommand == null)
+                {
+                    _switchCommand = new DelegateCommand(() =>
+                    {
+                        parent.ChangeDisplayText(clockItem.Id);
+                    });
+                }
+                return _switchCommand;
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }
