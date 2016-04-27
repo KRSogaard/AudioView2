@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:AudioView.UserControls"
+             xmlns:history="clr-namespace:AudioView.Views.History"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <StackPanel>
@@ -11,5 +12,56 @@
         <ComboBox ItemsSource="{Binding Themes}" SelectedItem="{Binding Theme}" />
         <Label Content="Accent" />
         <ComboBox ItemsSource="{Binding Accents}" SelectedItem="{Binding Accent}" />
+
+        <Expander Header="Data Tables">
+            <StackPanel>
+                <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=LAeq}" Content="LAeq" />
+                <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=LAMax}" Content="LAMax" />
+                <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=LAMin}" Content="LAMin" />
+                <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=LZMax}" Content="LZMax" />
+                <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=LZMin}" Content="LZMin" />
+
+                <Expander Header="1/1 Octave">
+                    <StackPanel>
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz6_3}" Content="6.3Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz8}" Content="8Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz10}" Content="10Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz12_5}" Content="12.5Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz16}" Content="16Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz20}" Content="20Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz25}" Content="25Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz31_5}" Content="31.5Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz40}" Content="40Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz50}" Content="50Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz63}" Content="63Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz80}" Content="80Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz100}" Content="100Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz125}" Content="125Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz160}" Content="160Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz200}" Content="200Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz250}" Content="250Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz315}" Content="315Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz400}" Content="400Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz500}" Content="500Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz630}" Content="630Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz800}" Content="800Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz1000}" Content="1000Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz1250}" Content="1250Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz1600}" Content="1600Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz2000}" Content="2000Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz2500}" Content="2500Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz3150}" Content="3150Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz4000}" Content="4000Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz5000}" Content="5000Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz6300}" Content="6300Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz8000}" Content="8000Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz10000}" Content="10000Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz12500}" Content="12500Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz16000}" Content="16000Hz" />
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz20000}" Content="20000Hz" />
+                    </StackPanel>
+                </Expander>
+            </StackPanel>
+        </Expander>
     </StackPanel>
 </UserControl>

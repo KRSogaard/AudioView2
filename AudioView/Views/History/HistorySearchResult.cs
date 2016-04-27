@@ -9,6 +9,7 @@ using System.Windows.Input;
 using AudioView.Common.Data;
 using AudioView.Common.Services;
 using AudioView.UserControls.Graph;
+using AudioView.Views.History;
 using GalaSoft.MvvmLight.Threading;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
@@ -153,7 +154,7 @@ namespace AudioView.ViewModels
             get { return _readingsMajor; }
             set { SetProperty(ref _readingsMajor, value); }
         }
-
+        
         public HistorySearchResult(Project project)
         {
             this.project = project;

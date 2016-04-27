@@ -169,6 +169,7 @@
     <Compile Include="UserControls\Graph\AudioViewGraph.cs" />
     <Compile Include="Properties\Annotations1.cs" />
     <Compile Include="UserControls\Graph\AudioViewGraphViewModel.cs" />
+    <Compile Include="Views\History\DataGridDisplayViewModel.cs" />
     <Compile Include="Views\History\DataTabelViewModel.cs" />
     <Compile Include="Views\History\HistoryControl.xaml.cs">
       <DependentUpon>HistoryControl.xaml</DependentUpon>
