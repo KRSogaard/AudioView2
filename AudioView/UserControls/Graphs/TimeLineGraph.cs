@@ -169,11 +169,14 @@ namespace AudioView.UserControls.Graphs
             {
                 if (e.OldValue != null)
                 {
-                    ((ObservableCollection<Tuple<DateTime, double>>)e.NewValue)
+                    ((ObservableCollection<Tuple<DateTime, double>>)e.OldValue)
                         .CollectionChanged -= OnLineCollectionChanged;
                 }
-                ((ObservableCollection<Tuple<DateTime, double>>)e.NewValue)
-                    .CollectionChanged += OnLineCollectionChanged;
+                if (e.NewValue != null)
+                {
+                    ((ObservableCollection<Tuple<DateTime, double>>) e.NewValue)
+                        .CollectionChanged += OnLineCollectionChanged;
+                }
             }
 
             switch (e.Property.Name)

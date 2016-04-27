@@ -255,31 +255,31 @@ namespace AudioView.ViewModels
             window.Show();
         }
 
-        //public void NewGraphReadingsPopUp(string methodName)
-        //{
-        //    var window = new LiveGraphWindow()
-        //    {
-        //        WindowStartupLocation = WindowStartupLocation.CenterOwner,
-        //        BorderThickness = new Thickness(1),
-        //        GlowBrush = null
-        //    };
-        //    window.SetResourceReference(MetroWindow.BorderBrushProperty, "AccentColorBrush");
+        public void NewGraphReadingsPopUp(string methodName)
+        {
+            var window = new LiveGraphWindow()
+            {
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                BorderThickness = new Thickness(1),
+                GlowBrush = null
+            };
+            window.SetResourceReference(MetroWindow.BorderBrushProperty, "AccentColorBrush");
 
-        //    popOutWindows.AddLast(window);
-        //    window.DataContext = this;
-        //    var model = new LiveGraphWindowViewModel(methodName);
-        //    model.Title = Title;
-        //    this.engine.RegisterListener(model);
-        //    window.DataContext = model;
-        //    window.Closed += (sender, args) =>
-        //    {
-        //        this.engine.UnRegisterListener(model);
-        //        window.DataContext = null;
-        //        popOutWindows.Remove(window);
-        //        window = null;
-        //    };
-        //    window.Show();
-        //}
+            popOutWindows.AddLast(window);
+            window.DataContext = this;
+            var model = new LiveGraphWindowViewModel(methodName);
+            model.Title = Title;
+            this.engine.RegisterListener(model);
+            window.DataContext = model;
+            window.Closed += (sender, args) =>
+            {
+                this.engine.UnRegisterListener(model);
+                window.DataContext = null;
+                popOutWindows.Remove(window);
+                window = null;
+            };
+            window.Show();
+        }
 
         public void Close()
         {
@@ -429,24 +429,24 @@ namespace AudioView.ViewModels
             }
         }
 
-        //private ObservableCollection<LiveGraphItemViewModel> _liveGraphReadings;
-        //public ObservableCollection<LiveGraphItemViewModel> LiveGraphReadings
-        //{
-        //    get
-        //    {
-        //        if (_liveGraphReadings == null)
-        //        {
-        //            _liveGraphReadings = new ObservableCollection<LiveGraphItemViewModel>();
-        //            foreach (var method in typeof(ReadingData).GetMethods().Where(
-        //                x=>x.IsPublic && 
-        //                x.ReturnType == typeof(double)))
-        //            {
-        //                _liveGraphReadings.Add(new LiveGraphItemViewModel(this, method));
-        //            }
-        //        }
-        //        return _liveGraphReadings;
-        //    }
-        //}
+        private ObservableCollection<LiveGraphItemViewModel> _liveGraphReadings;
+        public ObservableCollection<LiveGraphItemViewModel> LiveGraphReadings
+        {
+            get
+            {
+                if (_liveGraphReadings == null)
+                {
+                    _liveGraphReadings = new ObservableCollection<LiveGraphItemViewModel>();
+                    foreach (var method in typeof(ReadingData).GetMethods().Where(
+                        x => x.IsPublic &&
+                        x.ReturnType == typeof(double)))
+                    {
+                        _liveGraphReadings.Add(new LiveGraphItemViewModel(this, method));
+                    }
+                }
+                return _liveGraphReadings;
+            }
+        }
 
         private Project GetProject()
         {

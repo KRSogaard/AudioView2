@@ -39,23 +39,6 @@ namespace AudioView.ViewModels
 
             // Load offline files
             DataStorageMeterListener.UploadLocalFiles();
-
-
-            DispatcherTimer timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(15);
-            timer.IsEnabled = true;
-            timer.Tick += (sender, args) =>
-            {
-                var newValue = LagTest + 1;
-                if (newValue > 1000)
-                {
-                    LagTest = 0;
-                }
-                else
-                {
-                    LagTest = newValue;
-                }
-            };
         }
 
         public MeasurementsViewModel MeasurementsViewModel { get; set; }
@@ -83,13 +66,6 @@ namespace AudioView.ViewModels
         {
             get { return _showSettings; }
             set { SetProperty(ref _showSettings, value); }
-        }
-
-        private int _lagTest;
-        public int LagTest
-        {
-            get { return _lagTest; }
-            set { SetProperty(ref _lagTest, value); }
         }
 
         private bool _showNew;

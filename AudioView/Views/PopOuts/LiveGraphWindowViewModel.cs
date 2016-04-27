@@ -21,6 +21,7 @@ namespace AudioView.Views.PopOuts
         public LiveGraphWindowViewModel(string displayItem)
         {
             this.displayItem = displayItem;
+            _lineValues = new ObservableCollection<Tuple<DateTime, double>>();
         }
 
         public string _title;

@@ -41,23 +41,14 @@
         </Controls:WindowCommands>
     </Controls:MetroWindow.RightWindowCommands>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="30" />
-        </Grid.RowDefinitions>
-
-        <TabControl TabStripPlacement="Top"
-                    Margin="10">
-            <TabItem Header="Measurements">
-                <measurement:MeasurementsView DataContext="{Binding MeasurementsViewModel}" />
-            </TabItem>
-            <TabItem Header="History">
-                <UserControls:HistoryControl DataContext="{Binding HistoryViewModel}" />
-            </TabItem>
-        </TabControl>
-
-        <ProgressBar Grid.Row="1" Minimum="0" Maximum="1000" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Value="{Binding LagTest}" />
-    </Grid>
+    <TabControl TabStripPlacement="Top"
+                Margin="10">
+        <TabItem Header="Measurements">
+            <measurement:MeasurementsView DataContext="{Binding MeasurementsViewModel}" />
+        </TabItem>
+        <TabItem Header="History">
+            <UserControls:HistoryControl DataContext="{Binding HistoryViewModel}" />
+        </TabItem>
+    </TabControl>
 </Controls:MetroWindow>
 

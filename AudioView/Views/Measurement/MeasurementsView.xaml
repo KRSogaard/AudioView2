@@ -39,13 +39,13 @@
                     <MenuItem Header="Latest Building Major"  Command="{Binding ReadingsPopUpLatestBuildingMajor}" />
                     <MenuItem Header="Latest Building Minor"  Command="{Binding ReadingsPopUpLatestBuildingMinor}" />
                 </MenuItem>
-                <!--<MenuItem Header="Live Graph" ItemsSource="{Binding SelectedMeasurement.LiveGraphReadings}">
+                <MenuItem Header="Live Graph" ItemsSource="{Binding SelectedMeasurement.LiveGraphReadings}">
                     <MenuItem.ItemTemplate>
                         <DataTemplate>
                             <MenuItem Header="{Binding Name}" Command="{Binding Show}"></MenuItem>
                         </DataTemplate>
                     </MenuItem.ItemTemplate>
-                </MenuItem>-->
+                </MenuItem>
                 <Separator />
                 <MenuItem Header="Reading tabel" Command="{Binding SelectedMeasurement.DisplayReadingsTabel}" />
                 <MenuItem Header="Reading graph" Command="{Binding SelectedMeasurement.DisplayReadingsGraph}" />
