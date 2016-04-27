@@ -17,9 +17,9 @@ namespace AudioView
     /// <summary>
     /// Interaction logic for GraphWindow.xaml
     /// </summary>
-    public partial class GraphWindow
+    public partial class LiveGraphWindow
     {
-        public GraphWindow()
+        public LiveGraphWindow()
         {
             InitializeComponent();
         }

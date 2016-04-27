@@ -154,8 +154,9 @@
       <DependentUpon>DataTabelWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="GlobalContainer.cs" />
-    <Compile Include="GraphWindow.xaml.cs">
-      <DependentUpon>GraphWindow.xaml</DependentUpon>
+    <Compile Include="Views\Measurement\LiveGraphItemViewModel.cs" />
+    <Compile Include="Views\PopOuts\LiveGraphWindow.xaml.cs">
+      <DependentUpon>LiveGraphWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="LiveReadingWindow.xaml.cs">
       <DependentUpon>LiveReadingWindow.xaml</DependentUpon>
@@ -166,9 +167,7 @@
     <Compile Include="UserControls\CountDown\AudioViewCountDownViewModel.cs" />
     <Compile Include="UserControls\CountDown\ClockItems.cs" />
     <Compile Include="UserControls\Graphs\TimeLineGraph.cs" />
-    <Compile Include="UserControls\Graph\AudioViewGraph.cs" />
     <Compile Include="Properties\Annotations1.cs" />
-    <Compile Include="UserControls\Graph\AudioViewGraphViewModel.cs" />
     <Compile Include="Views\History\DataGridDisplayViewModel.cs" />
     <Compile Include="Views\History\DataTabelViewModel.cs" />
     <Compile Include="Views\History\HistoryControl.xaml.cs">
@@ -190,10 +189,10 @@
     <Compile Include="Views\Measurement\NewMeasurementControl.xaml.cs">
       <DependentUpon>NewMeasurementControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\PopOuts\LiveGraphWindowViewModel.cs" />
     <Compile Include="Views\Settings\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\Graph\GraphReadingViewModel.cs" />
     <Compile Include="Views\History\HistoryReadingViewModel.cs" />
     <Compile Include="Views\History\HistorySearchResult.cs" />
     <Compile Include="Views\History\HistoryViewModel.cs" />
@@ -210,7 +209,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="GraphWindow.xaml">
+    <Page Include="Views\PopOuts\LiveGraphWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

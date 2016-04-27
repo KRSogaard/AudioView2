@@ -2,13 +2,10 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Runtime.CompilerServices;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -18,9 +15,9 @@ using AudioView.Common.Data;
 using AudioView.Common.Engine;
 using AudioView.Common.Listeners;
 using AudioView.UserControls.CountDown;
-using AudioView.UserControls.Graph;
 using AudioView.Views.History;
-using GalaSoft.MvvmLight.CommandWpf;
+using AudioView.Views.Measurement;
+using AudioView.Views.PopOuts;
 using GalaSoft.MvvmLight.Threading;
 using MahApps.Metro.Controls;
 using Microsoft.Win32;
@@ -258,35 +255,31 @@ namespace AudioView.ViewModels
             window.Show();
         }
 
-        public void NewGraphReadingsPopUp(bool isMajor)
-        {
-            var window = new GraphWindow()
-            {
-                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                BorderThickness = new Thickness(1),
-                GlowBrush = null
-            };
-            window.SetResourceReference(MetroWindow.BorderBrushProperty, "AccentColorBrush");
+        //public void NewGraphReadingsPopUp(string methodName)
+        //{
+        //    var window = new LiveGraphWindow()
+        //    {
+        //        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+        //        BorderThickness = new Thickness(1),
+        //        GlowBrush = null
+        //    };
+        //    window.SetResourceReference(MetroWindow.BorderBrushProperty, "AccentColorBrush");
 
-            popOutWindows.AddLast(window);
-            var model = new GraphReadingViewModel(isMajor,
-                    settings.BarsDisplayed,
-                    isMajor ? settings.MajorDBLimit : settings.MinorDBLimit,
-                    isMajor ? settings.MajorInterval : settings.MinorInterval,
-                    settings.GraphLowerBound,
-                    settings.GraphUpperBound);
-            model.Title = Title;
-            this.engine.RegisterListener(model);
-            window.DataContext = model;
-            window.Closed += (sender, args) =>
-            {
-                this.engine.UnRegisterListener(model);
-                window.DataContext = null;
-                popOutWindows.Remove(window);
-                window = null;
-            };
-            window.Show();
-        }
+        //    popOutWindows.AddLast(window);
+        //    window.DataContext = this;
+        //    var model = new LiveGraphWindowViewModel(methodName);
+        //    model.Title = Title;
+        //    this.engine.RegisterListener(model);
+        //    window.DataContext = model;
+        //    window.Closed += (sender, args) =>
+        //    {
+        //        this.engine.UnRegisterListener(model);
+        //        window.DataContext = null;
+        //        popOutWindows.Remove(window);
+        //        window = null;
+        //    };
+        //    window.Show();
+        //}
 
         public void Close()
         {
@@ -435,6 +428,25 @@ namespace AudioView.ViewModels
                 return _downloadAsCSV;
             }
         }
+
+        //private ObservableCollection<LiveGraphItemViewModel> _liveGraphReadings;
+        //public ObservableCollection<LiveGraphItemViewModel> LiveGraphReadings
+        //{
+        //    get
+        //    {
+        //        if (_liveGraphReadings == null)
+        //        {
+        //            _liveGraphReadings = new ObservableCollection<LiveGraphItemViewModel>();
+        //            foreach (var method in typeof(ReadingData).GetMethods().Where(
+        //                x=>x.IsPublic && 
+        //                x.ReturnType == typeof(double)))
+        //            {
+        //                _liveGraphReadings.Add(new LiveGraphItemViewModel(this, method));
+        //            }
+        //        }
+        //        return _liveGraphReadings;
+        //    }
+        //}
 
         private Project GetProject()
         {

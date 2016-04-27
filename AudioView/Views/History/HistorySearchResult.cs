@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data.Entity.Core.Metadata.Edm;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using AudioView.Common.Data;
 using AudioView.Common.Services;
-using AudioView.UserControls.Graph;
-using AudioView.Views.History;
 using GalaSoft.MvvmLight.Threading;
-using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using NLog;
 using Prism.Commands;

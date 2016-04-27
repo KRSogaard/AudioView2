@@ -1,4 +1,4 @@
-﻿<controls:MetroWindow x:Class="AudioView.GraphWindow"
+﻿<controls:MetroWindow x:Class="AudioView.LiveGraphWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,6 +7,7 @@
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:countDown="clr-namespace:AudioView.UserControls.CountDown"
         xmlns:userControls="clr-namespace:AudioView.UserControls"
+        xmlns:graphs="clr-namespace:AudioView.UserControls.Graphs"
         mc:Ignorable="d"
         Topmost="{Binding StayOnTop, Mode=TwoWay}"
         Title="{Binding Title}" Height="250" Width="300">
@@ -44,12 +45,16 @@
     </controls:MetroWindow.RightWindowCommands>
 
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-        <userControls:AudioViewGraph HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                                     MinHeight="100" MinWidth="100" 
-                                     DataContext="{Binding}"
-                                     LimitColor="{StaticResource ControlsValidationBrush}"
-                                     BarWarrningColor="{StaticResource ValidationSummaryColor5}"
-                                     AxisColor="{StaticResource SeperatorBrush}"
-                                     LineColor="{StaticResource HighlightBrush}"/>
+        <graphs:TimeLineGraph Grid.Column="1"
+                              HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                              MinHeight="100" MinWidth="100"
+                              TimeSpan="{Binding MinorSpan}"
+                              ReadingBoundMin="{Binding Settings.GraphLowerBound}"
+                              ReadingBoundMax="{Binding Settings.GraphUpperBound}"
+                              ReadingLimit="{Binding Settings.MinorDBLimit}"
+                              BarSize="{Binding Settings.MinorInterval}"
+                              LineValues="{Binding LineValues}"
+                              LineValuesPenColor="{StaticResource HighlightBrush}"
+                              LineValuesPenSize="2.0" />
     </Grid>
     </controls:MetroWindow>
