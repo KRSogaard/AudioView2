@@ -71,7 +71,15 @@ namespace AudioView.ViewModels
             get { return majorSpan; }
             set { SetProperty(ref majorSpan, value); }
         }
-        
+
+        private ObservableCollection<double> octaveValues;
+        public ObservableCollection<double> OctaveValues
+        {
+            get { return octaveValues; }
+            set { SetProperty(ref octaveValues, value); }
+        }
+
+
         public MeasurementViewModel(Guid id, MeasurementSettings settings, IMeterReader reader)
         {
             MinorReadings = new ConcurrentQueue<Tuple<DateTime, ReadingData>>();
@@ -79,6 +87,7 @@ namespace AudioView.ViewModels
             BarMajorValues = new ObservableCollection<Tuple<DateTime, double>>();
             BarMinorValues = new ObservableCollection<Tuple<DateTime, double>>();
             LineValues = new ObservableCollection<Tuple<DateTime, double>>();
+            OctaveValues = new ObservableCollection<double>();
             MinorSpan = TimeSpan.FromTicks(settings.MinorInterval.Ticks * 15);
             MajorSpan = TimeSpan.FromTicks(settings.MajorInterval.Ticks * 15);
 
@@ -496,6 +505,19 @@ namespace AudioView.ViewModels
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
                     LineValues.Add(new Tuple<DateTime, double>(time, data.LAeq));
+
+                    // Add data for the octave bar
+                    OctaveValues.Clear();
+                    OctaveValues.Add(data.LAeqOctaveBandOneOne.Hz31_5);
+                    OctaveValues.Add(data.LAeqOctaveBandOneOne.Hz63);
+                    OctaveValues.Add(data.LAeqOctaveBandOneOne.Hz125);
+                    OctaveValues.Add(data.LAeqOctaveBandOneOne.Hz250);
+                    OctaveValues.Add(data.LAeqOctaveBandOneOne.Hz500);
+                    OctaveValues.Add(data.LAeqOctaveBandOneOne.Hz1000);
+                    OctaveValues.Add(data.LAeqOctaveBandOneOne.Hz2000);
+                    OctaveValues.Add(data.LAeqOctaveBandOneOne.Hz4000);
+                    OctaveValues.Add(data.LAeqOctaveBandOneOne.Hz8000);
+                    OctaveValues.Add(data.LAeqOctaveBandOneOne.Hz16000);
                 });
             });
         }
