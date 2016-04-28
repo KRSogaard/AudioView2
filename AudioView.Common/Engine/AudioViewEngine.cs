@@ -108,16 +108,21 @@ namespace AudioView.Common.Engine
                     this.minorTimer.Enabled = true;
                 if (this.majorTimer != null)
                     this.majorTimer.Enabled = true;
+
                 EngineStartedEvent?.Invoke();
 
-                nextMinor = DateTime.Now + TimeSpan.FromMilliseconds(this.minorTimer.Interval);
-                nextMajor = DateTime.Now + TimeSpan.FromMilliseconds(this.majorTimer.Interval);
-                lock (this.listeners)
+
+                if (!reader.IsTriggerMode())
                 {
-                    foreach (var listener in this.listeners)
+                    nextMinor = DateTime.Now + TimeSpan.FromMilliseconds(this.minorTimer.Interval);
+                    nextMajor = DateTime.Now + TimeSpan.FromMilliseconds(this.majorTimer.Interval);
+                    lock (this.listeners)
                     {
-                        listener.NextMajor(nextMajor);
-                        listener.NextMinor(nextMinor);
+                        foreach (var listener in this.listeners)
+                        {
+                            listener.NextMajor(nextMajor);
+                            listener.NextMinor(nextMinor);
+                        }
                     }
                 }
             });
