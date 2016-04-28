@@ -57,11 +57,9 @@ namespace AudioView.Common.Engine
 
                 this.minorTimer = new Timer(minorInterval.TotalMilliseconds);
                 this.minorTimer.Elapsed += OnMinorInterval;
-                nextMinor = DateTime.Now + TimeSpan.FromMilliseconds(this.minorTimer.Interval);
 
                 this.majorTimer = new Timer(majorInterval.TotalMilliseconds);
                 this.majorTimer.Elapsed += OnMajorInterval;
-                nextMajor = DateTime.Now + TimeSpan.FromMilliseconds(this.majorTimer.Interval);
             }
         }
         
@@ -72,8 +70,16 @@ namespace AudioView.Common.Engine
             logger.Debug("Registering new meter listener {0}.", listener);
             lock (this.listeners)
             {
-                listener.NextMajor(nextMajor);
-                listener.NextMinor(nextMinor);
+                // We add this safty as listernes might be registered before
+                // we know the next major time
+                if (nextMajor > DateTime.Now)
+                {
+                    listener.NextMajor(nextMajor);
+                }
+                if (nextMinor > DateTime.Now)
+                {
+                    listener.NextMinor(nextMinor);
+                }
                 this.listeners.Add(listener);
             }
         }
@@ -103,6 +109,17 @@ namespace AudioView.Common.Engine
                 if (this.majorTimer != null)
                     this.majorTimer.Enabled = true;
                 EngineStartedEvent?.Invoke();
+
+                nextMinor = DateTime.Now + TimeSpan.FromMilliseconds(this.minorTimer.Interval);
+                nextMajor = DateTime.Now + TimeSpan.FromMilliseconds(this.majorTimer.Interval);
+                lock (this.listeners)
+                {
+                    foreach (var listener in this.listeners)
+                    {
+                        listener.NextMajor(nextMajor);
+                        listener.NextMinor(nextMinor);
+                    }
+                }
             });
         }
 
