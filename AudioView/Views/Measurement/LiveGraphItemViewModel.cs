@@ -26,7 +26,7 @@ namespace AudioView.Views.Measurement
             methodName = method.Name;
 
             var name = methodName.Replace("_", ".");
-            name = name.Replace("get_", "");
+            name = name.Replace("get.", "");
             if (name.Contains("Hz"))
             {
                 name = name.Replace("Hz", "");
