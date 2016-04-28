@@ -39,6 +39,9 @@ namespace AudioView.Common.Data
         {
             LAeqOctaveBandOneOne = new OctaveBandOneOne()
             {
+                Hz16 = calculateOneOneFromOneThirs(lAeqOctaveBandOneThird.Hz12_5,
+                                                     lAeqOctaveBandOneThird.Hz16,
+                                                     lAeqOctaveBandOneThird.Hz20),
                 Hz31_5 = calculateOneOneFromOneThirs(lAeqOctaveBandOneThird.Hz25,
                                                      lAeqOctaveBandOneThird.Hz31_5,
                                                      lAeqOctaveBandOneThird.Hz40),
@@ -238,6 +241,7 @@ namespace AudioView.Common.Data
 
         public class OctaveBandOneOne
         {
+            public double Hz16 { get; set; }
             public double Hz31_5 { get; set; }
             public double Hz63 { get; set; }
             public double Hz125 { get; set; }

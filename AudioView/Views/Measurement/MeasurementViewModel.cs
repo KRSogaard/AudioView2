@@ -508,6 +508,7 @@ namespace AudioView.ViewModels
 
                     // Add data for the octave bar
                     OctaveValues.Clear();
+                    OctaveValues.Add(data.LAeqOctaveBandOneOne.Hz16);
                     OctaveValues.Add(data.LAeqOctaveBandOneOne.Hz31_5);
                     OctaveValues.Add(data.LAeqOctaveBandOneOne.Hz63);
                     OctaveValues.Add(data.LAeqOctaveBandOneOne.Hz125);

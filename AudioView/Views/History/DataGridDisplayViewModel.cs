@@ -304,6 +304,12 @@ namespace AudioView.Views.History
         }
 
 
+        private bool _OneOne_Hz16 = true;
+        public bool OneOne_Hz16
+        {
+            get { return _OneOne_Hz16; }
+            set { SetProperty(ref _OneOne_Hz16, value); }
+        }
         private bool _OneOne_Hz31_5 = true;
         public bool OneOne_Hz31_5
         {

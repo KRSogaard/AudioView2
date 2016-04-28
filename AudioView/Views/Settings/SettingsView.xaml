@@ -64,6 +64,7 @@
                 
                 <Expander Header="1/1 Octave">
                     <StackPanel>
+                        <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz16}" Content="16Hz" />
                         <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz31_5}" Content="31.5Hz" />
                         <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz125}" Content="125Hz" />
                         <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz250}" Content="250Hz" />

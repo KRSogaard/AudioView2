@@ -172,6 +172,9 @@
                                     Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz20000, StringFormat=#.0, Mode=OneWay}" />
 
                 <!-- 1/1 -->
+                <DataGridTextColumn Header="1/1 16Hz"
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz16, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneOne.Hz16, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="1/1 31.5Hz"
                                     Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz31_5, Converter={StaticResource BoolToVis}}"
                                     Binding="{Binding Reading.Data.LAeqOctaveBandOneOne.Hz31_5, StringFormat=#.0, Mode=OneWay}" />

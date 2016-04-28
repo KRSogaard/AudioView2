@@ -24,7 +24,7 @@ namespace AudioView.Common.Data
                                  "1/3 1250Hz{0}1/3 1600Hz{0}1/3 2000Hz{0}1/3 2500Hz{0}1/3 3150Hz{0}1/3 4000Hz{0}1/3 5000Hz{0}" +
                                  "1/3 6300Hz{0}1/3 8000Hz{0}1/3 10000Hz{0}1/3 12500Hz{0}1/3 16000Hz{0}1/3 20000Hz" +
                                  // 1/1 Octaves
-                                 "1/1 31_5Hz{0}1/1 63Hz{0}1/1 125Hz{0}1/1 250Hz{0}1/1 500Hz{0}1/1 1000Hz{0}" +
+                                 "1/1 16Hz{0}1/1 31_5Hz{0}1/1 63Hz{0}1/1 125Hz{0}1/1 250Hz{0}1/1 500Hz{0}1/1 1000Hz{0}" +
                                  "1/1 2000Hz{0}1/1 4000Hz{0}1/1 8000Hz{0}1/1 16000Hz{0}",
                                  seperator);
         }
@@ -52,10 +52,10 @@ namespace AudioView.Common.Data
                 formatToPrecision(Data.LAeqOctaveBandOneThird.Hz20000) + "{0}" +
 
                 // 1/1 Octaves
-                formatToPrecision(Data.LAeqOctaveBandOneOne.Hz31_5) + "{0}" + formatToPrecision(Data.LAeqOctaveBandOneOne.Hz63) + "{0}" + formatToPrecision(Data.LAeqOctaveBandOneOne.Hz125) + "{0}" +
-                formatToPrecision(Data.LAeqOctaveBandOneOne.Hz250) + "{0}" + formatToPrecision(Data.LAeqOctaveBandOneOne.Hz500) + "{0}" + formatToPrecision(Data.LAeqOctaveBandOneOne.Hz1000) + "{0}" +
-                formatToPrecision(Data.LAeqOctaveBandOneOne.Hz2000) + "{0}" + formatToPrecision(Data.LAeqOctaveBandOneOne.Hz4000) + "{0}" + formatToPrecision(Data.LAeqOctaveBandOneOne.Hz8000) + "{0}" +
-                formatToPrecision(Data.LAeqOctaveBandOneOne.Hz16000),
+                formatToPrecision(Data.LAeqOctaveBandOneOne.Hz16) + "{0}" + formatToPrecision(Data.LAeqOctaveBandOneOne.Hz31_5) + "{0}" + formatToPrecision(Data.LAeqOctaveBandOneOne.Hz63) + "{0}" +
+                formatToPrecision(Data.LAeqOctaveBandOneOne.Hz125) + "{0}" + formatToPrecision(Data.LAeqOctaveBandOneOne.Hz250) + "{0}" + formatToPrecision(Data.LAeqOctaveBandOneOne.Hz500) + "{0}" + 
+                formatToPrecision(Data.LAeqOctaveBandOneOne.Hz1000) + "{0}" + formatToPrecision(Data.LAeqOctaveBandOneOne.Hz2000) + "{0}" + formatToPrecision(Data.LAeqOctaveBandOneOne.Hz4000) + "{0}" + 
+                formatToPrecision(Data.LAeqOctaveBandOneOne.Hz8000) + "{0}" + formatToPrecision(Data.LAeqOctaveBandOneOne.Hz16000),
                 seperator);
         }
 

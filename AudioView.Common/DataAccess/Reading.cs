@@ -69,6 +69,7 @@ namespace AudioView.Common.DataAccess
         public double OOHz4000 { get; set; }
         public double OOHz8000 { get; set; }
         public double OOHz16000 { get; set; }
+        public double OOHz16 { get; set; }
     
         public virtual Project Project1 { get; set; }
     }

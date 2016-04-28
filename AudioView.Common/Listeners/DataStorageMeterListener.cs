@@ -172,6 +172,7 @@ namespace AudioView.Common.Listeners
                     Hz20000 = data.LAeqOctaveBandOneThird.Hz20000,
 
                     // 1/1
+                    OOHz16 = data.LAeqOctaveBandOneOne.Hz16,
                     OOHz31_5 = data.LAeqOctaveBandOneOne.Hz31_5,
                     OOHz63 = data.LAeqOctaveBandOneOne.Hz63,
                     OOHz125 = data.LAeqOctaveBandOneOne.Hz125,
