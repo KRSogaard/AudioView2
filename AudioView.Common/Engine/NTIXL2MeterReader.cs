@@ -113,7 +113,7 @@ namespace AudioView.Common.Engine
                 var reading = new ReadingData();
                 lock (previousReadings)
                 {
-                    var minorReadings = previousReadings.Where(x => x.Item1 >= DateTime.Now - minorInterval);
+                    var minorReadings = previousReadings.Where(x => x.Item1 >= DateTime.Now - minorInterval).ToList();
                     if (!minorReadings.Any())
                     {
                         return null;
