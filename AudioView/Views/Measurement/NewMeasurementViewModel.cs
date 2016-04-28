@@ -34,7 +34,7 @@ namespace AudioView.ViewModels
         public NewMeasurementViewModel(MeasurementsViewModel mainViewModel)
         {
             MainViewModel = mainViewModel;
-            ProjectName = "Untitled - " + DateTime.Now.ToString("yyyy-mm-dd hh-mm-ss");
+            ProjectName = "Untitled - " + DateTime.Now.ToString("yyyy-MM-dd hh-mm-ss");
             UseLocal = true;
             IsRemoteTested = false;
             LocalDevices = new ObservableCollection<string>();
