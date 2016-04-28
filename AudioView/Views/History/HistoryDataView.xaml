@@ -63,113 +63,142 @@
 
                 <!-- Octave Band -->
                 <DataGridTextColumn Header="6.3Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz6_3, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz6_3, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz6_3, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz6_3, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="8Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz8, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz8, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz8, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz8, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="10Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz10, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz10, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz10, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz10, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="12.5Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz12_5, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz12_5, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz12_5, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz12_5, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="16Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz16, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz16, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz16, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz16, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="20Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz20, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz20, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz20, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz20, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="25Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz25, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz25, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz25, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz25, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="31.5Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz31_5, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz31_5, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz31_5, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz31_5, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="40Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz40, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz40, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz40, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz40, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="50Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz50, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz50, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz50, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz50, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="63Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz63, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz63, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz63, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz63, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="80Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz80, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz80, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz80, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz80, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="100Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz100, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz100, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz100, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz100, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="125Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz125, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz125, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz125, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz125, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="160Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz160, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz160, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz160, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz160, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="200Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz200, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz200, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz200, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz200, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="250Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz250, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz250, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz250, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz250, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="315Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz315, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz315, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz315, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz315, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="400Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz400, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz400, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz400, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz400, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="500Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz500, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz500, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz500, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz500, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="630Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz630, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz630, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz630, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz630, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="800Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz800, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz800, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz800, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz800, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="1000Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz1000, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz1000, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz1000, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz1000, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="1250Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz1250, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz1250, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz1250, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz1250, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="1600Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz1600, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz1600, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz1600, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz1600, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="2000Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz2000, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz2000, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz2000, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz2000, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="2500Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz2500, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz2500, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz2500, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz2500, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="3150Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz3150, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz3150, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz3150, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz3150, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="4000Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz4000, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz4000, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz4000, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz4000, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="5000Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz5000, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz5000, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz5000, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz5000, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="6300Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz6300, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz6300, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz6300, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz6300, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="8000Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz8000, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz8000, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz8000, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz8000, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="10000Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz10000, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz10000, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz10000, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz10000, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="12500Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz12500, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz12500, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz12500, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz12500, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="16000Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz16000, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz16000, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz16000, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz16000, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="20000Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz20000, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz20000, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz20000, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz20000, StringFormat=#.0, Mode=OneWay}" />
+
+                <!-- 1/1 -->
+                <DataGridTextColumn Header="1/1 31.5Hz"
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz31_5, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneOne.Hz31_5, StringFormat=#.0, Mode=OneWay}" />
+                <DataGridTextColumn Header="1/1 125Hz"
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz125, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneOne.Hz125, StringFormat=#.0, Mode=OneWay}" />
+                <DataGridTextColumn Header="1/1 250Hz"
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz250, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneOne.Hz250, StringFormat=#.0, Mode=OneWay}" />
+                <DataGridTextColumn Header="1/1 500Hz"
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz500, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneOne.Hz500, StringFormat=#.0, Mode=OneWay}" />
+                <DataGridTextColumn Header="1/1 1000Hz"
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz1000, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneOne.Hz1000, StringFormat=#.0, Mode=OneWay}" />
+                <DataGridTextColumn Header="1/1 2000Hz"
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz2000, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneOne.Hz2000, StringFormat=#.0, Mode=OneWay}" />
+                <DataGridTextColumn Header="1/1 4000Hz"
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz4000, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneOne.Hz4000, StringFormat=#.0, Mode=OneWay}" />
+                <DataGridTextColumn Header="1/1 8000Hz"
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz8000, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneOne.Hz8000, StringFormat=#.0, Mode=OneWay}" />
+                <DataGridTextColumn Header="1/1 16000Hz"
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz16000, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneOne.Hz16000, StringFormat=#.0, Mode=OneWay}" />
             </DataGrid.Columns>
         </DataGrid>
 
@@ -202,113 +231,142 @@
 
                 <!-- Octave Band -->
                 <DataGridTextColumn Header="6.3Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz6_3, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz6_3, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz6_3, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz6_3, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="8Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz8, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz8, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz8, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz8, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="10Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz10, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz10, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz10, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz10, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="12.5Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz12_5, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz12_5, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz12_5, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz12_5, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="16Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz16, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz16, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz16, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz16, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="20Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz20, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz20, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz20, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz20, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="25Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz25, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz25, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz25, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz25, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="31.5Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz31_5, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz31_5, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz31_5, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz31_5, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="40Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz40, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz40, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz40, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz40, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="50Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz50, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz50, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz50, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz50, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="63Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz63, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz63, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz63, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz63, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="80Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz80, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz80, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz80, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz80, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="100Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz100, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz100, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz100, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz100, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="125Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz125, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz125, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz125, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz125, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="160Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz160, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz160, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz160, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz160, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="200Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz200, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz200, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz200, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz200, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="250Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz250, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz250, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz250, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz250, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="315Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz315, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz315, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz315, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz315, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="400Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz400, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz400, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz400, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz400, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="500Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz500, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz500, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz500, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz500, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="630Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz630, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz630, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz630, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz630, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="800Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz800, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz800, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz800, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz800, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="1000Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz1000, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz1000, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz1000, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz1000, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="1250Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz1250, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz1250, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz1250, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz1250, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="1600Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz1600, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz1600, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz1600, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz1600, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="2000Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz2000, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz2000, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz2000, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz2000, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="2500Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz2500, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz2500, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz2500, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz2500, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="3150Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz3150, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz3150, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz3150, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz3150, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="4000Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz4000, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz4000, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz4000, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz4000, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="5000Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz5000, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz5000, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz5000, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz5000, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="6300Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz6300, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz6300, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz6300, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz6300, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="8000Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz8000, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz8000, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz8000, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz8000, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="10000Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz10000, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz10000, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz10000, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz10000, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="12500Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz12500, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz12500, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz12500, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz12500, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="16000Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz16000, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz16000, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz16000, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz16000, StringFormat=#.0, Mode=OneWay}" />
                 <DataGridTextColumn Header="20000Hz"
-                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz20000, Converter={StaticResource BoolToVis}}"
-                                    Binding="{Binding Reading.Data.LAeqOctaveBand.Hz20000, StringFormat=#.0, Mode=OneWay}" />
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneThird_Hz20000, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneThird.Hz20000, StringFormat=#.0, Mode=OneWay}" />
+
+                <!-- 1/1 -->
+                <DataGridTextColumn Header="1/1 31.5Hz"
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz31_5, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneOne.Hz31_5, StringFormat=#.0, Mode=OneWay}" />
+                <DataGridTextColumn Header="1/1 125Hz"
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz125, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneOne.Hz125, StringFormat=#.0, Mode=OneWay}" />
+                <DataGridTextColumn Header="1/1 250Hz"
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz250, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneOne.Hz250, StringFormat=#.0, Mode=OneWay}" />
+                <DataGridTextColumn Header="1/1 500Hz"
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz500, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneOne.Hz500, StringFormat=#.0, Mode=OneWay}" />
+                <DataGridTextColumn Header="1/1 1000Hz"
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz1000, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneOne.Hz1000, StringFormat=#.0, Mode=OneWay}" />
+                <DataGridTextColumn Header="1/1 2000Hz"
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz2000, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneOne.Hz2000, StringFormat=#.0, Mode=OneWay}" />
+                <DataGridTextColumn Header="1/1 4000Hz"
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz4000, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneOne.Hz4000, StringFormat=#.0, Mode=OneWay}" />
+                <DataGridTextColumn Header="1/1 8000Hz"
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz8000, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneOne.Hz8000, StringFormat=#.0, Mode=OneWay}" />
+                <DataGridTextColumn Header="1/1 16000Hz"
+                                    Visibility="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=OneOne_Hz16000, Converter={StaticResource BoolToVis}}"
+                                    Binding="{Binding Reading.Data.LAeqOctaveBandOneOne.Hz16000, StringFormat=#.0, Mode=OneWay}" />
             </DataGrid.Columns>
         </DataGrid>
 

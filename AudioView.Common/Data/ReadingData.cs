@@ -1,4 +1,6 @@
-﻿namespace AudioView.Common.Data
+﻿using System;
+
+namespace AudioView.Common.Data
 {
     public class ReadingData
     {
@@ -7,16 +9,75 @@
         public double LAMin { get; set; }
         public double LZMax { get; set; }
         public double LZMin { get; set; }
-        public OctaveBand LAeqOctaveBand { get; set; }
+        private OctaveBandOneThird lAeqOctaveBandOneThird;
+        public OctaveBandOneThird LAeqOctaveBandOneThird
+        {
+            get {
+                return lAeqOctaveBandOneThird;
+            }
+            set
+            {
+                lAeqOctaveBandOneThird = value;
+                // Update 1:1 band
+                calculateOneOneBand();
+            }
+        }
+
+        public OctaveBandOneOne LAeqOctaveBandOneOne { get; set; }
 
         public ReadingData()
         {
-            LAeqOctaveBand = new OctaveBand();
+            LAeqOctaveBandOneThird = new OctaveBandOneThird();
         }
 
         public string SerializeToOneLine(string splitter)
         {
             return LAeq.ToString();
+        }
+
+        private void calculateOneOneBand()
+        {
+            LAeqOctaveBandOneOne = new OctaveBandOneOne()
+            {
+                Hz31_5 = calculateOneOneFromOneThirs(lAeqOctaveBandOneThird.Hz25,
+                                                     lAeqOctaveBandOneThird.Hz31_5,
+                                                     lAeqOctaveBandOneThird.Hz40),
+                Hz63 = calculateOneOneFromOneThirs(lAeqOctaveBandOneThird.Hz50,
+                                                     lAeqOctaveBandOneThird.Hz63,
+                                                     lAeqOctaveBandOneThird.Hz80),
+                Hz125 = calculateOneOneFromOneThirs(lAeqOctaveBandOneThird.Hz100,
+                                                     lAeqOctaveBandOneThird.Hz125,
+                                                     lAeqOctaveBandOneThird.Hz160),
+                Hz250 = calculateOneOneFromOneThirs(lAeqOctaveBandOneThird.Hz200,
+                                                     lAeqOctaveBandOneThird.Hz250,
+                                                     lAeqOctaveBandOneThird.Hz315),
+                Hz500 = calculateOneOneFromOneThirs(lAeqOctaveBandOneThird.Hz400,
+                                                     lAeqOctaveBandOneThird.Hz500,
+                                                     lAeqOctaveBandOneThird.Hz630),
+                Hz1000 = calculateOneOneFromOneThirs(lAeqOctaveBandOneThird.Hz800,
+                                                     lAeqOctaveBandOneThird.Hz1000,
+                                                     lAeqOctaveBandOneThird.Hz1250),
+                Hz2000 = calculateOneOneFromOneThirs(lAeqOctaveBandOneThird.Hz1600,
+                                                     lAeqOctaveBandOneThird.Hz2000,
+                                                     lAeqOctaveBandOneThird.Hz2500),
+                Hz4000 = calculateOneOneFromOneThirs(lAeqOctaveBandOneThird.Hz3150,
+                                                     lAeqOctaveBandOneThird.Hz4000,
+                                                     lAeqOctaveBandOneThird.Hz5000),
+                Hz8000 = calculateOneOneFromOneThirs(lAeqOctaveBandOneThird.Hz6300,
+                                                     lAeqOctaveBandOneThird.Hz8000,
+                                                     lAeqOctaveBandOneThird.Hz10000),
+                Hz16000 = calculateOneOneFromOneThirs(lAeqOctaveBandOneThird.Hz12500,
+                                                     lAeqOctaveBandOneThird.Hz16000,
+                                                     lAeqOctaveBandOneThird.Hz20000)
+            };
+        }
+
+        private double calculateOneOneFromOneThirs(double one, double two, double three)
+        {
+            return 10*Math.Log(
+                Math.Pow(10, (one/10)) +
+                Math.Pow(10, (two/10)) +
+                Math.Pow(10, (three/10)));
         }
 
         public static ReadingData operator +(ReadingData c1, ReadingData c2)
@@ -28,7 +89,7 @@
                 LAMin = c1.LAMin + c2.LAMin,
                 LZMax = c1.LZMax + c2.LZMax,
                 LZMin = c1.LZMin + c2.LZMin,
-                LAeqOctaveBand = c1.LAeqOctaveBand + c2.LAeqOctaveBand
+                LAeqOctaveBandOneThird = c1.LAeqOctaveBandOneThird + c2.LAeqOctaveBandOneThird
             };
         }
 
@@ -41,11 +102,11 @@
                 LAMin = c1.LAMin / n,
                 LZMax = c1.LZMax / n,
                 LZMin = c1.LZMin / n,
-                LAeqOctaveBand = c1.LAeqOctaveBand / n
+                LAeqOctaveBandOneThird = c1.LAeqOctaveBandOneThird / n
             };
         }
-
-        public class OctaveBand
+        
+        public class OctaveBandOneThird
         {
             public double Hz6_3 { get; set; }
             public double Hz8 { get; set; }
@@ -84,11 +145,11 @@
             public double Hz16000 { get; set; }
             public double Hz20000 { get; set; }
 
-            public static OctaveBand operator +(OctaveBand c1, OctaveBand c2)
+            public static OctaveBandOneThird operator +(OctaveBandOneThird c1, OctaveBandOneThird c2)
             {
                 if (c1 == null || c2 == null)
                     return null;
-                return new OctaveBand()
+                return new OctaveBandOneThird()
                 {
                     Hz6_3 = c1.Hz6_3 + c2.Hz6_3,
                     Hz8 = c1.Hz8 + c2.Hz8,
@@ -128,12 +189,12 @@
                     Hz20000 = c1.Hz20000 + c2.Hz20000
                 };
             }
-            public static OctaveBand operator /(OctaveBand c1, int n)
+            public static OctaveBandOneThird operator /(OctaveBandOneThird c1, int n)
             {
 
                 if (c1 == null)
                     return null;
-                return new OctaveBand()
+                return new OctaveBandOneThird()
                 {
                     Hz6_3 = c1.Hz6_3 / n,
                     Hz8 = c1.Hz8 / n,
@@ -173,6 +234,20 @@
                     Hz20000 = c1.Hz20000 / n
                 };
             }
+        }
+
+        public class OctaveBandOneOne
+        {
+            public double Hz31_5 { get; set; }
+            public double Hz63 { get; set; }
+            public double Hz125 { get; set; }
+            public double Hz250 { get; set; }
+            public double Hz500 { get; set; }
+            public double Hz1000 { get; set; }
+            public double Hz2000 { get; set; }
+            public double Hz4000 { get; set; }
+            public double Hz8000 { get; set; }
+            public double Hz16000 { get; set; }
         }
     }
 }

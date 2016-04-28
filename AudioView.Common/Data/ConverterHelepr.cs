@@ -35,7 +35,7 @@ namespace AudioView.Common.Data
                     LAMin = r.LAMin,
                     LZMax = r.LZMax,
                     LZMin = r.LZMin,
-                    LAeqOctaveBand = new ReadingData.OctaveBand()
+                    LAeqOctaveBandOneThird = new ReadingData.OctaveBandOneThird()
                     {
                         Hz6_3 = r.Hz6_3,
                         Hz8 = r.Hz8,

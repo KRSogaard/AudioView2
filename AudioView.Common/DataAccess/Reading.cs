@@ -59,6 +59,16 @@ namespace AudioView.Common.DataAccess
         public double Hz12500 { get; set; }
         public double Hz16000 { get; set; }
         public double Hz20000 { get; set; }
+        public double OOHz31_5 { get; set; }
+        public double OOHz63 { get; set; }
+        public double OOHz125 { get; set; }
+        public double OOHz250 { get; set; }
+        public double OOHz500 { get; set; }
+        public double OOHz1000 { get; set; }
+        public double OOHz2000 { get; set; }
+        public double OOHz4000 { get; set; }
+        public double OOHz8000 { get; set; }
+        public double OOHz16000 { get; set; }
     
         public virtual Project Project1 { get; set; }
     }

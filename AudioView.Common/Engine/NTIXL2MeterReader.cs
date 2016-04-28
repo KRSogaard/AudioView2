@@ -86,7 +86,7 @@ namespace AudioView.Common.Engine
 
                         // Getting EQ
                         this.WriteLine(serialPort, NTIXL2Commands.Octive);
-                        reading.LAeqOctaveBand = NTIXL2Utilities.ParseOctive(ReadToDB(serialPort));
+                        reading.LAeqOctaveBandOneThird = NTIXL2Utilities.ParseOctive(ReadToDB(serialPort));
                         
                         previousReadings.AddLast(new Tuple<DateTime, ReadingData>(DateTime.Now, reading));
                         logger.Trace("LAeq response {0} from NTI LX2 port {1}.", reading.LAeq, portName);
@@ -443,52 +443,52 @@ namespace AudioView.Common.Engine
         /// </summary>
         /// <param name="r">Result where octive band data needs to be added to</param>
         /// <param name="line">The line of Octive bands</param>
-        public static ReadingData.OctaveBand ParseOctive(String line)
+        public static ReadingData.OctaveBandOneThird ParseOctive(String line)
         {
             line = line.Split(new string[] { "dB" }, StringSplitOptions.RemoveEmptyEntries).First().Trim();
 
             // we need to split the octives by a commer
             String[] octives = line.Split(',');
             
-            ReadingData.OctaveBand octaveBand = new ReadingData.OctaveBand();
+            ReadingData.OctaveBandOneThird octaveBandOneThird = new ReadingData.OctaveBandOneThird();
             // assign the values
-            octaveBand.Hz6_3 = ParseMeasurement(octives[0]);
-            octaveBand.Hz8 = ParseMeasurement(octives[1]);
-            octaveBand.Hz10 = ParseMeasurement(octives[2]);
-            octaveBand.Hz12_5 = ParseMeasurement(octives[3]);
-            octaveBand.Hz16 = ParseMeasurement(octives[4]);
-            octaveBand.Hz20 = ParseMeasurement(octives[5]);
-            octaveBand.Hz25 = ParseMeasurement(octives[6]);
-            octaveBand.Hz31_5 = ParseMeasurement(octives[7]);
-            octaveBand.Hz40 = ParseMeasurement(octives[8]);
-            octaveBand.Hz50 = ParseMeasurement(octives[9]);
-            octaveBand.Hz63 = ParseMeasurement(octives[10]);
-            octaveBand.Hz80 = ParseMeasurement(octives[11]);
-            octaveBand.Hz100 = ParseMeasurement(octives[12]);
-            octaveBand.Hz125 = ParseMeasurement(octives[13]);
-            octaveBand.Hz160 = ParseMeasurement(octives[14]);
-            octaveBand.Hz200 = ParseMeasurement(octives[15]);
-            octaveBand.Hz250 = ParseMeasurement(octives[16]);
-            octaveBand.Hz315 = ParseMeasurement(octives[17]);
-            octaveBand.Hz400 = ParseMeasurement(octives[18]);
-            octaveBand.Hz500 = ParseMeasurement(octives[19]);
-            octaveBand.Hz630 = ParseMeasurement(octives[20]);
-            octaveBand.Hz800 = ParseMeasurement(octives[21]);
-            octaveBand.Hz1000 = ParseMeasurement(octives[22]);
-            octaveBand.Hz1250 = ParseMeasurement(octives[23]);
-            octaveBand.Hz1600 = ParseMeasurement(octives[24]);
-            octaveBand.Hz2000 = ParseMeasurement(octives[25]);
-            octaveBand.Hz2500 = ParseMeasurement(octives[26]);
-            octaveBand.Hz3150 = ParseMeasurement(octives[27]);
-            octaveBand.Hz4000 = ParseMeasurement(octives[28]);
-            octaveBand.Hz5000 = ParseMeasurement(octives[29]);
-            octaveBand.Hz6300 = ParseMeasurement(octives[30]);
-            octaveBand.Hz8000 = ParseMeasurement(octives[31]);
-            octaveBand.Hz10000 = ParseMeasurement(octives[32]);
-            octaveBand.Hz12500 = ParseMeasurement(octives[33]);
-            octaveBand.Hz16000 = ParseMeasurement(octives[34]);
-            octaveBand.Hz20000 = ParseMeasurement(octives[35]);
-            return octaveBand;
+            octaveBandOneThird.Hz6_3 = ParseMeasurement(octives[0]);
+            octaveBandOneThird.Hz8 = ParseMeasurement(octives[1]);
+            octaveBandOneThird.Hz10 = ParseMeasurement(octives[2]);
+            octaveBandOneThird.Hz12_5 = ParseMeasurement(octives[3]);
+            octaveBandOneThird.Hz16 = ParseMeasurement(octives[4]);
+            octaveBandOneThird.Hz20 = ParseMeasurement(octives[5]);
+            octaveBandOneThird.Hz25 = ParseMeasurement(octives[6]);
+            octaveBandOneThird.Hz31_5 = ParseMeasurement(octives[7]);
+            octaveBandOneThird.Hz40 = ParseMeasurement(octives[8]);
+            octaveBandOneThird.Hz50 = ParseMeasurement(octives[9]);
+            octaveBandOneThird.Hz63 = ParseMeasurement(octives[10]);
+            octaveBandOneThird.Hz80 = ParseMeasurement(octives[11]);
+            octaveBandOneThird.Hz100 = ParseMeasurement(octives[12]);
+            octaveBandOneThird.Hz125 = ParseMeasurement(octives[13]);
+            octaveBandOneThird.Hz160 = ParseMeasurement(octives[14]);
+            octaveBandOneThird.Hz200 = ParseMeasurement(octives[15]);
+            octaveBandOneThird.Hz250 = ParseMeasurement(octives[16]);
+            octaveBandOneThird.Hz315 = ParseMeasurement(octives[17]);
+            octaveBandOneThird.Hz400 = ParseMeasurement(octives[18]);
+            octaveBandOneThird.Hz500 = ParseMeasurement(octives[19]);
+            octaveBandOneThird.Hz630 = ParseMeasurement(octives[20]);
+            octaveBandOneThird.Hz800 = ParseMeasurement(octives[21]);
+            octaveBandOneThird.Hz1000 = ParseMeasurement(octives[22]);
+            octaveBandOneThird.Hz1250 = ParseMeasurement(octives[23]);
+            octaveBandOneThird.Hz1600 = ParseMeasurement(octives[24]);
+            octaveBandOneThird.Hz2000 = ParseMeasurement(octives[25]);
+            octaveBandOneThird.Hz2500 = ParseMeasurement(octives[26]);
+            octaveBandOneThird.Hz3150 = ParseMeasurement(octives[27]);
+            octaveBandOneThird.Hz4000 = ParseMeasurement(octives[28]);
+            octaveBandOneThird.Hz5000 = ParseMeasurement(octives[29]);
+            octaveBandOneThird.Hz6300 = ParseMeasurement(octives[30]);
+            octaveBandOneThird.Hz8000 = ParseMeasurement(octives[31]);
+            octaveBandOneThird.Hz10000 = ParseMeasurement(octives[32]);
+            octaveBandOneThird.Hz12500 = ParseMeasurement(octives[33]);
+            octaveBandOneThird.Hz16000 = ParseMeasurement(octives[34]);
+            octaveBandOneThird.Hz20000 = ParseMeasurement(octives[35]);
+            return octaveBandOneThird;
         }
 
         /// <summary>

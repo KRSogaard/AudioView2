@@ -67,6 +67,16 @@
           <Property Name="Hz12500" Type="float" Nullable="false" />
           <Property Name="Hz16000" Type="float" Nullable="false" />
           <Property Name="Hz20000" Type="float" Nullable="false" />
+          <Property Name="OOHz31_5" Type="float" Nullable="false" />
+          <Property Name="OOHz63" Type="float" Nullable="false" />
+          <Property Name="OOHz125" Type="float" Nullable="false" />
+          <Property Name="OOHz250" Type="float" Nullable="false" />
+          <Property Name="OOHz500" Type="float" Nullable="false" />
+          <Property Name="OOHz1000" Type="float" Nullable="false" />
+          <Property Name="OOHz2000" Type="float" Nullable="false" />
+          <Property Name="OOHz4000" Type="float" Nullable="false" />
+          <Property Name="OOHz8000" Type="float" Nullable="false" />
+          <Property Name="OOHz16000" Type="float" Nullable="false" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
@@ -177,6 +187,16 @@
           <Property Name="Hz12500" Type="Double" Nullable="false" />
           <Property Name="Hz16000" Type="Double" Nullable="false" />
           <Property Name="Hz20000" Type="Double" Nullable="false" />
+          <Property Name="OOHz31_5" Type="Double" Nullable="false" />
+          <Property Name="OOHz63" Type="Double" Nullable="false" />
+          <Property Name="OOHz125" Type="Double" Nullable="false" />
+          <Property Name="OOHz250" Type="Double" Nullable="false" />
+          <Property Name="OOHz500" Type="Double" Nullable="false" />
+          <Property Name="OOHz1000" Type="Double" Nullable="false" />
+          <Property Name="OOHz2000" Type="Double" Nullable="false" />
+          <Property Name="OOHz4000" Type="Double" Nullable="false" />
+          <Property Name="OOHz8000" Type="Double" Nullable="false" />
+          <Property Name="OOHz16000" Type="Double" Nullable="false" />
         </EntityType>
         <Association Name="FK_Readings_Projects">
           <End Type="AudioViewModel.Project" Role="Project" Multiplicity="1">
@@ -224,6 +244,16 @@
           <EntitySetMapping Name="Readings">
             <EntityTypeMapping TypeName="AudioViewModel.Reading">
               <MappingFragment StoreEntitySet="Readings">
+                <ScalarProperty Name="OOHz16000" ColumnName="OOHz16000" />
+                <ScalarProperty Name="OOHz8000" ColumnName="OOHz8000" />
+                <ScalarProperty Name="OOHz4000" ColumnName="OOHz4000" />
+                <ScalarProperty Name="OOHz2000" ColumnName="OOHz2000" />
+                <ScalarProperty Name="OOHz1000" ColumnName="OOHz1000" />
+                <ScalarProperty Name="OOHz500" ColumnName="OOHz500" />
+                <ScalarProperty Name="OOHz250" ColumnName="OOHz250" />
+                <ScalarProperty Name="OOHz125" ColumnName="OOHz125" />
+                <ScalarProperty Name="OOHz63" ColumnName="OOHz63" />
+                <ScalarProperty Name="OOHz31_5" ColumnName="OOHz31_5" />
                 <ScalarProperty Name="Hz20000" ColumnName="Hz20000" />
                 <ScalarProperty Name="Hz16000" ColumnName="Hz16000" />
                 <ScalarProperty Name="Hz12500" ColumnName="Hz12500" />
