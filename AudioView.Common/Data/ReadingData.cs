@@ -77,7 +77,7 @@ namespace AudioView.Common.Data
 
         private double calculateOneOneFromOneThirs(double one, double two, double three)
         {
-            return 10*Math.Log(
+            return 10*Math.Log10(
                 Math.Pow(10, (one/10)) +
                 Math.Pow(10, (two/10)) +
                 Math.Pow(10, (three/10)));
