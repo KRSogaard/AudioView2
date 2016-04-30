@@ -90,6 +90,7 @@
     <Compile Include="Data\Project.cs" />
     <Compile Include="Data\Reading.cs" />
     <Compile Include="Data\User.cs" />
+    <Compile Include="decibelHelper.cs" />
     <Compile Include="Engine\NTIXL2MeterReader.cs" />
     <Compile Include="Engine\RemoteMeterReader.cs" />
     <Compile Include="Listeners\DataStorageMeterListener.cs" />

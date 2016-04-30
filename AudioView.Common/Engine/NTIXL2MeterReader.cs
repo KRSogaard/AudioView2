@@ -119,12 +119,7 @@ namespace AudioView.Common.Engine
                         return null;
                     }
 
-                    foreach (var previousReading in minorReadings)
-                    {
-                        reading = reading + previousReading.Item2;
-                    }
-
-                    reading /= minorReadings.Count();
+                    reading = ReadingData.Average(minorReadings.Select(x=>x.Item2).ToList());
                 }
 
                 return reading;
@@ -144,12 +139,8 @@ namespace AudioView.Common.Engine
                     {
                         return null;
                     }
-                    foreach (var previousReading in previousReadings)
-                    {
-                        reading = reading + previousReading.Item2;
-                    }
 
-                    reading /= previousReadings.Count;
+                    reading = ReadingData.Average(previousReadings.Select(x => x.Item2).ToList());
                 }
 
                 return reading;

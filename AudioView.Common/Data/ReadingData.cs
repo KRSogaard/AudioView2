@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace AudioView.Common.Data
 {
@@ -39,76 +41,170 @@ namespace AudioView.Common.Data
         {
             LAeqOctaveBandOneOne = new OctaveBandOneOne()
             {
-                Hz16 = calculateOneOneFromOneThirs(lAeqOctaveBandOneThird.Hz12_5,
+                Hz16 = DecibelHelper.CalculateOneOneOctaveBand(lAeqOctaveBandOneThird.Hz12_5,
                                                      lAeqOctaveBandOneThird.Hz16,
                                                      lAeqOctaveBandOneThird.Hz20),
-                Hz31_5 = calculateOneOneFromOneThirs(lAeqOctaveBandOneThird.Hz25,
+                Hz31_5 = DecibelHelper.CalculateOneOneOctaveBand(lAeqOctaveBandOneThird.Hz25,
                                                      lAeqOctaveBandOneThird.Hz31_5,
                                                      lAeqOctaveBandOneThird.Hz40),
-                Hz63 = calculateOneOneFromOneThirs(lAeqOctaveBandOneThird.Hz50,
+                Hz63 = DecibelHelper.CalculateOneOneOctaveBand(lAeqOctaveBandOneThird.Hz50,
                                                      lAeqOctaveBandOneThird.Hz63,
                                                      lAeqOctaveBandOneThird.Hz80),
-                Hz125 = calculateOneOneFromOneThirs(lAeqOctaveBandOneThird.Hz100,
+                Hz125 = DecibelHelper.CalculateOneOneOctaveBand(lAeqOctaveBandOneThird.Hz100,
                                                      lAeqOctaveBandOneThird.Hz125,
                                                      lAeqOctaveBandOneThird.Hz160),
-                Hz250 = calculateOneOneFromOneThirs(lAeqOctaveBandOneThird.Hz200,
+                Hz250 = DecibelHelper.CalculateOneOneOctaveBand(lAeqOctaveBandOneThird.Hz200,
                                                      lAeqOctaveBandOneThird.Hz250,
                                                      lAeqOctaveBandOneThird.Hz315),
-                Hz500 = calculateOneOneFromOneThirs(lAeqOctaveBandOneThird.Hz400,
+                Hz500 = DecibelHelper.CalculateOneOneOctaveBand(lAeqOctaveBandOneThird.Hz400,
                                                      lAeqOctaveBandOneThird.Hz500,
                                                      lAeqOctaveBandOneThird.Hz630),
-                Hz1000 = calculateOneOneFromOneThirs(lAeqOctaveBandOneThird.Hz800,
+                Hz1000 = DecibelHelper.CalculateOneOneOctaveBand(lAeqOctaveBandOneThird.Hz800,
                                                      lAeqOctaveBandOneThird.Hz1000,
                                                      lAeqOctaveBandOneThird.Hz1250),
-                Hz2000 = calculateOneOneFromOneThirs(lAeqOctaveBandOneThird.Hz1600,
+                Hz2000 = DecibelHelper.CalculateOneOneOctaveBand(lAeqOctaveBandOneThird.Hz1600,
                                                      lAeqOctaveBandOneThird.Hz2000,
                                                      lAeqOctaveBandOneThird.Hz2500),
-                Hz4000 = calculateOneOneFromOneThirs(lAeqOctaveBandOneThird.Hz3150,
+                Hz4000 = DecibelHelper.CalculateOneOneOctaveBand(lAeqOctaveBandOneThird.Hz3150,
                                                      lAeqOctaveBandOneThird.Hz4000,
                                                      lAeqOctaveBandOneThird.Hz5000),
-                Hz8000 = calculateOneOneFromOneThirs(lAeqOctaveBandOneThird.Hz6300,
+                Hz8000 = DecibelHelper.CalculateOneOneOctaveBand(lAeqOctaveBandOneThird.Hz6300,
                                                      lAeqOctaveBandOneThird.Hz8000,
                                                      lAeqOctaveBandOneThird.Hz10000),
-                Hz16000 = calculateOneOneFromOneThirs(lAeqOctaveBandOneThird.Hz12500,
+                Hz16000 = DecibelHelper.CalculateOneOneOctaveBand(lAeqOctaveBandOneThird.Hz12500,
                                                      lAeqOctaveBandOneThird.Hz16000,
                                                      lAeqOctaveBandOneThird.Hz20000)
             };
         }
 
-        private double calculateOneOneFromOneThirs(double one, double two, double three)
+        public static ReadingData Average(List<ReadingData> readings)
         {
-            return 10*Math.Log10(
-                Math.Pow(10, (one/10)) +
-                Math.Pow(10, (two/10)) +
-                Math.Pow(10, (three/10)));
+            var result = new ReadingData()
+            {
+                lAeqOctaveBandOneThird = new OctaveBandOneThird(),
+                LAeqOctaveBandOneOne = new OctaveBandOneOne()
+            };
+            foreach (var readingData in readings)
+            {
+                result.LAeq += DecibelHelper.GetPowerFromDecibel(readingData.LAeq);
+                result.LAMax += DecibelHelper.GetPowerFromDecibel(readingData.LAMax);
+                result.LAMin += DecibelHelper.GetPowerFromDecibel(readingData.LAMin);
+                result.LZMax += DecibelHelper.GetPowerFromDecibel(readingData.LZMax);
+                result.LZMin += DecibelHelper.GetPowerFromDecibel(readingData.LZMin);
+
+                // OneOne
+                result.LAeqOctaveBandOneOne.Hz16 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneOne.Hz16);
+                result.LAeqOctaveBandOneOne.Hz31_5 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneOne.Hz31_5);
+                result.LAeqOctaveBandOneOne.Hz63 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneOne.Hz63);
+                result.LAeqOctaveBandOneOne.Hz125 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneOne.Hz125);
+                result.LAeqOctaveBandOneOne.Hz250 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneOne.Hz250);
+                result.LAeqOctaveBandOneOne.Hz500 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneOne.Hz500);
+                result.LAeqOctaveBandOneOne.Hz1000 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneOne.Hz1000);
+                result.LAeqOctaveBandOneOne.Hz2000 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneOne.Hz2000);
+                result.LAeqOctaveBandOneOne.Hz4000 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneOne.Hz4000);
+                result.LAeqOctaveBandOneOne.Hz8000 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneOne.Hz8000);
+                result.LAeqOctaveBandOneOne.Hz16000 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneOne.Hz16000);
+
+                // OneThird
+                result.LAeqOctaveBandOneThird.Hz6_3 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz6_3);
+                result.LAeqOctaveBandOneThird.Hz8 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz8);
+                result.LAeqOctaveBandOneThird.Hz10 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz10);
+                result.LAeqOctaveBandOneThird.Hz12_5 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz12_5);
+                result.LAeqOctaveBandOneThird.Hz16 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz16);
+                result.LAeqOctaveBandOneThird.Hz20 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz20);
+                result.LAeqOctaveBandOneThird.Hz25 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz25);
+                result.LAeqOctaveBandOneThird.Hz31_5 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz31_5);
+                result.LAeqOctaveBandOneThird.Hz40 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz40);
+                result.LAeqOctaveBandOneThird.Hz50 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz50);
+                result.LAeqOctaveBandOneThird.Hz63 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz63);
+                result.LAeqOctaveBandOneThird.Hz80 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz80);
+                result.LAeqOctaveBandOneThird.Hz100 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz100);
+                result.LAeqOctaveBandOneThird.Hz125 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz125);
+                result.LAeqOctaveBandOneThird.Hz160 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz160);
+                result.LAeqOctaveBandOneThird.Hz200 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz200);
+                result.LAeqOctaveBandOneThird.Hz250 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz250);
+                result.LAeqOctaveBandOneThird.Hz315 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz315);
+                result.LAeqOctaveBandOneThird.Hz400 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz400);
+                result.LAeqOctaveBandOneThird.Hz500 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz500);
+                result.LAeqOctaveBandOneThird.Hz630 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz630);
+                result.LAeqOctaveBandOneThird.Hz800 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz800);
+                result.LAeqOctaveBandOneThird.Hz1000 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz1000);
+                result.LAeqOctaveBandOneThird.Hz1250 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz1250);
+                result.LAeqOctaveBandOneThird.Hz1600 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz1600);
+                result.LAeqOctaveBandOneThird.Hz2000 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz2000);
+                result.LAeqOctaveBandOneThird.Hz2500 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz2500);
+                result.LAeqOctaveBandOneThird.Hz3150 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz3150);
+                result.LAeqOctaveBandOneThird.Hz4000 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz4000);
+                result.LAeqOctaveBandOneThird.Hz5000 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz5000);
+                result.LAeqOctaveBandOneThird.Hz6300 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz6300);
+                result.LAeqOctaveBandOneThird.Hz8000 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz8000);
+                result.LAeqOctaveBandOneThird.Hz10000 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz10000);
+                result.LAeqOctaveBandOneThird.Hz12500 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz12500);
+                result.LAeqOctaveBandOneThird.Hz16000 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz16000);
+                result.LAeqOctaveBandOneThird.Hz20000 += DecibelHelper.GetPowerFromDecibel(readingData.LAeqOctaveBandOneThird.Hz20000);
+            }
+
+            // Avarage the power and convert that to decibel
+            result.LAeq = DecibelHelper.GetDecibelFromPower(result.LAeq / readings.Count);
+            result.LAMax = DecibelHelper.GetDecibelFromPower(result.LAMax / readings.Count);
+            result.LAMin = DecibelHelper.GetDecibelFromPower(result.LAMin / readings.Count);
+            result.LZMax = DecibelHelper.GetDecibelFromPower(result.LZMax / readings.Count);
+            result.LZMin = DecibelHelper.GetDecibelFromPower(result.LZMin / readings.Count);
+
+            // OneOne
+            result.LAeqOctaveBandOneOne.Hz16 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneOne.Hz16 / readings.Count);
+            result.LAeqOctaveBandOneOne.Hz31_5 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneOne.Hz31_5 / readings.Count);
+            result.LAeqOctaveBandOneOne.Hz63 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneOne.Hz63 / readings.Count);
+            result.LAeqOctaveBandOneOne.Hz125 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneOne.Hz125 / readings.Count);
+            result.LAeqOctaveBandOneOne.Hz250 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneOne.Hz250 / readings.Count);
+            result.LAeqOctaveBandOneOne.Hz500 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneOne.Hz500 / readings.Count);
+            result.LAeqOctaveBandOneOne.Hz1000 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneOne.Hz1000 / readings.Count);
+            result.LAeqOctaveBandOneOne.Hz2000 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneOne.Hz2000 / readings.Count);
+            result.LAeqOctaveBandOneOne.Hz4000 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneOne.Hz4000 / readings.Count);
+            result.LAeqOctaveBandOneOne.Hz8000 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneOne.Hz8000 / readings.Count);
+            result.LAeqOctaveBandOneOne.Hz16000 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneOne.Hz16000 / readings.Count);
+
+            // OneThird
+            result.LAeqOctaveBandOneThird.Hz6_3 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz6_3 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz8 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz8 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz10 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz10 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz12_5 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz12_5 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz16 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz16 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz20 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz20 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz25 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz25 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz31_5 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz31_5 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz40 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz40 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz50 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz50 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz63 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz63 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz80 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz80 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz100 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz100 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz125 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz125 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz160 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz160 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz200 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz200 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz250 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz250 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz315 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz315 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz400 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz400 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz500 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz500 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz630 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz630 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz800 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz800 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz1000 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz1000 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz1250 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz1250 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz1600 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz1600 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz2000 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz2000 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz2500 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz2500 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz3150 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz3150 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz4000 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz4000 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz5000 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz5000 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz6300 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz6300 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz8000 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz8000 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz10000 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz10000 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz12500 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz12500 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz16000 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz16000 / readings.Count);
+            result.LAeqOctaveBandOneThird.Hz20000 = DecibelHelper.GetDecibelFromPower(result.LAeqOctaveBandOneThird.Hz20000 / readings.Count);
+
+            return result;
         }
 
-        public static ReadingData operator +(ReadingData c1, ReadingData c2)
-        {
-            return new ReadingData()
-            {
-                LAeq = c1.LAeq + c2.LAeq,
-                LAMax = c1.LAMax + c2.LAMax,
-                LAMin = c1.LAMin + c2.LAMin,
-                LZMax = c1.LZMax + c2.LZMax,
-                LZMin = c1.LZMin + c2.LZMin,
-                LAeqOctaveBandOneThird = c1.LAeqOctaveBandOneThird + c2.LAeqOctaveBandOneThird
-            };
-        }
-
-        public static ReadingData operator /(ReadingData c1, int n)
-        {
-            return new ReadingData()
-            {
-                LAeq = c1.LAeq / n,
-                LAMax = c1.LAMax / n,
-                LAMin = c1.LAMin / n,
-                LZMax = c1.LZMax / n,
-                LZMin = c1.LZMin / n,
-                LAeqOctaveBandOneThird = c1.LAeqOctaveBandOneThird / n
-            };
-        }
-        
         public class OctaveBandOneThird
         {
             public double Hz6_3 { get; set; }
@@ -147,96 +243,6 @@ namespace AudioView.Common.Data
             public double Hz12500 { get; set; }
             public double Hz16000 { get; set; }
             public double Hz20000 { get; set; }
-
-            public static OctaveBandOneThird operator +(OctaveBandOneThird c1, OctaveBandOneThird c2)
-            {
-                if (c1 == null || c2 == null)
-                    return null;
-                return new OctaveBandOneThird()
-                {
-                    Hz6_3 = c1.Hz6_3 + c2.Hz6_3,
-                    Hz8 = c1.Hz8 + c2.Hz8,
-                    Hz10 = c1.Hz10 + c2.Hz10,
-                    Hz12_5 = c1.Hz12_5 + c2.Hz12_5,
-                    Hz16 = c1.Hz16 + c2.Hz16,
-                    Hz20 = c1.Hz20 + c2.Hz20,
-                    Hz25 = c1.Hz25 + c2.Hz25,
-                    Hz31_5 = c1.Hz31_5 + c2.Hz31_5,
-                    Hz40 = c1.Hz40 + c2.Hz40,
-                    Hz50 = c1.Hz50 + c2.Hz50,
-                    Hz63 = c1.Hz63 + c2.Hz63,
-                    Hz80 = c1.Hz80 + c2.Hz80,
-                    Hz100 = c1.Hz100 + c2.Hz100,
-                    Hz125 = c1.Hz125 + c2.Hz125,
-                    Hz160 = c1.Hz160 + c2.Hz160,
-                    Hz200 = c1.Hz200 + c2.Hz200,
-                    Hz250 = c1.Hz250 + c2.Hz250,
-                    Hz315 = c1.Hz315 + c2.Hz315,
-                    Hz400 = c1.Hz400 + c2.Hz400,
-                    Hz500 = c1.Hz500 + c2.Hz500,
-                    Hz630 = c1.Hz630 + c2.Hz630,
-                    Hz800 = c1.Hz800 + c2.Hz800,
-                    Hz1000 = c1.Hz1000 + c2.Hz1000,
-                    Hz1250 = c1.Hz1250 + c2.Hz1250,
-                    Hz1600 = c1.Hz1600 + c2.Hz1600,
-                    Hz2000 = c1.Hz2000 + c2.Hz2000,
-                    Hz2500 = c1.Hz2500 + c2.Hz2500,
-                    Hz3150 = c1.Hz3150 + c2.Hz3150,
-                    Hz4000 = c1.Hz4000 + c2.Hz4000,
-                    Hz5000 = c1.Hz5000 + c2.Hz5000,
-                    Hz6300 = c1.Hz6300 + c2.Hz6300,
-                    Hz8000 = c1.Hz8000 + c2.Hz8000,
-                    Hz10000 = c1.Hz10000 + c2.Hz10000,
-                    Hz12500 = c1.Hz12500 + c2.Hz12500,
-                    Hz16000 = c1.Hz16000 + c2.Hz16000,
-                    Hz20000 = c1.Hz20000 + c2.Hz20000
-                };
-            }
-            public static OctaveBandOneThird operator /(OctaveBandOneThird c1, int n)
-            {
-
-                if (c1 == null)
-                    return null;
-                return new OctaveBandOneThird()
-                {
-                    Hz6_3 = c1.Hz6_3 / n,
-                    Hz8 = c1.Hz8 / n,
-                    Hz10 = c1.Hz10 / n,
-                    Hz12_5 = c1.Hz12_5 / n,
-                    Hz16 = c1.Hz16 / n,
-                    Hz20 = c1.Hz20 / n,
-                    Hz25 = c1.Hz25 / n,
-                    Hz31_5 = c1.Hz31_5 / n,
-                    Hz40 = c1.Hz40 / n,
-                    Hz50 = c1.Hz50 / n,
-                    Hz63 = c1.Hz63 / n,
-                    Hz80 = c1.Hz80 / n,
-                    Hz100 = c1.Hz100 / n,
-                    Hz125 = c1.Hz125 / n,
-                    Hz160 = c1.Hz160 / n,
-                    Hz200 = c1.Hz200 / n,
-                    Hz250 = c1.Hz250 / n,
-                    Hz315 = c1.Hz315 / n,
-                    Hz400 = c1.Hz400 / n,
-                    Hz500 = c1.Hz500 / n,
-                    Hz630 = c1.Hz630 / n,
-                    Hz800 = c1.Hz800 / n,
-                    Hz1000 = c1.Hz1000 / n,
-                    Hz1250 = c1.Hz1250 / n,
-                    Hz1600 = c1.Hz1600 / n,
-                    Hz2000 = c1.Hz2000 / n,
-                    Hz2500 = c1.Hz2500 / n,
-                    Hz3150 = c1.Hz3150 / n,
-                    Hz4000 = c1.Hz4000 / n,
-                    Hz5000 = c1.Hz5000 / n,
-                    Hz6300 = c1.Hz6300 / n,
-                    Hz8000 = c1.Hz8000 / n,
-                    Hz10000 = c1.Hz10000 / n,
-                    Hz12500 = c1.Hz12500 / n,
-                    Hz16000 = c1.Hz16000 / n,
-                    Hz20000 = c1.Hz20000 / n
-                };
-            }
         }
 
         public class OctaveBandOneOne
