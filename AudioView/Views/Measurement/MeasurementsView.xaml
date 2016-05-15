@@ -50,6 +50,8 @@
                 <Separator />
                 <MenuItem Header="Reading tabel" Command="{Binding SelectedMeasurement.DisplayReadingsTabel}" />
                 <MenuItem Header="Reading graph" Command="{Binding SelectedMeasurement.DisplayReadingsGraph}" />
+                <Separator />
+                <MenuItem Header="RTA Octave Band"  Command="{Binding SelectedMeasurement.OctaveBandPopUp}" />
             </MenuItem>
             <MenuItem Header="Export CVS" IsEnabled="{Binding MeasurementSelected}" Command="{Binding SelectedMeasurement.DownloadAsCSV}"/>
             <MenuItem Header="Close measurement" IsEnabled="{Binding MeasurementSelected}" Command="{Binding CloseMeasurementCommand}"/>

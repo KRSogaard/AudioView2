@@ -15,7 +15,7 @@
     <WarningLevel>4</WarningLevel>
     <TargetFrameworkProfile />
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <PublishUrl>ftp://waws-prod-am2-051.ftp.azurewebsites.windows.net/site/wwwroot/Program/</PublishUrl>
+    <PublishUrl>Z:\nodeserver\fileserver\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -25,11 +25,11 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://audioview.azurewebsites.net/Program/</InstallUrl>
+    <InstallUrl>http://199.195.151.63/</InstallUrl>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>1</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <ApplicationRevision>6</ApplicationRevision>
+    <ApplicationVersion>1.2.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -154,6 +154,9 @@
       <DependentUpon>DataTabelWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="GlobalContainer.cs" />
+    <Compile Include="OctaveBandWindow.xaml.cs">
+      <DependentUpon>OctaveBandWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\Graphs\OctaveBandGraph.cs" />
     <Compile Include="Views\Measurement\LiveGraphItemViewModel.cs" />
     <Compile Include="Views\PopOuts\LiveGraphWindow.xaml.cs">
@@ -207,6 +210,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="DataTabelWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="OctaveBandWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

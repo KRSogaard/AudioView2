@@ -334,6 +334,39 @@ namespace AudioView.ViewModels
             }
         }
 
+        private ICommand _octaveBandPopUp;
+
+        public ICommand OctaveBandPopUp
+        {
+            get
+            {
+                if (_octaveBandPopUp == null)
+                {
+                    _octaveBandPopUp = new DelegateCommand(() =>
+                    {
+                        var window = new OctaveBandWindow()
+                        {
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                            BorderThickness = new Thickness(1),
+                            GlowBrush = null
+                        };
+                        window.SetResourceReference(MetroWindow.BorderBrushProperty, "AccentColorBrush");
+                        popOutWindows.AddLast(window);
+                        window.DataContext = this;
+                        window.Closed += (sender, args) =>
+                        {
+                            window.DataContext = null;
+                            popOutWindows.Remove(window);
+                            window = null;
+                        };
+                        window.Show();
+                    });
+                }
+                return _octaveBandPopUp;
+            }
+        }
+
+
         private ICommand _displayReadingsTabel;
         public ICommand DisplayReadingsTabel
         {
