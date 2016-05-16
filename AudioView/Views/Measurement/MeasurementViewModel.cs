@@ -13,6 +13,7 @@ using System.Windows.Media;
 using AudioView.Common;
 using AudioView.Common.Data;
 using AudioView.Common.Engine;
+using AudioView.Common.Export;
 using AudioView.Common.Listeners;
 using AudioView.UserControls.CountDown;
 using AudioView.Views.History;
@@ -450,20 +451,21 @@ namespace AudioView.ViewModels
                         try
                         {
                             SaveFileDialog saveFileDialog = new SaveFileDialog();
-                            saveFileDialog.FileName = settings.ProjectName + ".csv";
-                            saveFileDialog.Filter = "CSV file (*.csv)|*.csv";
+                            saveFileDialog.FileName = settings.ProjectName + ".xlsx";
+                            saveFileDialog.Filter = "Excel file (*.xlsx)|*.xlsx";
                             if (saveFileDialog.ShowDialog() == true)
                             {
                                 var readingToSave = MajorReadings.Select(x => x.ToInternal(true))
                                     .Union(MinorReadings.Select(x => x.ToInternal(false)))
                                     .ToList();
                                 var ordered = readingToSave.OrderBy(x => x.Time).ToList();
-                                File.WriteAllText(saveFileDialog.FileName, Reading.CSV(ordered));
+                                var excel = new ExcelExport(this.GetProject(), ordered);
+                                excel.writeFile(saveFileDialog.FileName);
                             }
                         }
                         catch (Exception exp)
                         {
-                            logger.Error(exp, "Failed to save the readinds as CSV.");
+                            logger.Error(exp, "Failed to save the readings as Excel.");
                         }
                     });
                 }

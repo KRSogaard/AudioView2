@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -9,6 +10,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using AudioView.Common.Data;
+using AudioView.Common.Export;
 using AudioView.Common.Services;
 using AudioView.Web.Filters;
 using AudioView.Web.Models;
@@ -153,9 +155,10 @@ namespace AudioView.Web.Controllers
 
         public async Task<ActionResult> Download(Guid id)
         {
-            var readings = await databaseService.GetReading(id);
-            var csvFile = Reading.CSV(readings);
-            return File(Encoding.UTF8.GetBytes(csvFile), "text/csv", string.Format("{0}.csv", id));
+            MemoryStream memoryStream = new MemoryStream();
+            ExcelExport excel = new ExcelExport(await databaseService.GetProject(id), await databaseService.GetReading(id));
+            excel.writeStream(memoryStream);
+            return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", string.Format("{0}.xlsx", id));
         }
     }
 }
