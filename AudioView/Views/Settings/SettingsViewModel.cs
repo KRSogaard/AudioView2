@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Documents;
+using System.Windows.Media;
 using MahApps.Metro;
 using Newtonsoft.Json;
 using NLog;
@@ -18,6 +19,19 @@ namespace AudioView.ViewModels
         private bool isInitalizating = false;
         public List<string> Themes { get; set; }
         public List<string> Accents { get; set; }
+
+        private static SettingsViewModel _instance;
+        public static SettingsViewModel Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new SettingsViewModel();
+                }
+                return _instance;
+            }
+        }
 
         private string _theme;
         public string Theme
@@ -40,8 +54,8 @@ namespace AudioView.ViewModels
                 UpdateSettings();
             }
         }
-
-        public SettingsViewModel()
+       
+        private SettingsViewModel()
         {
             Accents = ThemeManager.Accents.Select(x => x.Name).ToList();
             Themes = ThemeManager.AppThemes.Select(x => x.Name).ToList();

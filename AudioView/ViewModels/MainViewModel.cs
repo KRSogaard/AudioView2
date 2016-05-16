@@ -30,7 +30,7 @@ namespace AudioView.ViewModels
         {
             logger.Info("Audio View started at {0}", DateTime.Now);
 
-            SettingsViewModel = new SettingsViewModel();
+            SettingsViewModel = SettingsViewModel.Instance;
             HistoryViewModel = new HistoryViewModel();
             MeasurementsViewModel = new MeasurementsViewModel(this);
 

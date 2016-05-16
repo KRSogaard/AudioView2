@@ -57,7 +57,7 @@ namespace AudioView.Common.Engine
 
                 this.minorTimer = new Timer(minorInterval.TotalMilliseconds);
                 this.minorTimer.Elapsed += OnMinorInterval;
-
+                
                 this.majorTimer = new Timer(majorInterval.TotalMilliseconds);
                 this.majorTimer.Elapsed += OnMajorInterval;
             }
@@ -99,30 +99,56 @@ namespace AudioView.Common.Engine
         public void Start()
         {
             logger.Debug("Preparing engine to start.");
-            GetNextFullMinute().ContinueWith((task) =>
+            var nextFullMin = GetNextFullMinute();
+            lock (this.listeners)
+            {
+                foreach (var listener in this.listeners)
+                {
+                    listener.NextMinor(nextFullMin);
+                }
+            }
+            WaitUntil(nextFullMin).ContinueWith((task) =>
             {
                 logger.Debug("Staring the engine.");
                 if (this.secondTimer != null)
                     this.secondTimer.Enabled = true;
                 if (this.minorTimer != null)
                     this.minorTimer.Enabled = true;
-                if (this.majorTimer != null)
-                    this.majorTimer.Enabled = true;
 
                 EngineStartedEvent?.Invoke();
-
-
+                
                 if (!reader.IsTriggerMode())
                 {
                     nextMinor = DateTime.Now + TimeSpan.FromMilliseconds(this.minorTimer.Interval);
-                    nextMajor = DateTime.Now + TimeSpan.FromMilliseconds(this.majorTimer.Interval);
                     lock (this.listeners)
                     {
                         foreach (var listener in this.listeners)
                         {
-                            listener.NextMajor(nextMajor);
                             listener.NextMinor(nextMinor);
                         }
+                    }
+                }
+            });
+
+            var nextMajorInterval = GetNextInterval(majorInterval);
+            lock (this.listeners)
+            {
+                foreach (var listener in this.listeners)
+                {
+                    listener.NextMajor(nextMajorInterval);
+                }
+            }
+            WaitUntil(nextMajorInterval).ContinueWith((innerTask) =>
+            {
+                if (this.majorTimer != null)
+                    this.majorTimer.Enabled = true;
+
+                nextMajor = DateTime.Now + TimeSpan.FromMilliseconds(this.majorTimer.Interval);
+                lock (this.listeners)
+                {
+                    foreach (var listener in this.listeners)
+                    {
+                        listener.NextMajor(nextMajor);
                     }
                 }
             });
@@ -286,11 +312,27 @@ namespace AudioView.Common.Engine
             });
         }
 
-        private Task GetNextFullMinute()
+        private DateTime GetNextFullMinute()
         {
             var nextFullMin = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0)
                             .AddMinutes(1);
-            var waitTime = nextFullMin - DateTime.Now;
+            return nextFullMin;
+        }
+
+        private DateTime GetNextInterval(TimeSpan interval)
+        {
+            var next = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour,
+                0, 0);
+            while (next < DateTime.Now)
+            {
+                next += interval;
+            }
+            return next;
+        }
+
+        private Task WaitUntil(DateTime dateTime)
+        {
+            var waitTime = dateTime - DateTime.Now;
 
             logger.Debug("Engine will start in " + waitTime);
             EngineStartDelayedEvent?.Invoke(waitTime);
