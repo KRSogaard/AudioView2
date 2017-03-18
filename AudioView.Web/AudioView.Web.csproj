@@ -247,7 +247,7 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\AudioView.Common\AudioView.Common.csproj">
+    <ProjectReference Include="..\AudioView.Common\AudioView.Common.csproj">
       <Project>{D385B54F-287D-4A3D-A32F-583637503FA1}</Project>
       <Name>AudioView.Common</Name>
     </ProjectReference>
