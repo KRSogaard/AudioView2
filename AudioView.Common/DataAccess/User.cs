@@ -18,5 +18,6 @@ namespace AudioView.Common.DataAccess
         public string username { get; set; }
         public string password { get; set; }
         public int passwordSalt { get; set; }
+        public Nullable<System.DateTime> expires { get; set; }
     }
 }

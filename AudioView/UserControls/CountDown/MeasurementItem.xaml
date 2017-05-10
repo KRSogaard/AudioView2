@@ -1,0 +1,37 @@
+﻿<UserControl x:Class="AudioView.UserControls.CountDown.MeasurementItem"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AudioView.UserControls.CountDown"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <StackPanel>
+        <TextBlock
+                    VerticalAlignment="Bottom"
+                    TextAlignment="Center"
+                    FontSize="60"
+                    HorizontalAlignment="Stretch"
+                    Text="{Binding Value}"
+                    Foreground="{Binding TextColor}" />
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Width="Auto">
+            <TextBlock 
+                    Visibility="{Binding HasUnit, Converter={StaticResource BoolToVisibilityConverter}}"
+                    VerticalAlignment="Bottom"
+                    TextAlignment="Center"
+                    FontSize="10"
+                    HorizontalAlignment="Stretch"
+                    Text="{Binding Unit}"
+                    Foreground="{Binding TextColor}" />
+            <TextBlock 
+                    Margin="10,0,0,0"
+                    Visibility="{Binding HasMeasurement, Converter={StaticResource BoolToVisibilityConverter}}"
+                    VerticalAlignment="Center"
+                    TextAlignment="Center"
+                    FontSize="10"
+                    HorizontalAlignment="Stretch"
+                    Text="{Binding Measurement}"
+                    Foreground="{Binding TextColor}" />
+        </StackPanel>
+    </StackPanel>
+</UserControl>

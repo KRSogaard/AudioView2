@@ -4,10 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
+using AudioView.Views.History;
 using MahApps.Metro;
+using MahApps.Metro.Controls;
 using Newtonsoft.Json;
 using NLog;
+using Prism.Commands;
 using Prism.Mvvm;
 
 namespace AudioView.ViewModels
@@ -117,6 +121,50 @@ namespace AudioView.ViewModels
             ThemeManager.ChangeAppStyle(Application.Current,
                 ThemeManager.Accents.Where(x => x.Name == Accent).First(),
                 ThemeManager.AppThemes.Where(x => x.Name == Theme).First());
+        }
+        
+        private ICommand _selectAllCommand;
+        public ICommand SelectAllCommand
+        {
+            get
+            {
+                if (_selectAllCommand == null)
+                {
+                    _selectAllCommand = new DelegateCommand(() =>
+                    {
+                        setSettingsValues(true);
+                    });
+                }
+                return _selectAllCommand;
+            }
+        }
+
+        private ICommand _unselectAllCommand;
+        public ICommand UnselectAllCommand
+        {
+            get
+            {
+                if (_unselectAllCommand == null)
+                {
+                    _unselectAllCommand = new DelegateCommand(() =>
+                    {
+                        setSettingsValues(false);
+                    });
+                }
+                return _unselectAllCommand;
+            }
+        }
+
+        private void setSettingsValues(bool value)
+        {
+            Type type = typeof(DataGridDisplayViewModel);
+            foreach (var p in type.GetProperties())
+            {
+                if (p.GetValue(DataGridDisplayViewModel.Instance) is bool)
+                {
+                    p.SetValue(DataGridDisplayViewModel.Instance, value);
+                }
+            }
         }
     }
 

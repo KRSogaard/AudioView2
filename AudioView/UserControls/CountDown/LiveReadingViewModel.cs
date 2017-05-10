@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using AudioView.UserControls.CountDown;
+using AudioView.UserControls.CountDown.ClockItems;
 using GalaSoft.MvvmLight.CommandWpf;
 using NLog;
 using Prism.Commands;
@@ -48,10 +49,10 @@ namespace AudioView.ViewModels
             }
         }
 
-        public LiveReadingViewModel(bool isMajor, TimeSpan interval, int limitDb, int mainItem, int secondItem) : 
+        public LiveReadingViewModel(bool isMajor, TimeSpan interval, int limitDb, Type mainItem, Type secondItem) : 
             base(isMajor, interval, limitDb, mainItem, secondItem, true)
         {
-            _readingType = ClockItems.Get.Where(x => x.Id == mainItem).Select(x => x.Name).First();
+            _readingType = ClockItemsFactory.AllClockItems.Where(x => x.GetType() == mainItem).Select(x => x.Name).First();
             StayOnTop = false;
             IsEnabled = true; // Always true for this control
         }

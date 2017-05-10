@@ -77,7 +77,7 @@ namespace AudioView.Common.Data
             };
         }
 
-        public static ReadingData Average(List<ReadingData> readings)
+        public static ReadingData Average(ICollection<ReadingData> readings)
         {
             var result = new ReadingData()
             {
@@ -258,6 +258,123 @@ namespace AudioView.Common.Data
             public double Hz4000 { get; set; }
             public double Hz8000 { get; set; }
             public double Hz16000 { get; set; }
+        }
+
+        public double GetValue(string displayValue)
+        {
+            switch (displayValue)
+            {
+                case "LAeq":
+                    return LAeq;
+                case "LAMax":
+                    return LAMax;
+                case "LAMin":
+                    return LAMin;
+                case "LZMax":
+                    return LZMax;
+                case "LZMin":
+                    return LZMin;
+
+                // One One Octave
+                case "1-1-Hz16":
+                    return LAeqOctaveBandOneOne.Hz16;
+                case "1-1-Hz31_5":
+                    return LAeqOctaveBandOneOne.Hz31_5;
+                case "1-1-Hz63":
+                    return LAeqOctaveBandOneOne.Hz63;
+                case "1-1-Hz125":
+                    return LAeqOctaveBandOneOne.Hz125;
+                case "1-1-Hz250":
+                    return LAeqOctaveBandOneOne.Hz250;
+                case "1-1-Hz500":
+                    return LAeqOctaveBandOneOne.Hz500;
+                case "1-1-Hz1000":
+                    return LAeqOctaveBandOneOne.Hz1000;
+                case "1-1-Hz2000":
+                    return LAeqOctaveBandOneOne.Hz2000;
+                case "1-1-Hz4000":
+                    return LAeqOctaveBandOneOne.Hz4000;
+                case "1-1-Hz8000":
+                    return LAeqOctaveBandOneOne.Hz8000;
+                case "1-1-Hz16000":
+                    return LAeqOctaveBandOneOne.Hz16000;
+
+                // One Third Octave
+                case "1-3-Hz6_3":
+                    return LAeqOctaveBandOneThird.Hz6_3;
+                case "1-3-Hz8":
+                    return LAeqOctaveBandOneThird.Hz8;
+                case "1-3-Hz10":
+                    return LAeqOctaveBandOneThird.Hz10;
+                case "1-3-Hz12_5":
+                    return LAeqOctaveBandOneThird.Hz12_5;
+                case "1-3-Hz16":
+                    return LAeqOctaveBandOneThird.Hz16;
+                case "1-3-Hz20":
+                    return LAeqOctaveBandOneThird.Hz20;
+                case "1-3-Hz25":
+                    return LAeqOctaveBandOneThird.Hz25;
+                case "1-3-Hz31_5":
+                    return LAeqOctaveBandOneThird.Hz31_5;
+                case "1-3-Hz40":
+                    return LAeqOctaveBandOneThird.Hz40;
+                case "1-3-Hz50":
+                    return LAeqOctaveBandOneThird.Hz50;
+                case "1-3-Hz63":
+                    return LAeqOctaveBandOneThird.Hz63;
+                case "1-3-Hz80":
+                    return LAeqOctaveBandOneThird.Hz80;
+                case "1-3-Hz100":
+                    return LAeqOctaveBandOneThird.Hz100;
+                case "1-3-Hz125":
+                    return LAeqOctaveBandOneThird.Hz125;
+                case "1-3-Hz160":
+                    return LAeqOctaveBandOneThird.Hz160;
+                case "1-3-Hz200":
+                    return LAeqOctaveBandOneThird.Hz200;
+                case "1-3-Hz250":
+                    return LAeqOctaveBandOneThird.Hz250;
+                case "1-3-Hz315":
+                    return LAeqOctaveBandOneThird.Hz315;
+                case "1-3-Hz400":
+                    return LAeqOctaveBandOneThird.Hz400;
+                case "1-3-Hz500":
+                    return LAeqOctaveBandOneThird.Hz500;
+                case "1-3-Hz630":
+                    return LAeqOctaveBandOneThird.Hz630;
+                case "1-3-Hz800":
+                    return LAeqOctaveBandOneThird.Hz800;
+                case "1-3-Hz1000":
+                    return LAeqOctaveBandOneThird.Hz1000;
+                case "1-3-Hz1250":
+                    return LAeqOctaveBandOneThird.Hz1250;
+                case "1-3-Hz1600":
+                    return LAeqOctaveBandOneThird.Hz1600;
+                case "1-3-Hz2000":
+                    return LAeqOctaveBandOneThird.Hz2000;
+                case "1-3-Hz2500":
+                    return LAeqOctaveBandOneThird.Hz2500;
+                case "1-3-Hz3150":
+                    return LAeqOctaveBandOneThird.Hz3150;
+                case "1-3-Hz4000":
+                    return LAeqOctaveBandOneThird.Hz4000;
+                case "1-3-Hz5000":
+                    return LAeqOctaveBandOneThird.Hz5000;
+                case "1-3-Hz6300":
+                    return LAeqOctaveBandOneThird.Hz6300;
+                case "1-3-Hz8000":
+                    return LAeqOctaveBandOneThird.Hz8000;
+                case "1-3-Hz10000":
+                    return LAeqOctaveBandOneThird.Hz10000;
+                case "1-3-Hz12500":
+                    return LAeqOctaveBandOneThird.Hz12500;
+                case "1-3-Hz16000":
+                    return LAeqOctaveBandOneThird.Hz16000;
+                case "1-3-Hz20000":
+                    return LAeqOctaveBandOneThird.Hz20000;
+                default:
+                    return 0;
+            }
         }
     }
 }

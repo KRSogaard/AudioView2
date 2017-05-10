@@ -2,45 +2,46 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using AudioView.Annotations;
-using AudioView.Common;
 using AudioView.Common.Data;
 using AudioView.Common.Engine;
-using AudioView.ViewModels;
+using AudioView.UserControls.CountDown.ClockItems;
 using NLog;
 using Prism.Commands;
+using Prism.Mvvm;
 
 namespace AudioView.UserControls.CountDown
 {
-    public class AudioViewCountDownViewModel : INotifyPropertyChanged, IMeterListener
+    public class AudioViewCountDownViewModel : BindableBase, IMeterListener
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
         protected bool isMajor;
-        private int mainItem;
-        private int secondItem;
+        private ClockItem mainItem;
+        private ClockItem secondItem;
         private int limitDb;
         private bool isPopOut;
+        private MeasurementItemViewModel mainItemViewModel;
+        private MeasurementItemViewModel secondaryItemViewModel;
 
-        public AudioViewCountDownViewModel(bool isMajor, TimeSpan interval, int limitDb, int mainItem, int secondItem, bool isPopOut = false)
+        public AudioViewCountDownViewModel(bool isMajor, TimeSpan interval, int limitDb, Type mainItem, Type secondItem, bool isPopOut = false)
         {
             Interval = interval;
             this.isMajor = isMajor;
             this.limitDb = limitDb;
-            this.mainItem = mainItem;
-            this.secondItem = secondItem;
+            this.mainItem = ClockItemsFactory.AllClockItems.First(x => x.GetType() == mainItem);
+            this.secondItem = ClockItemsFactory.AllClockItems.First(x => x.GetType() == secondItem);
             this.isPopOut = isPopOut;
 
+            mainItemViewModel = new MeasurementItemViewModel();
+            secondaryItemViewModel = new MeasurementItemViewModel();
+
             ClockSelections = new ObservableCollection<ClockSelectionViewModel>();
-            foreach (var clockItem in ClockItems.Get)
+            foreach (var clockItem in ClockItemsFactory.AllClockItems)
             {
                 ClockSelections.Add(new ClockSelectionViewModel(this, clockItem));
             }
@@ -53,10 +54,11 @@ namespace AudioView.UserControls.CountDown
         public ReadingData LastReading { get; set; }
         public ReadingData LastBuildingInterval { get; set; }
         public ReadingData LastInterval { get; set; }
-        public string RenderTime { get; set; }
 
         public SolidColorBrush BarBrush { get; set; }
         public SolidColorBrush BarOverBrush { get; set; }
+
+        public string DisplayValue { get; set; }
 
         public ObservableCollection<ClockSelectionViewModel> ClockSelections { get; set; }
 
@@ -64,16 +66,45 @@ namespace AudioView.UserControls.CountDown
         public double Angle
         {
             get { return 360 - _angle; }
-            set {
-                _angle = value;
+            set
+            {
+                SetProperty(ref _angle, value);
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(MainItemText));
-                OnPropertyChanged(nameof(SecondItemText));
-                OnPropertyChanged(nameof(MainItemName));
-                OnPropertyChanged(nameof(SecondItemName));
-                OnPropertyChanged(nameof(TextColor));
-                OnPropertyChanged(nameof(RenderTime));
+                UpdateValues();
+                UpdateTextColor();
             }
+        }
+
+        private void UpdateTextColor()
+        {
+            if (LastReading == null)
+            {
+                SetProperty(ref _textColor, BarBrush, nameof(TextColor));
+                return;
+            }
+            SetProperty(ref _textColor, LastReading.LAeq >= limitDb ? BarOverBrush : BarBrush, nameof(TextColor));
+        }
+
+        private void UpdateValues()
+        {
+            var data = new ClockItemData()
+            {
+                LastReading = LastReading,
+                LastInterval = LastInterval,
+                NextReadingTime = NextReadingTime,
+                LastBuilding = LastBuildingInterval
+            };
+            mainItem.SetValues(mainItemViewModel, data);
+            secondItem.SetValues(secondaryItemViewModel, data);
+
+            mainItemViewModel.TextColor = TextColor;
+            secondaryItemViewModel.TextColor = TextColor;
+        }
+
+        public bool ShowArch
+        {
+            // They do not want the countdown on the pop outs
+            get { return !isPopOut; }
         }
 
         private int _arcThickness;
@@ -90,85 +121,24 @@ namespace AudioView.UserControls.CountDown
         }
 
         private bool _isEnabled;
-
         public bool IsEnabled
         {
             get { return _isEnabled; }
             set { _isEnabled = value; OnPropertyChanged(); }
         }
 
-        public string MainItemText
+        public MeasurementItemViewModel MainIteam
         {
-            get { return GetDisplayText(mainItem); }
+            get { return mainItemViewModel; }
         }
 
-        public string MainItemName
+        public MeasurementItemViewModel SecondIteam
         {
-            get { return GetDisplayName(mainItem); }
+            get { return secondaryItemViewModel; }
         }
-
-        public string SecondItemText
-        {
-            get { return GetDisplayText(secondItem); }
-        }
-
-        public string SecondItemName
-        {
-            get { return GetDisplayName(mainItem); }
-        }
-
-        private string GetDisplayText(int displayId)
-        {
-            switch (displayId)
-            {
-                case -1: // Inactive
-                    return "";
-                case 1: // Latests interval
-                    if (LastInterval == null)
-                        return "N/A";
-                    return ((int)Math.Ceiling(LastInterval.LAeq)).ToString();
-                case 2: // Time to next interval
-                    return (NextReadingTime - DateTime.Now).ToString(@"mm\:ss\.f", null);
-                case 3: // Latests building reading
-                    if (LastBuildingInterval == null)
-                        return "N/A";
-                    return ((int)Math.Ceiling(LastBuildingInterval.LAeq)).ToString();
-                case 0: // Lastest reading (live data)
-                default:
-                    if (LastReading == null)
-                        return "N/A";
-                    return ((int)Math.Ceiling(LastReading.LAeq)).ToString();
-            }
-        }
-
-        private string GetDisplayName(int displayId)
-        {
-            ClockItem item = ClockItems.Get.Where(x => x.Id == displayId).FirstOrDefault();
-            if (item == null)
-            {
-                return "N/A";
-            }
-            return item.Name;
-        }
-
-        public Brush TextColor
-        {
-            get
-            {
-                if (LastReading == null)
-                    return BarBrush;
-                return LastReading.LAeq >= limitDb ? BarOverBrush : BarBrush;
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            var handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
-        }
+       
+        private Brush _textColor;
+        public Brush TextColor => _textColor;
 
         public void OnNext(DateTime time)
         {
@@ -229,17 +199,17 @@ namespace AudioView.UserControls.CountDown
 
         #endregion
 
-        public void ChangeMainDisplayItem(int displayId)
+        public void ChangeMainDisplayItem(ClockItem clodItem)
         {
-            mainItem = displayId;
+            mainItem = clodItem;
         }
-        public void ChangeSecondayDisplayItem(int displayId)
+        public void ChangeSecondayDisplayItem(ClockItem clodItem)
         {
-            secondItem = displayId;
+            secondItem = clodItem;
         }
     }
 
-    public class ClockSelectionViewModel : INotifyPropertyChanged
+    public class ClockSelectionViewModel : BindableBase
     {
         private AudioViewCountDownViewModel parent;
         private ClockItem clockItem;
@@ -250,13 +220,10 @@ namespace AudioView.UserControls.CountDown
             this.clockItem = clockItem;
         }
 
-        public string Name
-        {
-            get { return "Set to " + clockItem.Name; }
-        }
+        public string Name => "Set to " + clockItem.Name;
 
         private ICommand _switchCommand;
-        public ICommand switchCommand
+        public ICommand SwitchCommand
         {
             get
             {
@@ -264,7 +231,7 @@ namespace AudioView.UserControls.CountDown
                 {
                     _switchCommand = new DelegateCommand(() =>
                     {
-                        parent.ChangeMainDisplayItem(clockItem.Id);
+                        parent.ChangeMainDisplayItem(clockItem);
                     });
                 }
                 return _switchCommand;
@@ -272,7 +239,7 @@ namespace AudioView.UserControls.CountDown
         }
 
         private ICommand _switchSecondayCommand;
-        public ICommand switchSecondayCommand
+        public ICommand SwitchSecondayCommand
         {
             get
             {
@@ -280,21 +247,13 @@ namespace AudioView.UserControls.CountDown
                 {
                     _switchSecondayCommand = new DelegateCommand(() =>
                     {
-                        parent.ChangeSecondayDisplayItem(clockItem.Id);
+                        parent.ChangeSecondayDisplayItem(clockItem);
                     });
                 }
                 return _switchSecondayCommand;
             }
         }
 
-        
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        public ObservableCollection<ClockSelectionViewModel> SubItems { get; set; }
     }
 }

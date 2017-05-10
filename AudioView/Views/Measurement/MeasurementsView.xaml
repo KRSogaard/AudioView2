@@ -7,6 +7,7 @@
              xmlns:userControls="clr-namespace:AudioView.UserControls"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:graphs="clr-namespace:AudioView.UserControls.Graphs"
+             xmlns:viewModels="clr-namespace:AudioView.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="800" d:DesignWidth="800">
     <UserControl.Resources>
@@ -32,6 +33,65 @@
 						VerticalAlignment="Stretch"
 						HorizontalAlignment="Left">
             <MenuItem Header="New measurement" Command="{Binding NewMeasurementCommand}" />
+            <MenuItem Header="Change Settings" Command="{Binding ChangeSettingsCommand}" IsEnabled="{Binding MeasurementSelected}" />
+            <MenuItem Header="Graph Settings" IsEnabled="{Binding MeasurementSelected}"
+                      ItemsSource="{Binding GraphMenuItems}">
+                <MenuItem Header="LAeq" Tag="LAeq" Click="GraphSettingsMenuItem_OnClick" />
+                <MenuItem Header="LAMax" Tag="LAMax" Click="GraphSettingsMenuItem_OnClick" />
+                <MenuItem Header="LAMin" Tag="LAMin" Click="GraphSettingsMenuItem_OnClick" />
+                <MenuItem Header="LZMax" Tag="LZMax" Click="GraphSettingsMenuItem_OnClick" />
+                <MenuItem Header="LZMin" Tag="LZMin" Click="GraphSettingsMenuItem_OnClick" />
+                <MenuItem Header="1/1 Octave band">
+                    <MenuItem Header="16 Hz" Tag="1-1-Hz16" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="31.5 Hz" Tag="1-1-Hz31_5" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="63 Hz" Tag="1-1-Hz63" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="125 Hz" Tag="1-1-Hz125" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="250 Hz" Tag="1-1-Hz250" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="500 Hz" Tag="1-1-Hz500" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="1000 Hz" Tag="1-1-Hz1000" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="2000 Hz" Tag="1-1-Hz2000" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="4000 Hz" Tag="1-1-Hz4000" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="8000 Hz" Tag="1-1-Hz8000" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="16000 Hz" Tag="1-1-Hz16000" Click="GraphSettingsMenuItem_OnClick" />
+                </MenuItem>
+                <MenuItem Header="1/3 Octave band">
+                    <MenuItem Header="6.3 Hz" Tag="1-3-Hz6_3" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="8 Hz" Tag="1-3-Hz8" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="12.5 Hz" Tag="1-3-Hz12_5" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="16 Hz" Tag="1-3-Hz16" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="20 Hz" Tag="1-3-Hz20" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="25 Hz" Tag="1-3-Hz25" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="31.5 Hz" Tag="1-3-Hz31_5" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="40 Hz" Tag="1-3-Hz40" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="50 Hz" Tag="1-3-Hz50" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="63 Hz" Tag="1-3-Hz63" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="80 Hz" Tag="1-3-Hz80" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="100 Hz" Tag="1-3-Hz100" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="125 Hz" Tag="1-3-Hz125" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="160 Hz" Tag="1-3-Hz160" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="200 Hz" Tag="1-3-Hz200" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="250 Hz" Tag="1-3-Hz250" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="315 Hz" Tag="1-3-Hz315" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="400 Hz" Tag="1-3-Hz400" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="500 Hz" Tag="1-3-Hz500" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="630 Hz" Tag="1-3-Hz630" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="800 Hz" Tag="1-3-Hz800" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="1000 Hz" Tag="1-3-Hz1000" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="1250 Hz" Tag="1-3-Hz1250" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="1600 Hz" Tag="1-3-Hz1600" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="2000 Hz" Tag="1-3-Hz2000" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="2500 Hz" Tag="1-3-Hz2500" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="3150 Hz" Tag="1-3-Hz3150" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="4000 Hz" Tag="1-3-Hz4000" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="5000 Hz" Tag="1-3-Hz5000" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="6300 Hz" Tag="1-3-Hz6300" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="8000 Hz" Tag="1-3-Hz8000" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="10000 Hz" Tag="1-3-Hz10000" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="12500 Hz" Tag="1-3-Hz12500" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="16000 Hz" Tag="1-3-Hz16000" Click="GraphSettingsMenuItem_OnClick" />
+                    <MenuItem Header="20000 Hz" Tag="1-3-Hz20000" Click="GraphSettingsMenuItem_OnClick" />
+                </MenuItem>
+            </MenuItem>
             <MenuItem Header="Pop-Outs" IsEnabled="{Binding MeasurementSelected}">
                 <MenuItem Header="Readings">
                     <MenuItem Header="Live"  Command="{Binding ReadingsPopUpLive}" />
@@ -46,6 +106,10 @@
                             <MenuItem Header="{Binding Name}" Command="{Binding Show}"></MenuItem>
                         </DataTemplate>
                     </MenuItem.ItemTemplate>
+                </MenuItem>
+                <MenuItem Header="Octave Bands">
+                    <MenuItem Header="1/1"  Command="{Binding OctaveBandOneOnePopUp}" />
+                    <MenuItem Header="1/3"  Command="{Binding OctaveBandOneThirdPopUp}" />
                 </MenuItem>
                 <Separator />
                 <MenuItem Header="Reading tabel" Command="{Binding SelectedMeasurement.DisplayReadingsTabel}" />

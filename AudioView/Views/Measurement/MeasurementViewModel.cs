@@ -28,7 +28,7 @@ using Prism.Mvvm;
 
 namespace AudioView.ViewModels
 {
-    public class MeasurementViewModel : BindableBase, IMeterListener
+    public partial class MeasurementViewModel
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -39,59 +39,36 @@ namespace AudioView.ViewModels
         private DateTime started;
         private TCPServerListener tcpServer;
         private bool ConnectionStatus;
+        private TimeSpan minorSpan;
+        private TimeSpan majorSpan;
 
         private ConcurrentQueue<Tuple<DateTime,ReadingData>> MinorReadings;
         private ConcurrentQueue<Tuple<DateTime, ReadingData>> MajorReadings;
         private ObservableCollection<Tuple<DateTime, double>> barMinorValues;
-        public ObservableCollection<Tuple<DateTime, double>> BarMinorValues
-        {
-            get { return barMinorValues; }
-            set { SetProperty(ref barMinorValues, value); }
-        }
         private ObservableCollection<Tuple<DateTime, double>> barMajorValues;
-        public ObservableCollection<Tuple<DateTime, double>> BarMajorValues
-        {
-            get { return barMajorValues; }
-            set { SetProperty(ref barMajorValues, value); }
-        }
         private ObservableCollection<Tuple<DateTime, double>> lineValues;
-        public ObservableCollection<Tuple<DateTime, double>> LineValues
-        {
-            get { return lineValues; }
-            set { SetProperty(ref lineValues, value); }
-        }
-        private TimeSpan minorSpan;
-        public TimeSpan MinorSpan
-        {
-            get { return minorSpan; }
-            set { SetProperty(ref minorSpan, value); }
-        }
-        private TimeSpan majorSpan;
-        public TimeSpan MajorSpan
-        {
-            get { return majorSpan; }
-            set { SetProperty(ref majorSpan, value); }
-        }
-
         private ObservableCollection<double> octaveValues;
-        public ObservableCollection<double> OctaveValues
-        {
-            get { return octaveValues; }
-            set { SetProperty(ref octaveValues, value); }
-        }
+        private ReadingsStorage readingHistory;
+        private ReadingsStorage minorIntervalHistory;
+        private ReadingsStorage majorIntervalHistory;
+        private AudioViewCountDownViewModel minorClockViewModel;
+        private AudioViewCountDownViewModel majorClockViewModel;
 
+        private GraphViewModel minorGraphViewModel;
+        private GraphViewModel majorGraphViewModel;
 
         public MeasurementViewModel(Guid id, MeasurementSettings settings, IMeterReader reader)
         {
             MinorReadings = new ConcurrentQueue<Tuple<DateTime, ReadingData>>();
             MajorReadings = new ConcurrentQueue<Tuple<DateTime, ReadingData>>();
-            BarMajorValues = new ObservableCollection<Tuple<DateTime, double>>();
-            BarMinorValues = new ObservableCollection<Tuple<DateTime, double>>();
-            LineValues = new ObservableCollection<Tuple<DateTime, double>>();
             OctaveValues = new ObservableCollection<double>();
             MinorSpan = TimeSpan.FromTicks(settings.MinorInterval.Ticks * 15);
             MajorSpan = TimeSpan.FromTicks(settings.MajorInterval.Ticks * 15);
-
+            readingHistory = new ReadingsStorage(MinorSpan);
+            minorIntervalHistory = new ReadingsStorage(MinorSpan);
+            majorIntervalHistory = new ReadingsStorage(majorSpan);
+            minorGraphViewModel = new GraphViewModel("LAeq", readingHistory, minorIntervalHistory, MinorSpan);
+            majorGraphViewModel = new GraphViewModel("LAeq", null, majorIntervalHistory, MajorSpan, false, true);
 
             started = DateTime.Now;
             popOutWindows = new LinkedList<MetroWindow>();
@@ -124,19 +101,21 @@ namespace AudioView.ViewModels
                 this.engine.RegisterListener(dataStorage);
             }
 
+            this.engine.RegisterListener(new LocalStorageListener("localStorage/", settings.ProjectName));
+
             this.engine.RegisterListener(this);
             this.engine.EngineStartDelayedEvent += (waitTime) =>
             {
                 MinorClock = new AudioViewCountDownViewModel(false,
                         settings.MinorInterval,
                         settings.MinorDBLimit,
-                        settings.MinorClockMainItemId,
-                        settings.MinorClockSecondaryItemId);
+                        settings.MinorClockMainItem,
+                        settings.MinorClockSecondaryItem);
                 MajorClock = new AudioViewCountDownViewModel(true,
                         settings.MajorInterval,
                         settings.MajorDBLimit,
-                        settings.MajorClockMainItemId,
-                        settings.MajorClockSecondaryItemId);
+                        settings.MajorClockMainItem,
+                        settings.MajorClockSecondaryItem);
                 MinorClock.NextMinor(DateTime.Now + waitTime);
                 MinorClock.NextMajor(DateTime.Now + waitTime);
                 MajorClock.NextMinor(DateTime.Now + waitTime);
@@ -153,11 +132,6 @@ namespace AudioView.ViewModels
         }
 
         private string title;
-        public string Title
-        {
-            get { return title; }
-            set { title = value; }
-        }
 
         public Brush TextColor
         {
@@ -219,22 +193,8 @@ namespace AudioView.ViewModels
         {
             get { return settings.IsLocal; }
         }
-
-        private AudioViewCountDownViewModel minorClockViewModel;
-        public AudioViewCountDownViewModel MinorClock
-        {
-            get { return minorClockViewModel; }
-            set { SetProperty(ref minorClockViewModel, value); }
-        }
-
-        private AudioViewCountDownViewModel majorClockViewModel;
-        public AudioViewCountDownViewModel MajorClock
-        {
-            get { return majorClockViewModel; }
-            set { SetProperty(ref majorClockViewModel, value); }
-        }
-
-        public void NewLiveReadingsPopUp(bool isMajor, int mainClockItemId, int secondayClockItemId)
+        
+        public void NewLiveReadingsPopUp(bool isMajor, Type mainClockItemId, Type secondayClockItemId)
         {
             var window = new LiveReadingWindow()
             {
@@ -291,6 +251,40 @@ namespace AudioView.ViewModels
             window.Show();
         }
 
+        public void NewOctaveBandPopUp(OctaveBandWindowViewModel.OctaveBand band)
+        {
+            var window = new OctaveBandWindow()
+            {
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                BorderThickness = new Thickness(1),
+                GlowBrush = null
+            };
+            window.SetResourceReference(MetroWindow.BorderBrushProperty, "AccentColorBrush");
+
+            popOutWindows.AddLast(window);
+            window.DataContext = this;
+            var model = new OctaveBandWindowViewModel(settings, band);
+            model.Title = Title;
+            if (band == OctaveBandWindowViewModel.OctaveBand.OneOne)
+            {
+                model.Title += " - 1/1 Octave band.";
+            }
+            else
+            {
+                model.Title += " - 1/3 Octave band.";
+            }
+            this.engine.RegisterListener(model);
+            window.DataContext = model;
+            window.Closed += (sender, args) =>
+            {
+                this.engine.UnRegisterListener(model);
+                window.DataContext = null;
+                popOutWindows.Remove(window);
+                window = null;
+            };
+            window.Show();
+        }
+
         public void Close()
         {
             this.engine.Stop();
@@ -335,141 +329,95 @@ namespace AudioView.ViewModels
             }
         }
 
-        private ICommand _octaveBandPopUp;
-
-        public ICommand OctaveBandPopUp
+        private void OnOctaveBandPopUp()
         {
-            get
+            var window = new OctaveBandWindow()
             {
-                if (_octaveBandPopUp == null)
-                {
-                    _octaveBandPopUp = new DelegateCommand(() =>
-                    {
-                        var window = new OctaveBandWindow()
-                        {
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                            BorderThickness = new Thickness(1),
-                            GlowBrush = null
-                        };
-                        window.SetResourceReference(MetroWindow.BorderBrushProperty, "AccentColorBrush");
-                        popOutWindows.AddLast(window);
-                        window.DataContext = this;
-                        window.Closed += (sender, args) =>
-                        {
-                            window.DataContext = null;
-                            popOutWindows.Remove(window);
-                            window = null;
-                        };
-                        window.Show();
-                    });
-                }
-                return _octaveBandPopUp;
-            }
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                BorderThickness = new Thickness(1),
+                GlowBrush = null
+            };
+            window.SetResourceReference(MetroWindow.BorderBrushProperty, "AccentColorBrush");
+            popOutWindows.AddLast(window);
+            window.DataContext = this;
+            window.Closed += (sender, args) =>
+            {
+                window.DataContext = null;
+                popOutWindows.Remove(window);
+                window = null;
+            };
+            window.Show();
         }
 
-
-        private ICommand _displayReadingsTabel;
-        public ICommand DisplayReadingsTabel
+        private void OnDisplayReadingsTabel()
         {
-            get
+            var window = new DataTabelWindow()
             {
-                if (_displayReadingsTabel == null)
-                {
-                    _displayReadingsTabel = new DelegateCommand(() =>
-                    {
-                        var window = new DataTabelWindow()
-                        {
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                            BorderThickness = new Thickness(1),
-                            GlowBrush = null
-                        };
-                        window.SetResourceReference(MetroWindow.BorderBrushProperty, "AccentColorBrush");
-                        popOutWindows.AddLast(window);
-                        var model = new DataTabelViewModel(GetProject());
-                        model.OnSelected();
-                        model.Preloadreadings(MajorReadings.Select(x => x.ToInternal(true)).ToList(), MinorReadings.Select(x => x.ToInternal(false)).ToList());
-                        model.Title = Title;
-                        window.DataContext = model;
-                        window.Closed += (sender, args) =>
-                        {
-                            window.DataContext = null;
-                            popOutWindows.Remove(window);
-                            window = null;
-                        };
-                        window.Show();
-                    });
-                }
-                return _displayReadingsTabel;
-            }
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                BorderThickness = new Thickness(1),
+                GlowBrush = null
+            };
+            window.SetResourceReference(MetroWindow.BorderBrushProperty, "AccentColorBrush");
+            popOutWindows.AddLast(window);
+            var model = new DataTabelViewModel(GetProject());
+            model.OnSelected();
+            model.Preloadreadings(MajorReadings.Select(x => x.ToInternal(true)).ToList(), MinorReadings.Select(x => x.ToInternal(false)).ToList());
+            model.Title = Title;
+            window.DataContext = model;
+            window.Closed += (sender, args) =>
+            {
+                window.DataContext = null;
+                popOutWindows.Remove(window);
+                window = null;
+            };
+            window.Show();
         }
 
-        private ICommand _displayReadingsGraph;
-        public ICommand DisplayReadingsGraph
+        private void OnDisplayReadingsGraph()
         {
-            get
+            var window = new DataGraphWindow()
             {
-                if (_displayReadingsGraph == null)
-                {
-                    _displayReadingsGraph = new DelegateCommand(() =>
-                    {
-                        var window = new DataGraphWindow()
-                        {
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                            BorderThickness = new Thickness(1),
-                            GlowBrush = null
-                        };
-                        window.SetResourceReference(MetroWindow.BorderBrushProperty, "AccentColorBrush");
-                        popOutWindows.AddLast(window);
-                        var model = new DataTabelViewModel(GetProject());
-                        model.OnSelected();
-                        model.Preloadreadings(MajorReadings.Select(x => x.ToInternal(true)).ToList(), MinorReadings.Select(x => x.ToInternal(false)).ToList());
-                        model.Title = Title;
-                        model.OnSelected();
-                        window.DataContext = model;
-                        window.Closed += (sender, args) =>
-                        {
-                            window.DataContext = null;
-                            popOutWindows.Remove(window);
-                            window = null;
-                        };
-                        window.Show();
-                    });
-                }
-                return _displayReadingsGraph;
-            }
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                BorderThickness = new Thickness(1),
+                GlowBrush = null
+            };
+            window.SetResourceReference(MetroWindow.BorderBrushProperty, "AccentColorBrush");
+            popOutWindows.AddLast(window);
+            var model = new DataTabelViewModel(GetProject());
+            model.OnSelected();
+            model.Preloadreadings(MajorReadings.Select(x => x.ToInternal(true)).ToList(), MinorReadings.Select(x => x.ToInternal(false)).ToList());
+            model.Title = Title;
+            model.OnSelected();
+            window.DataContext = model;
+            window.Closed += (sender, args) =>
+            {
+                window.DataContext = null;
+                popOutWindows.Remove(window);
+                window = null;
+            };
+            window.Show();
         }
 
-        private ICommand _downloadAsCSV;
-        public ICommand DownloadAsCSV
+        private void OnDownloadAsCsv()
         {
-            get
+            try
             {
-                if (_downloadAsCSV == null)
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.FileName = settings.ProjectName + ".xlsx";
+                saveFileDialog.Filter = "Excel file (*.xlsx)|*.xlsx";
+                if (saveFileDialog.ShowDialog() == true)
                 {
-                    _downloadAsCSV = new DelegateCommand(() =>
-                    {
-                        try
-                        {
-                            SaveFileDialog saveFileDialog = new SaveFileDialog();
-                            saveFileDialog.FileName = settings.ProjectName + ".xlsx";
-                            saveFileDialog.Filter = "Excel file (*.xlsx)|*.xlsx";
-                            if (saveFileDialog.ShowDialog() == true)
-                            {
-                                var readingToSave = MajorReadings.Select(x => x.ToInternal(true))
-                                    .Union(MinorReadings.Select(x => x.ToInternal(false)))
-                                    .ToList();
-                                var ordered = readingToSave.OrderBy(x => x.Time).ToList();
-                                var excel = new ExcelExport(this.GetProject(), ordered);
-                                excel.writeFile(saveFileDialog.FileName);
-                            }
-                        }
-                        catch (Exception exp)
-                        {
-                            logger.Error(exp, "Failed to save the readings as Excel.");
-                        }
-                    });
+                    var readingToSave = MajorReadings.Select(x => x.ToInternal(true))
+                        .Union(MinorReadings.Select(x => x.ToInternal(false)))
+                        .ToList();
+                    var ordered = readingToSave.OrderBy(x => x.Time).ToList();
+                    var excel = new ExcelExport(this.GetProject(), ordered);
+                    excel.writeFile(saveFileDialog.FileName);
                 }
-                return _downloadAsCSV;
+            }
+            catch (Exception exp)
+            {
+                logger.Error(exp, "Failed to save the readings as Excel.");
             }
         }
 
@@ -516,7 +464,8 @@ namespace AudioView.ViewModels
                 MinorReadings.Enqueue(new Tuple<DateTime, ReadingData>(time, data));
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    BarMinorValues.Add(new Tuple<DateTime, double>(time, data.LAeq));
+                    minorIntervalHistory.Add(time, data);
+                    minorGraphViewModel.OnBarReading();
                 });
             });
         }
@@ -528,7 +477,8 @@ namespace AudioView.ViewModels
                 MajorReadings.Enqueue(new Tuple<DateTime, ReadingData>(time, data));
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    BarMajorValues.Add(new Tuple<DateTime, double>(time, data.LAeq));
+                    majorIntervalHistory.Add(time, data);
+                    majorGraphViewModel.OnBarReading();
                 });
             });
         }
@@ -539,21 +489,25 @@ namespace AudioView.ViewModels
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    LineValues.Add(new Tuple<DateTime, double>(time, data.LAeq));
+                    readingHistory.Add(time, data);
+                    minorGraphViewModel.OnLineReading();
 
                     // Add data for the octave bar
                     OctaveValues.Clear();
-                    OctaveValues.Add(data.LAeqOctaveBandOneOne.Hz16);
-                    OctaveValues.Add(data.LAeqOctaveBandOneOne.Hz31_5);
-                    OctaveValues.Add(data.LAeqOctaveBandOneOne.Hz63);
-                    OctaveValues.Add(data.LAeqOctaveBandOneOne.Hz125);
-                    OctaveValues.Add(data.LAeqOctaveBandOneOne.Hz250);
-                    OctaveValues.Add(data.LAeqOctaveBandOneOne.Hz500);
-                    OctaveValues.Add(data.LAeqOctaveBandOneOne.Hz1000);
-                    OctaveValues.Add(data.LAeqOctaveBandOneOne.Hz2000);
-                    OctaveValues.Add(data.LAeqOctaveBandOneOne.Hz4000);
-                    OctaveValues.Add(data.LAeqOctaveBandOneOne.Hz8000);
-                    OctaveValues.Add(data.LAeqOctaveBandOneOne.Hz16000);
+
+                    ReadingData avgData =
+                        ReadingData.Average(readingHistory.GetSince(time.Subtract(TimeSpan.FromMinutes(1))));
+                    OctaveValues.Add(avgData.LAeqOctaveBandOneOne.Hz16);
+                    OctaveValues.Add(avgData.LAeqOctaveBandOneOne.Hz31_5);
+                    OctaveValues.Add(avgData.LAeqOctaveBandOneOne.Hz63);
+                    OctaveValues.Add(avgData.LAeqOctaveBandOneOne.Hz125);
+                    OctaveValues.Add(avgData.LAeqOctaveBandOneOne.Hz250);
+                    OctaveValues.Add(avgData.LAeqOctaveBandOneOne.Hz500);
+                    OctaveValues.Add(avgData.LAeqOctaveBandOneOne.Hz1000);
+                    OctaveValues.Add(avgData.LAeqOctaveBandOneOne.Hz2000);
+                    OctaveValues.Add(avgData.LAeqOctaveBandOneOne.Hz4000);
+                    OctaveValues.Add(avgData.LAeqOctaveBandOneOne.Hz8000);
+                    OctaveValues.Add(avgData.LAeqOctaveBandOneOne.Hz16000);
                 });
             });
         }
@@ -568,5 +522,15 @@ namespace AudioView.ViewModels
             return Task.FromResult<object>(null);
         }
         #endregion
+
+        public void SettingsChanged()
+        {
+            OnPropertyChanged(nameof(Settings));
+        }
+
+        public void OnMinorGraphSettingsChanged(string value)
+        {
+            minorGraphViewModel.ChangeDisplayItem(value);
+        }
     }
 }

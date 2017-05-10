@@ -12,6 +12,7 @@ using AudioView.Annotations;
 using AudioView.Common;
 using AudioView.Common.Engine;
 using AudioView.UserControls.CountDown;
+using AudioView.UserControls.CountDown.ClockItems;
 using AudioView.Views.Measurement;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
@@ -52,12 +53,12 @@ namespace AudioView.ViewModels
 
             MinorDBLimit = 98.ToString();
             MajorDBLimit = 95.ToString();
-            ClockItems = UserControls.CountDown.ClockItems.Get;
+            ClockItems = ClockItemsFactory.AllClockItems;
 
-            MinorClockMainItem = ClockItems.FirstOrDefault(x => x.Id == 3);
-            MinorClockSecondaryItem = ClockItems.FirstOrDefault(x => x.Id == -1);
-            MajorClockMainItem = ClockItems.FirstOrDefault(x => x.Id == 3);
-            MajorClockSecondaryItem = ClockItems.FirstOrDefault(x => x.Id == -1);
+            MinorClockMainItem = ClockItems.FirstOrDefault(x => x.GetType() == typeof(BuildingReadingClockItem));
+            MinorClockSecondaryItem = ClockItems.FirstOrDefault(x => x.GetType() == typeof(InactiveClockItem));
+            MajorClockMainItem = ClockItems.FirstOrDefault(x => x.GetType() == typeof(BuildingReadingClockItem));
+            MajorClockSecondaryItem = ClockItems.FirstOrDefault(x => x.GetType() == typeof(InactiveClockItem));
 
             RemoteIpAddress = "localhost";
             RemotePort = DefaultPort.ToString();
@@ -433,10 +434,10 @@ namespace AudioView.ViewModels
                 MajorDBLimit = _MajordBLimit,
                 GraphLowerBound = _graphBoundLower,
                 GraphUpperBound = _graphBoundUpper,
-                MajorClockMainItemId = MajorClockMainItem.Id,
-                MajorClockSecondaryItemId = MajorClockSecondaryItem.Id,
-                MinorClockMainItemId = MinorClockMainItem.Id,
-                MinorClockSecondaryItemId = MinorClockSecondaryItem.Id,
+                MajorClockMainItem = MajorClockMainItem.GetType(),
+                MajorClockSecondaryItem = MajorClockSecondaryItem.GetType(),
+                MinorClockMainItem = MinorClockMainItem.GetType(),
+                MinorClockSecondaryItem = MinorClockSecondaryItem.GetType(),
                 MajorInterval = new TimeSpan(_majorIntervalHours, _majorIntervalMinutes, _majorIntervalSeconds),
                 MinorInterval = new TimeSpan(_minorIntervalHours, _minorIntervalMinutes, _minorIntervalSeconds),
                 Port = int.Parse(ListenPort),
@@ -524,8 +525,6 @@ namespace AudioView.ViewModels
                                 settings.ProjectNumber = remoteSettings.ProjectNumber;
                                 settings.MajorInterval = remoteSettings.MajorInterval;
                                 settings.MinorInterval = remoteSettings.MinorInterval;
-                                settings.MinorDBLimit = remoteSettings.MinorDBLimit;
-                                settings.MajorDBLimit = remoteSettings.MajorDBLimit;
                             }
 
                             newModel = new MeasurementViewModel(Guid.NewGuid(), settings, reader);

@@ -13,6 +13,8 @@ namespace AudioView.UserControls.Graphs
 {
     public partial class TimeLineGraph : UserControl
     {
+        private static string timeTextFormat = "HH:mm";
+
         #region Settings
         private static readonly int LeftMargin = 40; //px
         private static readonly int buttomMargin = 40; //px
@@ -455,7 +457,7 @@ namespace AudioView.UserControls.Graphs
                 {
                     var tempBarWidth = Math.Max(1, barWidth - (LeftMargin - leftEdge));
                     drawBar(drawingContext,
-                        barValue.Item1.ToString("HH:mm:ss"),
+                        barValue.Item1.ToString(timeTextFormat),
                         new Point(x, y),
                         tempBarWidth,
                         new Point(LeftMargin, y),
@@ -464,7 +466,7 @@ namespace AudioView.UserControls.Graphs
                 else
                 {
                     drawBar(drawingContext,
-                        barValue.Item1.ToString("HH:mm:ss"),
+                        barValue.Item1.ToString(timeTextFormat),
                         new Point(x, y),
                         barWidth,
                         new Point(x - barWidth / 2, y),

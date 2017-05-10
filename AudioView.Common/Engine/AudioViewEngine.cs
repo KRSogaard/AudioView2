@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Timers;
 using AudioView.Common.Data;
@@ -25,7 +23,12 @@ namespace AudioView.Common.Engine
         private List<IMeterListener> listeners;
         private DateTime nextMajor;
         private DateTime nextMinor;
-        
+        private DateTime startTime;
+
+        protected AudioViewEngine()
+        {
+            
+        }
         public AudioViewEngine(IMeterReader reader)
             : this(new TimeSpan(0,1,0), new TimeSpan(0, 15, 0), reader)
         {
@@ -100,6 +103,7 @@ namespace AudioView.Common.Engine
         {
             logger.Debug("Preparing engine to start.");
             var nextFullMin = GetNextFullMinute();
+            startTime = nextFullMin;
             lock (this.listeners)
             {
                 foreach (var listener in this.listeners)
@@ -119,7 +123,7 @@ namespace AudioView.Common.Engine
                 
                 if (!reader.IsTriggerMode())
                 {
-                    nextMinor = DateTime.Now + TimeSpan.FromMilliseconds(this.minorTimer.Interval);
+                    nextMinor = nextFullMin + TimeSpan.FromMilliseconds(this.minorTimer.Interval);
                     lock (this.listeners)
                     {
                         foreach (var listener in this.listeners)
@@ -143,7 +147,7 @@ namespace AudioView.Common.Engine
                 if (this.majorTimer != null)
                     this.majorTimer.Enabled = true;
 
-                nextMajor = DateTime.Now + TimeSpan.FromMilliseconds(this.majorTimer.Interval);
+                nextMajor = nextMajorInterval + TimeSpan.FromMilliseconds(this.majorTimer.Interval);
                 lock (this.listeners)
                 {
                     foreach (var listener in this.listeners)
@@ -175,7 +179,10 @@ namespace AudioView.Common.Engine
 
         public void OnMajorInterval(object sender, ElapsedEventArgs e)
         {
-            DateTime time = e.SignalTime;
+            logger.Debug("Got Major interval");
+            // There might be some minor drift, this will snap to the correct interval
+            DateTime time = RoundToNearest(startTime, e.SignalTime, majorInterval);
+            logger.Debug("Snapping Major interval to {0}", time);
             OnMajorInterval(time);
         }
         public Task OnMajorInterval(DateTime time)
@@ -200,8 +207,11 @@ namespace AudioView.Common.Engine
                     {
                         foreach (var listener in this.listeners)
                         {
+                            start = DateTime.Now;
                             listener.NextMajor(nextMajor);
                             listener.OnMajor(time, reading);
+                            end = DateTime.Now;
+                            logger.Debug("On Minor listener \"{0}\" took {1} ms.", listener.GetType(), (end - start).TotalMilliseconds);
                         }
                     }
                 }
@@ -214,7 +224,10 @@ namespace AudioView.Common.Engine
 
         public void OnMinorInterval(object sender, ElapsedEventArgs e)
         {
-            DateTime time = e.SignalTime;
+            logger.Debug("Got Minor interval");
+            // There might be some minor drift, this will snap to the correct interval
+            DateTime time = RoundToNearest(startTime, e.SignalTime, minorInterval);
+            logger.Debug("Snapping Minor interval to {0}", time);
             OnMinorInterval(time);
         }
         public Task OnMinorInterval(DateTime time)
@@ -238,8 +251,11 @@ namespace AudioView.Common.Engine
                     {
                         foreach (var listener in this.listeners)
                         {
+                            start = DateTime.Now;
                             listener.NextMinor(nextMinor);
                             listener.OnMinor(time, reading);
+                            end = DateTime.Now;
+                            logger.Debug("On Minor listener \"{0}\" took {1} ms.", listener.GetType(), (end - start).TotalMilliseconds);
                         }
                     }
                 }
@@ -252,6 +268,7 @@ namespace AudioView.Common.Engine
 
         public void OnSecond(object sender, ElapsedEventArgs elapsedEventArgs)
         {
+            logger.Trace("Second reading triggered at");
             OnSecond(DateTime.Now);
         }
         public Task OnSecond(DateTime time)
@@ -280,7 +297,10 @@ namespace AudioView.Common.Engine
                     {
                         foreach (var listener in this.listeners)
                         {
+                            start = DateTime.Now;
                             listener.OnSecond(time, readingSecond.Result, readingMinor.Result, readingMajor.Result);
+                            end = DateTime.Now;
+                            logger.Trace("On Second listener \"{0}\" took {1} ms.", listener.GetType(), (end - start).TotalMilliseconds);
                         }
                     }
                 }
@@ -337,6 +357,24 @@ namespace AudioView.Common.Engine
             logger.Debug("Engine will start in " + waitTime);
             EngineStartDelayedEvent?.Invoke(waitTime);
             return Task.Delay(waitTime);
+        }
+
+        protected DateTime RoundToNearest(DateTime start, DateTime dt, TimeSpan span)
+        {
+            long ticks = dt.Ticks - start.Ticks;
+            decimal spans = Decimal.Divide(ticks, span.Ticks);
+
+            long lowTicks = start.Ticks + Convert.ToInt64(span.Ticks * Math.Floor(spans));
+            long highTicks = start.Ticks + Convert.ToInt64(span.Ticks * Math.Ceiling(spans));
+
+            long sinceLow = Math.Abs(dt.Ticks - lowTicks);
+            long toHihg = Math.Abs(dt.Ticks - highTicks);
+
+            if (sinceLow < toHihg)
+            {
+                return new DateTime(lowTicks, dt.Kind);
+            }
+            return new DateTime(highTicks, dt.Kind);
         }
 
         public event ConnectionStatusUpdateDeligate ConnectionStatusEvent;

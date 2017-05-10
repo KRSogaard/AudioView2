@@ -28,17 +28,17 @@
             </TextBlock.LayoutTransform>
         </TextBlock>
         <graphs:TimeLineGraph Grid.Column="1"
-                              HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                              MinHeight="100" MinWidth="100"
-                              TimeSpan="{Binding MinorSpan}"
-                              ReadingBoundMin="{Binding Settings.GraphLowerBound}"
-                              ReadingBoundMax="{Binding Settings.GraphUpperBound}"
-                              ReadingLimit="{Binding Settings.MinorDBLimit}"
-                              BarSize="{Binding Settings.MinorInterval}"
-                              LineValues="{Binding LineValues}"
-                              BarValues="{Binding BarMinorValues}"
-                              LineValuesPenColor="{StaticResource HighlightBrush}"
-                              LineValuesPenSize="2.0" />
+                HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                MinHeight="100" MinWidth="100"
+                TimeSpan="{Binding MinorSpan}"
+                ReadingBoundMin="{Binding Settings.GraphLowerBound}"
+                ReadingBoundMax="{Binding Settings.GraphUpperBound}"
+                ReadingLimit="{Binding Settings.MinorDBLimit}"
+                BarSize="{Binding Settings.MinorInterval}"
+                LineValues="{Binding MinorGraphViewModel.LineValues}"
+                BarValues="{Binding MinorGraphViewModel.BarValues}"
+                LineValuesPenColor="{StaticResource HighlightBrush}"
+                LineValuesPenSize="2.0" />
         <CountDown:AudioViewCountDown 
              Grid.Column="2"
             MinHeight="100"
@@ -61,7 +61,7 @@
                               ReadingBoundMax="{Binding Settings.GraphUpperBound}"
                               ReadingLimit="{Binding Settings.MajorDBLimit}"
                               BarSize="{Binding Settings.MajorInterval}"
-                              BarValues="{Binding BarMajorValues}" />
+                              BarValues="{Binding MajorGraphViewModel.BarValues}" />
         <CountDown:AudioViewCountDown 
             Grid.Row="2" Grid.Column="2"
             MinHeight="100"

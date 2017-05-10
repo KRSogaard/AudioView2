@@ -87,6 +87,7 @@
           <Property Name="username" Type="nvarchar(max)" Nullable="false" />
           <Property Name="password" Type="nvarchar(max)" Nullable="false" />
           <Property Name="passwordSalt" Type="int" Nullable="false" />
+          <Property Name="expires" Type="datetime" />
         </EntityType>
         <Association Name="FK_Readings_Projects">
           <End Role="Projects" Type="Self.Projects" Multiplicity="1">
@@ -222,6 +223,7 @@
           <Property Name="username" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="password" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="passwordSalt" Type="Int32" Nullable="false" />
+          <Property Name="expires" Type="DateTime" Precision="3" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -308,6 +310,7 @@
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="AudioViewModel.User">
               <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="expires" ColumnName="expires" />
                 <ScalarProperty Name="passwordSalt" ColumnName="passwordSalt" />
                 <ScalarProperty Name="password" ColumnName="password" />
                 <ScalarProperty Name="username" ColumnName="username" />

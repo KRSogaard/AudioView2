@@ -14,6 +14,9 @@
             <Label Content="Accent" />
             <ComboBox ItemsSource="{Binding Accents}" SelectedItem="{Binding Accent}" />
 
+
+            <Button Command="{Binding SelectAllCommand}">Select all</Button>
+            <Button Command="{Binding UnselectAllCommand}">Unselect all</Button>
             <Expander Header="Data Tables">
                 <StackPanel>
                     <CheckBox IsChecked="{Binding Source={x:Static history:DataGridDisplayViewModel.Instance}, Path=LAeq}" Content="LAeq" />

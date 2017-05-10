@@ -43,7 +43,7 @@ namespace AudioView.Common.Listeners
                 {
                     using (var audioViewEntities = new AudioViewEntities())
                     {
-                        if (!audioViewEntities.Projects.Where(x => x.Id == id).Any())
+                        if (!audioViewEntities.Projects.Any(x => x.Id == id))
                         {
                             audioViewEntities.Projects.Add(new Project()
                             {

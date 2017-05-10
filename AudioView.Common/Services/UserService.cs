@@ -42,7 +42,16 @@ namespace AudioView.Common.Services
         {
             using (var audioViewEntities = new AudioViewEntities())
             {
-                return (await audioViewEntities.Users.FirstOrDefaultAsync(x => x.username.ToLower() == username.ToLower()).ConfigureAwait(false))?.ToInternal();
+                return (await audioViewEntities.Users.FirstOrDefaultAsync(
+                    x => x.username.ToLower() == username.ToLower()).ConfigureAwait(false))?.ToInternal();
+            }
+        }
+
+        public User GetUserSync(string username)
+        {
+            using (var audioViewEntities = new AudioViewEntities())
+            {
+                return (audioViewEntities.Users.FirstOrDefault(x => x.username.ToLower() == username.ToLower()))?.ToInternal();
             }
         }
 

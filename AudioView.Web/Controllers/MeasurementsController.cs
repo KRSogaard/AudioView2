@@ -156,8 +156,12 @@ namespace AudioView.Web.Controllers
         public async Task<ActionResult> Download(Guid id)
         {
             MemoryStream memoryStream = new MemoryStream();
-            ExcelExport excel = new ExcelExport(await databaseService.GetProject(id), await databaseService.GetReading(id));
+            var project = databaseService.GetProject(id).Result;
+            var readings = databaseService.GetReading(id).Result;
+
+            ExcelExport excel = new ExcelExport(project, readings);
             excel.writeStream(memoryStream);
+            memoryStream.Position = 0;
             return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", string.Format("{0}.xlsx", id));
         }
     }

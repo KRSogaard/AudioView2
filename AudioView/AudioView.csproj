@@ -9,13 +9,13 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AudioView</RootNamespace>
     <AssemblyName>AudioView</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <TargetFrameworkProfile />
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <PublishUrl>Z:\nodeserver\fileserver\</PublishUrl>
+    <PublishUrl>C:\Users\Kaspe\Downloads\temp\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -25,10 +25,10 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://199.195.151.63/</InstallUrl>
+    <InstallUrl>http://audioview.s3-website-us-east-1.amazonaws.com/</InstallUrl>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>7</ApplicationRevision>
+    <ApplicationRevision>10</ApplicationRevision>
     <ApplicationVersion>1.2.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -71,6 +71,12 @@
   <PropertyGroup>
     <SignManifests>false</SignManifests>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Tuziibanez-Profesional-Red-Audio-folder.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <NoWin32Manifest>true</NoWin32Manifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
@@ -106,8 +112,10 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Wpf.6.2.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
       <Private>True</Private>
@@ -132,6 +140,30 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="UserControls\CountDown\ClockItems\DisplayValueClockItem.cs" />
+    <Compile Include="UserControls\CountDown\ClockItems\BuildingReadingClockItem.cs" />
+    <Compile Include="UserControls\CountDown\ClockItems\ClockItemData.cs" />
+    <Compile Include="UserControls\CountDown\ClockItems\ClockItemsFactory.cs" />
+    <Compile Include="UserControls\CountDown\ClockItems\InactiveClockItem.cs" />
+    <Compile Include="UserControls\CountDown\ClockItems\LatestIntervalClockItem.cs" />
+    <Compile Include="UserControls\CountDown\ClockItems\LiveLAegClockItem.cs" />
+    <Compile Include="UserControls\CountDown\ClockItems\TimeToIntervalClockItem.cs" />
+    <Compile Include="UserControls\CountDown\ClockItems\ClockItem.cs" />
+    <Compile Include="UserControls\CountDown\MeasurementItem.xaml.cs">
+      <DependentUpon>MeasurementItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\CountDown\MeasurementItemViewModel.cs" />
+    <Compile Include="ViewModels\GraphViewModel.cs" />
+    <Compile Include="ViewModels\MenuViewModel.cs" />
+    <Compile Include="Views\Measurement\FlyOuts\LiveMeasurementSettingsControl.xaml.cs">
+      <DependentUpon>LiveMeasurementSettingsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Measurement\FlyOuts\LiveMeasurementSettingsControl.cs" />
+    <Compile Include="Views\Measurement\MeasurementViewModelBinding.cs" />
+    <Compile Include="Views\PopOuts\OctaveBandWindow.xaml.cs">
+      <DependentUpon>OctaveBandWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PopOuts\OctaveBandWindowViewModel.cs" />
     <Compile Include="Windows\DataGraphWindow.xaml.cs">
       <DependentUpon>DataGraphWindow.xaml</DependentUpon>
     </Compile>
@@ -154,7 +186,6 @@
       <DependentUpon>AudioViewCountDown.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\CountDown\AudioViewCountDownViewModel.cs" />
-    <Compile Include="UserControls\CountDown\ClockItems.cs" />
     <Compile Include="UserControls\Graphs\TimeLineGraph.cs" />
     <Compile Include="Properties\Annotations1.cs" />
     <Compile Include="Views\History\DataGridDisplayViewModel.cs" />
@@ -175,7 +206,7 @@
     <Compile Include="Views\Measurement\MeasurementsView.xaml.cs">
       <DependentUpon>MeasurementsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Measurement\NewMeasurementControl.xaml.cs">
+    <Compile Include="Views\Measurement\FlyOuts\NewMeasurementControl.xaml.cs">
       <DependentUpon>NewMeasurementControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PopOuts\LiveGraphWindowViewModel.cs" />
@@ -188,7 +219,7 @@
     <Compile Include="UserControls\CountDown\LiveReadingViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Views\Measurement\MeasurementViewModel.cs" />
-    <Compile Include="Views\Measurement\NewMeasurementViewModel.cs" />
+    <Compile Include="Views\Measurement\FlyOuts\NewMeasurementViewModel.cs" />
     <Compile Include="Views\Settings\SettingsViewModel.cs" />
     <Page Include="Resources\Icons.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -197,6 +228,18 @@
     <Page Include="Resources\IconsNonShared.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\CountDown\MeasurementItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Measurement\FlyOuts\LiveMeasurementSettingsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PopOuts\OctaveBandWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\DataGraphWindow.xaml">
       <SubType>Designer</SubType>
@@ -254,7 +297,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Measurement\NewMeasurementControl.xaml">
+    <Page Include="Views\Measurement\FlyOuts\NewMeasurementControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -277,6 +320,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Resource Include="Tuziibanez-Profesional-Red-Audio-folder.ico" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -322,9 +366,7 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="UserControls\OctaveBand\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Resources\WindowsIcons-license.txt" />
   </ItemGroup>

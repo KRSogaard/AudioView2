@@ -12,10 +12,10 @@ namespace AudioView.Common
         public int MajorDBLimit { get; set; }
         public int GraphUpperBound { get; set; }
         public int GraphLowerBound { get; set; }
-        public int MinorClockMainItemId { get; set; }
-        public int MinorClockSecondaryItemId { get; set; }
-        public int MajorClockMainItemId { get; set; }
-        public int MajorClockSecondaryItemId { get; set; }
+        public Type MinorClockMainItem { get; set; }
+        public Type MinorClockSecondaryItem { get; set; }
+        public Type MajorClockMainItem { get; set; }
+        public Type MajorClockSecondaryItem { get; set; }
         public string ProjectName { get; set; }
         public string ProjectNumber { get; set; }
         public int Port { get; set; }

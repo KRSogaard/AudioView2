@@ -232,7 +232,7 @@ namespace AudioView.ViewModels
                 dateSpan = (lastDate.Value - firstDate.Value);
             }
 
-            await loadGraph(ReadingsMajor, ReadingsMinor);
+            await LoadGraph(ReadingsMajor, ReadingsMinor);
         }
 
         public Task LoadReadings()
@@ -262,7 +262,7 @@ namespace AudioView.ViewModels
                 }
 
                 // Graph minipolations can be done outside of the UI thread
-                loadGraph(major, minor);
+                LoadGraph(major, minor);
 
                 _readingsMinor = new List<HistoryReadingViewModel>();
                 _readingsMajor = new List<HistoryReadingViewModel>();
@@ -278,7 +278,7 @@ namespace AudioView.ViewModels
             });
         }
 
-        private Task loadGraph(List<HistoryReadingViewModel> major, List<HistoryReadingViewModel> minor)
+        private Task LoadGraph(List<HistoryReadingViewModel> major, List<HistoryReadingViewModel> minor)
         {
             return Task.Run(() =>
             {

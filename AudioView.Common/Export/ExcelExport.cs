@@ -251,7 +251,7 @@ namespace AudioView.Common.Export
             excel.SaveAs(path);
         }
 
-        public void writeStream(MemoryStream memoryStream)
+        public void writeStream(Stream memoryStream)
         {
             var excel = createExecel();
             excel.SaveAs(memoryStream);

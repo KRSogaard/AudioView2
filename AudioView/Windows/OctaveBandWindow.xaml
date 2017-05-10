@@ -7,7 +7,8 @@
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:graphs="clr-namespace:AudioView.UserControls.Graphs"
         mc:Ignorable="d"
-        Title="OctaveBandWindow" Height="300" Width="300">
+        Topmost="{Binding StayOnTop, Mode=TwoWay}"
+        Title="{Binding Title}" Height="300" Width="300">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -15,6 +16,31 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
+    <controls:MetroWindow.RightWindowCommands>
+        <controls:WindowCommands>
+            <Button Command="{Binding ToggleOnTop}">
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle Width="20" Height="20" Visibility="{Binding IsNotStayOnTop, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill"
+                         Visual="{StaticResource appbar_pin}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <Rectangle Width="20" Height="20" Visibility="{Binding StayOnTop, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill"
+                         Visual="{StaticResource appbar_pin_remove}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <TextBlock Margin="4 0 0 0"
+                   VerticalAlignment="Center"
+                   Text="Stay on top" />
+                </StackPanel>
+            </Button>
+        </controls:WindowCommands>
+    </controls:MetroWindow.RightWindowCommands>
     
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <graphs:OctaveBandGraph
@@ -25,3 +51,4 @@
                     BarValues="{Binding OctaveValues}" />
     </Grid>
 </controls:MetroWindow>
+

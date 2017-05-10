@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
+using AudioView.UserControls.CountDown.ClockItems;
+using NLog;
 
 namespace AudioView.UserControls.CountDown
 {
@@ -10,6 +13,7 @@ namespace AudioView.UserControls.CountDown
     /// </summary>
     public partial class AudioViewCountDown : UserControl
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
         private DispatcherTimer timer;
         
         public SolidColorBrush BarBrush { get; set; }
@@ -22,7 +26,7 @@ namespace AudioView.UserControls.CountDown
             Draw();
 
             this.timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(41); // 25 fps
+            timer.Interval = TimeSpan.FromMilliseconds(100); // 41 = 25 fps, 100 = 10 fps
             timer.Tick += TimerOnTick;
             timer.Start();
         }
@@ -55,7 +59,14 @@ namespace AudioView.UserControls.CountDown
             model.BarBrush = BarBrush;
             model.BarOverBrush = BarOverBrush;
             //var end = DateTime.Now;
-            //model.RenderTime = "Render time: " + (start - end).TotalMilliseconds + " ms. Inteval: " + model.LastInterval + " reading: " + model.LastReading;
+            //logger.Warn("Clock Render time: " + (start - end).TotalMilliseconds);
+        }
+
+        private void GraphSettingsMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            var model = (AudioViewCountDownViewModel)this.DataContext;
+            string tag = ((MenuItem) sender).Tag.ToString();
+            model.ChangeMainDisplayItem(new DisplayValueClockItem(tag));
         }
     }
 }

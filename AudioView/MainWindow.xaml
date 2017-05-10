@@ -26,6 +26,9 @@
             <Controls:Flyout DataContext="{Binding MeasurementsViewModel}" Header="New Measurement" Position="Right" Width="450" IsOpen="{Binding ShowNew}">
                 <UserControls:NewMeasurementControl DataContext="{Binding NewViewModel}"/>
             </Controls:Flyout>
+            <Controls:Flyout DataContext="{Binding MeasurementsViewModel}" Header="New Measurement" Position="Right" Width="450" IsOpen="{Binding ShowSettings}">
+                <UserControls:LiveMeasurementSettingsControl DataContext="{Binding ChangeSettingsViewModel}"/>
+            </Controls:Flyout>
             
             <Controls:Flyout Header="Settings" Position="Right" Width="450" IsOpen="{Binding ShowSettings}">
                 <UserControls:SettingsView DataContext="{Binding SettingsViewModel}" />
@@ -41,14 +44,43 @@
         </Controls:WindowCommands>
     </Controls:MetroWindow.RightWindowCommands>
 
-    <TabControl TabStripPlacement="Top"
-                Margin="10">
-        <TabItem Header="Measurements">
-            <measurement:MeasurementsView DataContext="{Binding MeasurementsViewModel}" />
-        </TabItem>
-        <TabItem Header="History">
-            <UserControls:HistoryControl DataContext="{Binding HistoryViewModel}" />
-        </TabItem>
-    </TabControl>
+    <Grid>
+        <Grid x:Name="LogInGrid" Visibility="{Binding NeedLogIn, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
+            <StackPanel Width="450" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Label>Access to the database requires authorization, please log in to continue.</Label>
+                <Label Visibility="{Binding LogInFailed, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}" Foreground="Red">The provided username and password was not accepted.</Label>
+                <Label Visibility="{Binding LogInExpired, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}" Foreground="Red">Access for the provided user has expired.</Label>
+                <Label Foreground="{StaticResource ControlsValidationBrush}" x:Name="loginFailedLabel" Visibility="Collapsed">Log-in failed.</Label>
+                <Label>Username:</Label>
+                <TextBox x:Name="username" KeyDown="Username_OnKeyDown" />
+
+                <Label Margin="0,5,0,0">Password:</Label>
+                <PasswordBox x:Name="password" KeyDown="Password_OnKeyDown" />
+
+                <Button Margin="0,10,0,0" Click="ButtonBase_OnClick">Log In</Button>
+                <Button Margin="0,10,0,0" Command="{Binding SkipLogin}">Skip Login (Only for testing)</Button>
+            </StackPanel>
+        </Grid>
+
+        <Border
+                HorizontalAlignment="Stretch" 
+                VerticalAlignment="Stretch" 
+                Background="{StaticResource ControlBackgroundBrush}" 
+                Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}" 
+                Opacity="0.75">
+            <Controls:ProgressRing Width="90" Height="90" IsActive="True" />
+        </Border>
+
+        <TabControl TabStripPlacement="Top"
+                    Margin="10"
+                    Visibility="{Binding ShowControls, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
+            <TabItem Header="Measurements">
+                <measurement:MeasurementsView DataContext="{Binding MeasurementsViewModel}" />
+            </TabItem>
+            <TabItem Header="History">
+                <UserControls:HistoryControl DataContext="{Binding HistoryViewModel}" />
+            </TabItem>
+        </TabControl>
+    </Grid>
 </Controls:MetroWindow>
 

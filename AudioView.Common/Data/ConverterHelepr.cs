@@ -94,7 +94,8 @@ namespace AudioView.Common.Data
             return new User()
             {
                 Id = u.id,
-                UserName = u.username
+                UserName = u.username,
+                Expires = u.expires
             };
         }
 
@@ -103,7 +104,8 @@ namespace AudioView.Common.Data
             return new DataAccess.User()
             {
                 id = u.Id,
-                username = u.UserName
+                username = u.UserName,
+                expires = u.Expires
             };
         }
     }

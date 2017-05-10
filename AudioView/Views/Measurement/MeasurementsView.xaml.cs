@@ -24,5 +24,11 @@ namespace AudioView.Views.Measurement
         {
             InitializeComponent();
         }
+
+        private void GraphSettingsMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            String tag = ((MenuItem)sender).Tag.ToString();
+            ((MeasurementsViewModel)DataContext).OnMinorGraphSettingsChanged(tag);
+        }
     }
 }
