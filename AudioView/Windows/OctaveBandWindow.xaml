@@ -48,6 +48,7 @@
                     ReadingBoundMin="{Binding Settings.GraphLowerBound}"
                     ReadingBoundMax="{Binding Settings.GraphUpperBound}"
                     ReadingLimit="{Binding Settings.MinorDBLimit}"
+                    DisplayAxis="True"
                     BarValues="{Binding OctaveValues}" />
     </Grid>
 </controls:MetroWindow>

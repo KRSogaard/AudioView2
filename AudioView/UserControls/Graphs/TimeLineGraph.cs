@@ -468,7 +468,7 @@ namespace AudioView.UserControls.Graphs
                     drawBar(drawingContext,
                         barValue.Item1.ToString(timeTextFormat),
                         new Point(x, y),
-                        barWidth,
+                        Math.Max(0, barWidth),
                         new Point(x - barWidth / 2, y),
                         barValue.Item2);
                 }

@@ -9,7 +9,7 @@ namespace AudioView.UserControls.CountDown.ClockItems
 {
     public class LiveLAegClockItem : ClockItem
     {
-        public override string Name => "Live LAeq";
+        public override string Name => "LAeq, 1s";
         public override void SetValues(MeasurementItemViewModel viewModel, ClockItemData data)
         {
             if (data.LastReading == null)

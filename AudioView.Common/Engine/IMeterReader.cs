@@ -9,8 +9,8 @@ namespace AudioView.Common.Engine
     public interface IMeterReader
     {
         Task<ReadingData> GetSecondReading();
-        Task<ReadingData> GetMinorReading();
-        Task<ReadingData> GetMajorReading();
+        Task<ReadingData> GetMinorReading(DateTime intervalStarted);
+        Task<ReadingData> GetMajorReading(DateTime intervalStarted);
 
         void SetMinorInterval(TimeSpan interval);
         void SetMajorInterval(TimeSpan interval);

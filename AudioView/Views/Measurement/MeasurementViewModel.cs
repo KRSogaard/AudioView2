@@ -53,7 +53,9 @@ namespace AudioView.ViewModels
         private ReadingsStorage majorIntervalHistory;
         private AudioViewCountDownViewModel minorClockViewModel;
         private AudioViewCountDownViewModel majorClockViewModel;
-
+        private DateTime lastMinorInterval;
+        private DateTime lastMajorInterval;
+        
         private GraphViewModel minorGraphViewModel;
         private GraphViewModel majorGraphViewModel;
 
@@ -64,11 +66,13 @@ namespace AudioView.ViewModels
             OctaveValues = new ObservableCollection<double>();
             MinorSpan = TimeSpan.FromTicks(settings.MinorInterval.Ticks * 15);
             MajorSpan = TimeSpan.FromTicks(settings.MajorInterval.Ticks * 15);
-            readingHistory = new ReadingsStorage(MinorSpan);
+            readingHistory = new ReadingsStorage(MajorSpan);
             minorIntervalHistory = new ReadingsStorage(MinorSpan);
             majorIntervalHistory = new ReadingsStorage(majorSpan);
             minorGraphViewModel = new GraphViewModel("LAeq", readingHistory, minorIntervalHistory, MinorSpan);
             majorGraphViewModel = new GraphViewModel("LAeq", null, majorIntervalHistory, MajorSpan, false, true);
+            lastMinorInterval = new DateTime();
+            lastMajorInterval = new DateTime();
 
             started = DateTime.Now;
             popOutWindows = new LinkedList<MetroWindow>();
@@ -101,7 +105,7 @@ namespace AudioView.ViewModels
                 this.engine.RegisterListener(dataStorage);
             }
 
-            this.engine.RegisterListener(new LocalStorageListener("localStorage/", settings.ProjectName));
+            this.engine.RegisterListener(new LocalStorageListener(AudioViewSettings.Instance.AutoSaveLocation, settings.ProjectName));
 
             this.engine.RegisterListener(this);
             this.engine.EngineStartDelayedEvent += (waitTime) =>
@@ -262,7 +266,6 @@ namespace AudioView.ViewModels
             window.SetResourceReference(MetroWindow.BorderBrushProperty, "AccentColorBrush");
 
             popOutWindows.AddLast(window);
-            window.DataContext = this;
             var model = new OctaveBandWindowViewModel(settings, band);
             model.Title = Title;
             if (band == OctaveBandWindowViewModel.OctaveBand.OneOne)
@@ -457,46 +460,45 @@ namespace AudioView.ViewModels
         }
 
         #region IMeterListener Members
-        public Task OnMinor(DateTime time, ReadingData data)
+        public Task OnMinor(DateTime time, DateTime starTime, ReadingData data)
         {
             return Task.Run(() =>
             {
                 MinorReadings.Enqueue(new Tuple<DateTime, ReadingData>(time, data));
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    minorIntervalHistory.Add(time, data);
+                    minorIntervalHistory.Add(starTime, data);
                     minorGraphViewModel.OnBarReading();
                 });
             });
         }
 
-        public Task OnMajor(DateTime time, ReadingData data)
+        public Task OnMajor(DateTime time, DateTime starTime, ReadingData data)
         {
             return Task.Run(() =>
             {
                 MajorReadings.Enqueue(new Tuple<DateTime, ReadingData>(time, data));
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    majorIntervalHistory.Add(time, data);
+                    majorIntervalHistory.Add(starTime, data);
                     majorGraphViewModel.OnBarReading();
                 });
             });
         }
 
-        public Task OnSecond(DateTime time, ReadingData data, ReadingData minorData, ReadingData majorData)
+        public Task OnSecond(DateTime time, DateTime starTime, ReadingData data, ReadingData minorData, ReadingData majorData)
         {
             return Task.Run(() =>
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    readingHistory.Add(time, data);
+                    readingHistory.Add(starTime, data);
                     minorGraphViewModel.OnLineReading();
 
                     // Add data for the octave bar
                     OctaveValues.Clear();
 
-                    ReadingData avgData =
-                        ReadingData.Average(readingHistory.GetSince(time.Subtract(TimeSpan.FromMinutes(1))));
+                    ReadingData avgData = ReadingData.Average(readingHistory.GetSince(lastMinorInterval));
                     OctaveValues.Add(avgData.LAeqOctaveBandOneOne.Hz16);
                     OctaveValues.Add(avgData.LAeqOctaveBandOneOne.Hz31_5);
                     OctaveValues.Add(avgData.LAeqOctaveBandOneOne.Hz63);
@@ -526,6 +528,19 @@ namespace AudioView.ViewModels
         public void SettingsChanged()
         {
             OnPropertyChanged(nameof(Settings));
+            OnPropertyChanged(nameof(MinorDBLimit));
+            if (minorClockViewModel != null)
+            {
+                minorClockViewModel.ChangeLimitDb(settings.MinorDBLimit);
+            }
+            OnPropertyChanged(nameof(MajorDBLimit));
+            if (majorClockViewModel != null)
+            {
+                majorClockViewModel.ChangeLimitDb(settings.MajorDBLimit);
+            }
+
+            OnPropertyChanged(nameof(MinorInterval));
+            OnPropertyChanged(nameof(MajorInterval));
         }
 
         public void OnMinorGraphSettingsChanged(string value)

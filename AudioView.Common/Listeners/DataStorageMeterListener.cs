@@ -67,23 +67,23 @@ namespace AudioView.Common.Listeners
             });
         }
 
-        public Task OnMinor(DateTime time, ReadingData data)
+        public Task OnMinor(DateTime time, DateTime starTime, ReadingData data)
         {
             return Task.Run(() =>
             {
-                WriteReading(false, time, data);
+                WriteReading(false, starTime, data);
             });
         }
 
-        public Task OnMajor(DateTime time, ReadingData data)
+        public Task OnMajor(DateTime time, DateTime starTime, ReadingData data)
         {
             return Task.Run(() =>
             {
-                WriteReading(true, time, data);
+                WriteReading(true, starTime, data);
             });
         }
 
-        public Task OnSecond(DateTime time, ReadingData data, ReadingData minorData, ReadingData majorData)
+        public Task OnSecond(DateTime time, DateTime starTime, ReadingData data, ReadingData minorData, ReadingData majorData)
         {
             return Task.FromResult<object>(null);
         }

@@ -38,24 +38,24 @@ namespace AudioView.Views.PopOuts
             set { SetProperty(ref _lineValues, value); }
         }
 
-        public Task OnMinor(DateTime time, ReadingData data)
+        public Task OnMinor(DateTime time, DateTime starTime, ReadingData data)
         {
             return Task.FromResult<object>(null);
         }
 
-        public Task OnMajor(DateTime time, ReadingData data)
+        public Task OnMajor(DateTime time, DateTime starTime, ReadingData data)
         {
             return Task.FromResult<object>(null);
         }
 
-        public Task OnSecond(DateTime time, ReadingData data, ReadingData minorData, ReadingData majorData)
+        public Task OnSecond(DateTime time, DateTime starTime, ReadingData data, ReadingData minorData, ReadingData majorData)
         {
             return Task.Run(() =>
             {
                 double value = (double)typeof(ReadingData).GetMethod(displayItem).Invoke(data, new object[] { });
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    LineValues.Add(new Tuple<DateTime, double>(time, value));
+                    LineValues.Add(new Tuple<DateTime, double>(starTime, value));
                 });
             });
         }

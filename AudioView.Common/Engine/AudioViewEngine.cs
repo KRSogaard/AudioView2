@@ -25,6 +25,9 @@ namespace AudioView.Common.Engine
         private DateTime nextMinor;
         private DateTime startTime;
 
+        private DateTime minorIntervalStarted;
+        private DateTime majorIntervalStarted;
+
         protected AudioViewEngine()
         {
             
@@ -191,10 +194,11 @@ namespace AudioView.Common.Engine
             {
                 try
                 {
+                    DateTime mesurementSpanStart = time - majorInterval;
                     nextMajor = time + majorInterval;
                     logger.Trace("Fetching major reading, next fetch is at {0}.", nextMajor);
                     DateTime start = DateTime.Now;
-                    var reading = await this.reader.GetMajorReading();
+                    var reading = await this.reader.GetMajorReading(majorIntervalStarted);
                     if (reading == null || reading.LAeq < 0)
                     {
                         logger.Warn("Got null as major reading.");
@@ -209,15 +213,20 @@ namespace AudioView.Common.Engine
                         {
                             start = DateTime.Now;
                             listener.NextMajor(nextMajor);
-                            listener.OnMajor(time, reading);
+                            listener.OnMajor(time, mesurementSpanStart, reading);
                             end = DateTime.Now;
-                            logger.Debug("On Minor listener \"{0}\" took {1} ms.", listener.GetType(), (end - start).TotalMilliseconds);
+                            logger.Debug("On Minor listener \"{0}\" took {1} ms.", listener.GetType(),
+                                (end - start).TotalMilliseconds);
                         }
                     }
                 }
                 catch (Exception exp)
                 {
                     logger.Error(exp, "Failed on Major Interval");
+                }
+                finally
+                {
+                    majorIntervalStarted = DateTime.Now;
                 }
             });
         }
@@ -234,11 +243,13 @@ namespace AudioView.Common.Engine
         {
             return Task.Run(async () =>
             {
-                try { 
+                try
+                {
+                    DateTime mesurementSpanStart = time - minorInterval;
                     nextMinor = time + minorInterval;
                     logger.Trace("Fetching minor reading, next fetch is at {0}.", nextMinor);
                     DateTime start = DateTime.Now;
-                    var reading = await this.reader.GetMinorReading();
+                    var reading = await this.reader.GetMinorReading(minorIntervalStarted);
                     if (reading == null || reading.LAeq < 0)
                     {
                         logger.Warn("Got null as minor reading.");
@@ -253,7 +264,7 @@ namespace AudioView.Common.Engine
                         {
                             start = DateTime.Now;
                             listener.NextMinor(nextMinor);
-                            listener.OnMinor(time, reading);
+                            listener.OnMinor(time, mesurementSpanStart, reading);
                             end = DateTime.Now;
                             logger.Debug("On Minor listener \"{0}\" took {1} ms.", listener.GetType(), (end - start).TotalMilliseconds);
                         }
@@ -262,6 +273,10 @@ namespace AudioView.Common.Engine
                 catch (Exception exp)
                 {
                     logger.Error(exp, "Failed on Minor Interval");
+                }
+                finally
+                {
+                    minorIntervalStarted = DateTime.Now;
                 }
             });
         }
@@ -277,11 +292,12 @@ namespace AudioView.Common.Engine
             {
                 try
                 {
+                    DateTime mesurementSpanStart = time - TimeSpan.FromSeconds(1);
                     logger.Trace("Fetching second reading.");
                     DateTime start = DateTime.Now;
                     var readingSecond = this.reader.GetSecondReading();
-                    var readingMinor = this.reader.GetMinorReading();
-                    var readingMajor = this.reader.GetMajorReading();
+                    var readingMinor = this.reader.GetMinorReading(minorIntervalStarted);
+                    var readingMajor = this.reader.GetMajorReading(majorIntervalStarted);
                     await Task.WhenAll(readingSecond, readingMinor, readingMajor).ConfigureAwait(false);
 
                     if (readingSecond.Result == null || readingSecond.Result.LAeq < 0)
@@ -298,7 +314,7 @@ namespace AudioView.Common.Engine
                         foreach (var listener in this.listeners)
                         {
                             start = DateTime.Now;
-                            listener.OnSecond(time, readingSecond.Result, readingMinor.Result, readingMajor.Result);
+                            listener.OnSecond(time, mesurementSpanStart, readingSecond.Result, readingMinor.Result, readingMajor.Result);
                             end = DateTime.Now;
                             logger.Trace("On Second listener \"{0}\" took {1} ms.", listener.GetType(), (end - start).TotalMilliseconds);
                         }
@@ -316,12 +332,13 @@ namespace AudioView.Common.Engine
             {
                 try
                 {
+                    DateTime mesurementSpanStart = time - TimeSpan.FromSeconds(1);
                     logger.Trace("Triggered second reading \"{0}\".", second.LAeq);
                     lock (this.listeners)
                     {
                         foreach (var listener in this.listeners)
                         {
-                            listener.OnSecond(time, second, minor, major);
+                            listener.OnSecond(time, mesurementSpanStart, second, minor, major);
                         }
                     }
                 }

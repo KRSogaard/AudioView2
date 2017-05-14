@@ -82,7 +82,9 @@ namespace AudioView.UserControls.CountDown
                 SetProperty(ref _textColor, BarBrush, nameof(TextColor));
                 return;
             }
-            SetProperty(ref _textColor, LastReading.LAeq >= limitDb ? BarOverBrush : BarBrush, nameof(TextColor));
+
+            double buildingValue = LastBuildingInterval?.LAeq ?? 0;
+            SetProperty(ref _textColor, buildingValue >= limitDb ? BarOverBrush : BarBrush, nameof(TextColor));
         }
 
         private void UpdateValues()
@@ -147,7 +149,7 @@ namespace AudioView.UserControls.CountDown
         }
 
         #region IMeterListener
-        public Task OnMinor(DateTime time, ReadingData data)
+        public Task OnMinor(DateTime time, DateTime starTime, ReadingData data)
         {
             return Task.Run(() =>
             {
@@ -156,7 +158,7 @@ namespace AudioView.UserControls.CountDown
             });
         }
 
-        public Task OnMajor(DateTime time, ReadingData data)
+        public Task OnMajor(DateTime time, DateTime starTime, ReadingData data)
         {
             return Task.Run(() =>
             {
@@ -165,7 +167,7 @@ namespace AudioView.UserControls.CountDown
             });
         }
 
-        public Task OnSecond(DateTime time, ReadingData data, ReadingData minorData, ReadingData majorData)
+        public Task OnSecond(DateTime time, DateTime starTime, ReadingData data, ReadingData minorData, ReadingData majorData)
         {
             return Task.Run(() =>
             {
@@ -206,6 +208,10 @@ namespace AudioView.UserControls.CountDown
         public void ChangeSecondayDisplayItem(ClockItem clodItem)
         {
             secondItem = clodItem;
+        }
+        public void ChangeLimitDb(int limitDb)
+        {
+            this.limitDb = limitDb;
         }
     }
 

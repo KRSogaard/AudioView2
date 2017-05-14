@@ -51,7 +51,7 @@ namespace AudioView.Common.Engine
             });
         }
 
-        public Task<ReadingData> GetMinorReading()
+        public Task<ReadingData> GetMinorReading(DateTime intervalStarted)
         {
             return Task.Run(() =>
             {
@@ -72,7 +72,7 @@ namespace AudioView.Common.Engine
             });
         }
 
-        public Task<ReadingData> GetMajorReading()
+        public Task<ReadingData> GetMajorReading(DateTime intervalStarted)
         {
             return Task.Run(() =>
             {

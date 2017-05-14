@@ -37,6 +37,7 @@
             <MenuItem Header="Graph Settings" IsEnabled="{Binding MeasurementSelected}"
                       ItemsSource="{Binding GraphMenuItems}">
                 <MenuItem Header="LAeq" Tag="LAeq" Click="GraphSettingsMenuItem_OnClick" />
+                <MenuItem Header="LCeq" Tag="LCeq" Click="GraphSettingsMenuItem_OnClick" />
                 <MenuItem Header="LAMax" Tag="LAMax" Click="GraphSettingsMenuItem_OnClick" />
                 <MenuItem Header="LAMin" Tag="LAMin" Click="GraphSettingsMenuItem_OnClick" />
                 <MenuItem Header="LZMax" Tag="LZMax" Click="GraphSettingsMenuItem_OnClick" />

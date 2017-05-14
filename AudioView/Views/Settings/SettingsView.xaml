@@ -9,6 +9,10 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <ScrollViewer>
         <StackPanel>
+            <Label Content="Auto Save" />
+            <TextBox Text="{Binding AutoSaveLocation}" IsReadOnly="True" />
+            <Button Command="{Binding ChangeAutoSavingLocation}">Browse</Button>
+            
             <Label Content="Theme" />
             <ComboBox ItemsSource="{Binding Themes}" SelectedItem="{Binding Theme}" />
             <Label Content="Accent" />

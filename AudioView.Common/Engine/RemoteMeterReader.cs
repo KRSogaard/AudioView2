@@ -133,12 +133,12 @@ namespace AudioView.Common.Engine
             return Task.FromResult(this.lastSecondReading);
         }
 
-        public Task<ReadingData> GetMinorReading()
+        public Task<ReadingData> GetMinorReading(DateTime intervalStarted)
         {
             return Task.FromResult(this.lastMinorReading);
         }
 
-        public Task<ReadingData> GetMajorReading()
+        public Task<ReadingData> GetMajorReading(DateTime intervalStarted)
         {
             return Task.FromResult(this.lastMajorReading);
         }

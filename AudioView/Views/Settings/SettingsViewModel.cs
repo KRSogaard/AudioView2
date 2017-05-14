@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Windows;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using AudioView.Views.History;
@@ -13,6 +14,7 @@ using Newtonsoft.Json;
 using NLog;
 using Prism.Commands;
 using Prism.Mvvm;
+using Application = System.Windows.Application;
 
 namespace AudioView.ViewModels
 {
@@ -58,7 +60,18 @@ namespace AudioView.ViewModels
                 UpdateSettings();
             }
         }
-       
+
+        private string _autoSaveLocation;
+        public string AutoSaveLocation
+        {
+            get { return _autoSaveLocation; }
+            set
+            {
+                SetProperty(ref _autoSaveLocation, value);
+                UpdateSettings();
+            }
+        }
+
         private SettingsViewModel()
         {
             Accents = ThemeManager.Accents.Select(x => x.Name).ToList();
@@ -82,7 +95,8 @@ namespace AudioView.ViewModels
             var settingsString = JsonConvert.SerializeObject(new AudioViewSettings()
             {
                 Accent = Accent,
-                Theme = Theme
+                Theme = Theme,
+                AutoSaveLocation = AutoSaveLocation
             });
             File.WriteAllText("settings.json", settingsString);
         }
@@ -94,6 +108,7 @@ namespace AudioView.ViewModels
                 isInitalizating = true;
                 Theme = "BaseDark"; // ThemeManager.Accents.Select(x=>x.Name).First(),
                 Accent = "Amber"; // ThemeManager.AppThemes.Select(x => x.Name).First()
+                AutoSaveLocation = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                 isInitalizating = false;
                 UpdateSettings();
                 return;
@@ -102,25 +117,34 @@ namespace AudioView.ViewModels
             var settings = JsonConvert.DeserializeObject<AudioViewSettings>(File.ReadAllText("settings.json"));
 
             isInitalizating = true;
-            if (!Themes.Any(x => x == settings.Theme))
+            if (settings.Theme == null || Themes.All(x => x != settings.Theme))
             {
                 settings.Theme = "BaseDark";
                 SaveSettings();
             }
             Theme = settings.Theme;
 
-            if (!Accents.Any(x => x == settings.Accent))
+            if (settings.Accent == null || Accents.All(x => x != settings.Accent))
             {
                 settings.Accent = "Amber";
                 SaveSettings();
             }
             Accent = settings.Accent;
 
+            if (settings.AutoSaveLocation == null || !Directory.Exists(settings.AutoSaveLocation))
+            {
+                settings.AutoSaveLocation = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                SaveSettings();
+            }
+            AutoSaveLocation = settings.AutoSaveLocation;
+
             isInitalizating = false;
 
             ThemeManager.ChangeAppStyle(Application.Current,
                 ThemeManager.Accents.Where(x => x.Name == Accent).First(),
                 ThemeManager.AppThemes.Where(x => x.Name == Theme).First());
+
+            AudioViewSettings.Overwrite(settings);
         }
         
         private ICommand _selectAllCommand;
@@ -155,6 +179,34 @@ namespace AudioView.ViewModels
             }
         }
 
+        private ICommand _changeAutoSavingLocation;
+        public ICommand ChangeAutoSavingLocation
+        {
+            get
+            {
+                if (_changeAutoSavingLocation == null)
+                {
+                    _changeAutoSavingLocation = new DelegateCommand(() =>
+                    {
+                        using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
+                        {
+                            if (AutoSaveLocation != null && Directory.Exists(AutoSaveLocation))
+                            {
+                                dialog.SelectedPath = AutoSaveLocation;
+                            }
+
+                            System.Windows.Forms.DialogResult result = dialog.ShowDialog();
+                            if (result == DialogResult.OK)
+                            {
+                                AutoSaveLocation = dialog.SelectedPath;
+                            }
+                        }
+                    });
+                }
+                return _changeAutoSavingLocation;
+            }
+        }
+
         private void setSettingsValues(bool value)
         {
             Type type = typeof(DataGridDisplayViewModel);
@@ -172,5 +224,24 @@ namespace AudioView.ViewModels
     {
         public string Accent { get; set; }
         public string Theme { get; set; }
+        public string AutoSaveLocation { get; set; }
+
+        private static AudioViewSettings _settings;
+        public static AudioViewSettings Instance
+        {
+            get
+            {
+                if (_settings == null)
+                {
+                    _settings = new AudioViewSettings();
+                }
+                return _settings;
+            }
+        }
+
+        public static void Overwrite(AudioViewSettings newSettigns)
+        {
+            _settings = newSettigns;
+        }
     }
 }

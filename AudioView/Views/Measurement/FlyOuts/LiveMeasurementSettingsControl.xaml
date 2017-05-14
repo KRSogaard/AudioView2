@@ -25,11 +25,11 @@
                             <TextBox Grid.Column="2" Text="{Binding GraphBoundUpper}" />
                         </Grid>
 
-                        <Label Content="Minor dB Trigger:" />
+                        <Label Content="Minor dB Limit:" />
                         <TextBox Text="{Binding MinorDBLimit}" Margin="0,0,0,5" />
 
                         
-                        <Label Content="Major dB Trigger:" />
+                        <Label Content="Major dB Limit:" />
                         <TextBox Text="{Binding MajorDBLimit}" Margin="0,0,0,5" />
                     </StackPanel>
                 </Expander>

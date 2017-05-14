@@ -23,7 +23,7 @@ namespace AudioView.UserControls.CountDown.ClockItems
                 viewModel.NoValue();
                 return;
             }
-            viewModel.Value = data.LastReading.GetValue(displayValue).ToString("0.##");
+            viewModel.Value = data.LastReading.GetValue(displayValue).ToString("0.0");
             viewModel.Unit = "dB";
             viewModel.Measurement = GetMeasurement();
         }

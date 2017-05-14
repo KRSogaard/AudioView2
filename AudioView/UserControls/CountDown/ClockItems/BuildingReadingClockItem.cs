@@ -8,17 +8,31 @@ namespace AudioView.UserControls.CountDown.ClockItems
 {
     public class BuildingReadingClockItem : ClockItem
     {
-        public override string Name => "Latest building reading";
+        // When a new building starts will there be no measurments for a second, which will result in N/A, just display the last measurment in that case.
+        private String lastValue;
+
+        public override string Name => "Building LAeq";
         public override void SetValues(MeasurementItemViewModel viewModel, ClockItemData data)
         {
-            if (data.LastBuilding == null)
+            // Default to last recorded value
+            String value = lastValue;
+
+            if (data.LastBuilding == null && lastValue == null)
             {
                 viewModel.NoValue();
                 return;
             }
-            viewModel.Value = ((int)Math.Ceiling(data.LastBuilding.LAeq)).ToString();
+            // If we have a value populate it
+            if (data.LastBuilding != null)
+            {
+                value = ((int)Math.Ceiling(data.LastReading.LAeq)).ToString();
+            }
+
+
+            viewModel.Value = value;
             viewModel.Unit = "dB";
             viewModel.Measurement = "LAeq";
+            lastValue = value;
         }
     }
 }

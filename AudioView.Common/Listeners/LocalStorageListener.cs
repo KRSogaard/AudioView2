@@ -39,31 +39,31 @@ namespace AudioView.Common.Listeners
             return sanitisedNamePart;
         }
 
-        public Task OnMinor(DateTime time, ReadingData data)
+        public Task OnMinor(DateTime time, DateTime starTime, ReadingData data)
         {
             return Task.Run(() =>
             {
                 lock (LogFileLock)
                 {
-                    StreamWriter.WriteLineAsync(ToCsv(data, time, false)).Wait();
+                    StreamWriter.WriteLineAsync(ToCsv(data, starTime, false)).Wait();
                     StreamWriter.Flush();
                 }
             });
         }
 
-        public Task OnMajor(DateTime time, ReadingData data)
+        public Task OnMajor(DateTime time, DateTime starTime, ReadingData data)
         {
             return Task.Run(() =>
             {
                 lock (LogFileLock)
                 {
-                    StreamWriter.WriteLineAsync(ToCsv(data, time, true)).Wait();
+                    StreamWriter.WriteLineAsync(ToCsv(data, starTime, true)).Wait();
                     StreamWriter.Flush();
                 }
             });
         }
 
-        public Task OnSecond(DateTime time, ReadingData data, ReadingData minorData, ReadingData majorData)
+        public Task OnSecond(DateTime time, DateTime starTime, ReadingData data, ReadingData minorData, ReadingData majorData)
         {
             return Task.FromResult<object>(null);
         }

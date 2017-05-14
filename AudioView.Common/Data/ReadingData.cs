@@ -7,6 +7,7 @@ namespace AudioView.Common.Data
     public class ReadingData
     {
         public double LAeq { get; set; }
+        public double LCeq { get; set; }
         public double LAMax { get; set; }
         public double LAMin { get; set; }
         public double LZMax { get; set; }
@@ -87,6 +88,7 @@ namespace AudioView.Common.Data
             foreach (var readingData in readings)
             {
                 result.LAeq += DecibelHelper.GetPowerFromDecibel(readingData.LAeq);
+                result.LCeq += DecibelHelper.GetPowerFromDecibel(readingData.LCeq);
                 result.LAMax += DecibelHelper.GetPowerFromDecibel(readingData.LAMax);
                 result.LAMin += DecibelHelper.GetPowerFromDecibel(readingData.LAMin);
                 result.LZMax += DecibelHelper.GetPowerFromDecibel(readingData.LZMax);
@@ -146,6 +148,7 @@ namespace AudioView.Common.Data
 
             // Avarage the power and convert that to decibel
             result.LAeq = DecibelHelper.GetDecibelFromPower(result.LAeq / readings.Count);
+            result.LCeq = DecibelHelper.GetDecibelFromPower(result.LCeq / readings.Count);
             result.LAMax = DecibelHelper.GetDecibelFromPower(result.LAMax / readings.Count);
             result.LAMin = DecibelHelper.GetDecibelFromPower(result.LAMin / readings.Count);
             result.LZMax = DecibelHelper.GetDecibelFromPower(result.LZMax / readings.Count);
@@ -266,6 +269,8 @@ namespace AudioView.Common.Data
             {
                 case "LAeq":
                     return LAeq;
+                case "LCeq":
+                    return LCeq;
                 case "LAMax":
                     return LAMax;
                 case "LAMin":

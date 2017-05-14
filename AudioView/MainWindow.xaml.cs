@@ -21,7 +21,7 @@ namespace AudioView
 
         public MainWindow()
         {
-            DateTime uatShutdown = new DateTime(2017, 04, 30, 23, 59, 59);
+            DateTime uatShutdown = new DateTime(2017, 06, 30, 23, 59, 59);
             if (DateTime.Now > uatShutdown)
             {
                 MessageBox.Show("Access to this User Acceptance Testing version of AudioView 2, expired " +

@@ -73,7 +73,7 @@ namespace AudioView.Common.Engine
                         if(token.IsCancellationRequested)
                             return;
                         // ask for leq
-                        this.WriteLine(serialPort, NTIXL2Commands.Measurement + " LAEQ LAFMAX LAFMIN LZFMAX LZFMIN");
+                        this.WriteLine(serialPort, NTIXL2Commands.Measurement + " LAEQ LAFMAX LAFMIN LZFMAX LZFMIN LCEQ");
                         if (token.IsCancellationRequested)
                             return;
 
@@ -83,6 +83,7 @@ namespace AudioView.Common.Engine
                         reading.LAMin = NTIXL2Utilities.ParseMeasurement(ReadToDB(serialPort));
                         reading.LZMax = NTIXL2Utilities.ParseMeasurement(ReadToDB(serialPort));
                         reading.LZMin = NTIXL2Utilities.ParseMeasurement(ReadToDB(serialPort));
+                        reading.LCeq = NTIXL2Utilities.ParseMeasurement(ReadToDB(serialPort));
 
                         // Getting EQ
                         this.WriteLine(serialPort, NTIXL2Commands.Octive);
@@ -104,7 +105,7 @@ namespace AudioView.Common.Engine
             });
         }
 
-        public Task<ReadingData> GetMinorReading()
+        public Task<ReadingData> GetMinorReading(DateTime intervalStarted)
         {
             return Task.Run(() =>
             {
@@ -113,7 +114,7 @@ namespace AudioView.Common.Engine
                 var reading = new ReadingData();
                 lock (previousReadings)
                 {
-                    var minorReadings = previousReadings.Where(x => x.Item1 >= DateTime.Now - minorInterval).ToList();
+                    var minorReadings = previousReadings.Where(x => x.Item1 >= intervalStarted).ToList();
                     if (!minorReadings.Any())
                     {
                         return null;
@@ -126,7 +127,7 @@ namespace AudioView.Common.Engine
             });
         }
 
-        public Task<ReadingData> GetMajorReading()
+        public Task<ReadingData> GetMajorReading(DateTime intervalStarted)
         {
             return Task.Run(() =>
             {
@@ -135,12 +136,14 @@ namespace AudioView.Common.Engine
                 var reading = new ReadingData();
                 lock (previousReadings)
                 {
+                    var readings = previousReadings.Where(x => x.Item1 >= intervalStarted).ToList();
+
                     if (previousReadings.Count == 0)
                     {
                         return null;
                     }
 
-                    reading = ReadingData.Average(previousReadings.Select(x => x.Item2).ToList());
+                    reading = ReadingData.Average(readings.Select(x => x.Item2).ToList());
                 }
 
                 return reading;
