@@ -75,7 +75,8 @@ namespace AudioView.Common.Engine
                                             line.Substring(
                                                 TCPServerListener.TcpMessages.OnMinorResponse.Replace("{0}", "").Length);
                                         this.lastMinorReading = JsonConvert.DeserializeObject<ReadingData>(json);
-                                        this.engine.OnMinorInterval(DateTime.Now);
+                                        // TODO: Fix the next interval time
+                                        this.engine.OnMinorInterval(DateTime.Now, DateTime.Now);
                                     }
                                     else if (
                                         line.StartsWith(TCPServerListener.TcpMessages.OnMajorResponse.Replace("{0}", "")))
@@ -85,7 +86,8 @@ namespace AudioView.Common.Engine
                                                 TCPServerListener.TcpMessages.OnMajorResponse.Replace("{0}", "")
                                                     .Length);
                                         this.lastMajorReading = JsonConvert.DeserializeObject<ReadingData>(json);
-                                        this.engine.OnMajorInterval(DateTime.Now);
+                                        // TODO: Fix the next interval time
+                                        this.engine.OnMajorInterval(DateTime.Now, DateTime.Now);
                                     }
                                     else if (
                                         line.StartsWith(TCPServerListener.TcpMessages.OnSecondResponse.Replace("{0}", "")))

@@ -108,28 +108,18 @@ namespace AudioView.ViewModels
             this.engine.RegisterListener(new LocalStorageListener(AudioViewSettings.Instance.AutoSaveLocation, settings.ProjectName));
 
             this.engine.RegisterListener(this);
-            this.engine.EngineStartDelayedEvent += (waitTime) =>
-            {
-                MinorClock = new AudioViewCountDownViewModel(false,
-                        settings.MinorInterval,
-                        settings.MinorDBLimit,
-                        settings.MinorClockMainItem,
-                        settings.MinorClockSecondaryItem);
-                MajorClock = new AudioViewCountDownViewModel(true,
-                        settings.MajorInterval,
-                        settings.MajorDBLimit,
-                        settings.MajorClockMainItem,
-                        settings.MajorClockSecondaryItem);
-                MinorClock.NextMinor(DateTime.Now + waitTime);
-                MinorClock.NextMajor(DateTime.Now + waitTime);
-                MajorClock.NextMinor(DateTime.Now + waitTime);
-                MajorClock.NextMajor(DateTime.Now + waitTime);
-            };
-            this.engine.EngineStartedEvent += () =>
-            {
-                this.engine.RegisterListener(MinorClock);
-                this.engine.RegisterListener(MajorClock);
-            };
+            MinorClock = new AudioViewCountDownViewModel(false,
+                    settings.MinorInterval,
+                    settings.MinorDBLimit,
+                    settings.MinorClockMainItem,
+                    settings.MinorClockSecondaryItem);
+            MajorClock = new AudioViewCountDownViewModel(true,
+                    settings.MajorInterval,
+                    settings.MajorDBLimit,
+                    settings.MajorClockMainItem,
+                    settings.MajorClockSecondaryItem);
+            this.engine.RegisterListener(MinorClock);
+            this.engine.RegisterListener(MajorClock);
             this.engine.Start();
 
             Title = settings.ProjectName;

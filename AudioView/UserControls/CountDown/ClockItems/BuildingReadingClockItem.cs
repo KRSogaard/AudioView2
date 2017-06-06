@@ -25,7 +25,7 @@ namespace AudioView.UserControls.CountDown.ClockItems
             // If we have a value populate it
             if (data.LastBuilding != null)
             {
-                value = ((int)Math.Ceiling(data.LastReading.LAeq)).ToString();
+                value = ((int)Math.Round(data.LastBuilding.LAeq)).ToString();
             }
 
 

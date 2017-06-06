@@ -97,6 +97,7 @@
     <Compile Include="Engine\NTIXL2MeterReader.cs" />
     <Compile Include="Engine\RemoteMeterReader.cs" />
     <Compile Include="Export\ExcelExport.cs" />
+    <Compile Include="IntervalTimer.cs" />
     <Compile Include="Listeners\DataStorageMeterListener.cs" />
     <Compile Include="Engine\AudioViewEngine.cs" />
     <Compile Include="Engine\IMeterListener.cs" />

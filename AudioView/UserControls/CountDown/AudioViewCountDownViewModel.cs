@@ -189,6 +189,7 @@ namespace AudioView.UserControls.CountDown
         {
             return Task.Run(() =>
             {
+                logger.Info("Next interval: " + time + " Major: " + isMajor);
                 if (isMajor)
                     OnNext(time);
             });

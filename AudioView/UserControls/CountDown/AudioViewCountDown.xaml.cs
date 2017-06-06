@@ -42,18 +42,21 @@ namespace AudioView.UserControls.CountDown
             var model = (AudioViewCountDownViewModel)this.DataContext;
             if (model == null || !model.IsEnabled)
                 return;
-
-            DateTime lastReading = model.LastReadingTime;
+            
             DateTime nextReading = model.NextReadingTime;
-
-            TimeSpan totalSpan = nextReading - lastReading;
-            TimeSpan currentSpan = DateTime.Now - lastReading;
+            
+            TimeSpan totalSpan = model.Interval;
+            TimeSpan currentSpan = nextReading - DateTime.Now;
             
             var msValue = 360.0 / totalSpan.TotalMilliseconds;
             // Rotate -90 degres to get start at top
             var angle = currentSpan.TotalMilliseconds * msValue;
-
-            model.Angle = angle;
+            if (angle > 360)
+            {
+                angle = 0.0001;
+            }
+            
+            model.Angle = 360 - angle;
             model.ArcThickness = (int)Math.Max(20, this.ActualWidth * 0.1);
 
             model.BarBrush = BarBrush;

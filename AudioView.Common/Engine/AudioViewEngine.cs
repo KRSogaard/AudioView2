@@ -7,16 +7,11 @@ using NLog;
 
 namespace AudioView.Common.Engine
 {
-    public delegate void EngineStartDelayedDeligate(TimeSpan delay);
-    public delegate void EngineStartedDeligate();
-
     public class AudioViewEngine
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
         private Timer secondTimer;
-        private Timer minorTimer;
-        private Timer majorTimer;
         private TimeSpan minorInterval;
         private TimeSpan majorInterval;
         private IMeterReader reader;
@@ -27,6 +22,9 @@ namespace AudioView.Common.Engine
 
         private DateTime minorIntervalStarted;
         private DateTime majorIntervalStarted;
+
+        private IntervalTimer majorIntervalTimer;
+        private IntervalTimer minorIntervalTimer;
 
         protected AudioViewEngine()
         {
@@ -58,14 +56,12 @@ namespace AudioView.Common.Engine
 
             if (!reader.IsTriggerMode())
             {
+
                 this.secondTimer = new Timer(new TimeSpan(0, 0, 1).TotalMilliseconds);
                 this.secondTimer.Elapsed += OnSecond;
 
-                this.minorTimer = new Timer(minorInterval.TotalMilliseconds);
-                this.minorTimer.Elapsed += OnMinorInterval;
-                
-                this.majorTimer = new Timer(majorInterval.TotalMilliseconds);
-                this.majorTimer.Elapsed += OnMajorInterval;
+                minorIntervalTimer = new IntervalTimer(minorInterval);
+                majorIntervalTimer = new IntervalTimer(majorInterval);
             }
         }
         
@@ -78,13 +74,15 @@ namespace AudioView.Common.Engine
             {
                 // We add this safty as listernes might be registered before
                 // we know the next major time
-                if (nextMajor > DateTime.Now)
-                {
-                    listener.NextMajor(nextMajor);
-                }
                 if (nextMinor > DateTime.Now)
                 {
+                    logger.Debug("Informing " + listener.GetType().Name + " that next minor interval is at " + nextMinor);
                     listener.NextMinor(nextMinor);
+                }
+                if (nextMajor > DateTime.Now)
+                {
+                    logger.Debug("Informing " + listener.GetType().Name + " that next major interval is at " + nextMajor);
+                    listener.NextMajor(nextMajor);
                 }
                 this.listeners.Add(listener);
             }
@@ -105,60 +103,70 @@ namespace AudioView.Common.Engine
         public void Start()
         {
             logger.Debug("Preparing engine to start.");
-            var nextFullMin = GetNextFullMinute();
-            startTime = nextFullMin;
-            lock (this.listeners)
-            {
-                foreach (var listener in this.listeners)
-                {
-                    listener.NextMinor(nextFullMin);
-                }
-            }
-            WaitUntil(nextFullMin).ContinueWith((task) =>
-            {
-                logger.Debug("Staring the engine.");
-                if (this.secondTimer != null)
-                    this.secondTimer.Enabled = true;
-                if (this.minorTimer != null)
-                    this.minorTimer.Enabled = true;
+            secondTimer.Start();
 
-                EngineStartedEvent?.Invoke();
-                
-                if (!reader.IsTriggerMode())
-                {
-                    nextMinor = nextFullMin + TimeSpan.FromMilliseconds(this.minorTimer.Interval);
-                    lock (this.listeners)
-                    {
-                        foreach (var listener in this.listeners)
-                        {
-                            listener.NextMinor(nextMinor);
-                        }
-                    }
-                }
-            });
-
-            var nextMajorInterval = GetNextInterval(majorInterval);
-            lock (this.listeners)
+            var minorTimerStart = minorIntervalTimer.Start((triggered, nextInterval) =>
             {
-                foreach (var listener in this.listeners)
-                {
-                    listener.NextMajor(nextMajorInterval);
-                }
-            }
-            WaitUntil(nextMajorInterval).ContinueWith((innerTask) =>
+                logger.Info("Minor interval triggered. Triggered: " + triggered + " Next: " + nextInterval);
+                nextMinor = nextInterval;
+                OnMinorInterval(triggered, nextInterval);
+            }, (triggered, nextInterval) =>
             {
-                if (this.majorTimer != null)
-                    this.majorTimer.Enabled = true;
-
-                nextMajor = nextMajorInterval + TimeSpan.FromMilliseconds(this.majorTimer.Interval);
+                logger.Info("Minor interval Started. Triggered: " + triggered + " Next: " + nextInterval);
+                nextMinor = nextInterval;
+                minorIntervalStarted = triggered;
                 lock (this.listeners)
                 {
                     foreach (var listener in this.listeners)
                     {
-                        listener.NextMajor(nextMajor);
+                        logger.Debug("Informing " + listener.GetType().Name + " of next minor interval " + nextInterval);
+                        listener.NextMinor(nextInterval);
                     }
                 }
             });
+
+            logger.Debug("Minor interval will start at " + minorTimerStart);
+            nextMinor = minorTimerStart;
+            lock (this.listeners)
+            {
+                foreach (var listener in this.listeners)
+                {
+                    logger.Debug("Informing " + listener.GetType().Name + " of minor start time " + minorTimerStart);
+                    listener.NextMinor(minorTimerStart);
+                }
+            }
+
+
+            var majorTimerStart = majorIntervalTimer.Start((triggered, nextInterval) =>
+            {
+                logger.Info("Major interval triggered. Triggered: " + triggered + " Next: " + nextInterval);
+                nextMajor = nextInterval;
+                OnMajorInterval(triggered, nextInterval);
+            }, (triggered, nextInterval) =>
+            {
+                logger.Info("Major interval Started. Triggered: " + triggered + " Next: " + nextInterval);
+                nextMajor = nextInterval;
+                majorIntervalStarted = triggered;
+                lock (this.listeners)
+                {
+                    foreach (var listener in this.listeners)
+                    {
+                        logger.Debug("Informing " + listener.GetType().Name + " of next major interval " + nextInterval);
+                        listener.NextMajor(nextInterval);
+                    }
+                }
+            });
+
+            logger.Debug("Major interval will start at " + majorTimerStart);
+            nextMajor = majorTimerStart;
+            lock (this.listeners)
+            {
+                foreach (var listener in this.listeners)
+                {
+                    logger.Debug("Informing " + listener.GetType().Name + " of major start time.");
+                    listener.NextMajor(majorTimerStart);
+                }
+            }
         }
 
         public void Stop()
@@ -166,37 +174,28 @@ namespace AudioView.Common.Engine
             logger.Debug("Stopping the engine.");
             if (this.secondTimer != null)
                 this.secondTimer.Enabled = false;
-            if (this.minorTimer != null)
-                this.minorTimer.Enabled = false;
-            if (this.majorTimer != null)
-                this.majorTimer.Enabled = false;
+            if (this.minorIntervalTimer != null)
+                this.minorIntervalTimer.Stop();
+            if (this.majorIntervalTimer != null)
+                this.majorIntervalTimer.Stop();
 
             if (reader != null)
                 reader.Close();
 
             this.secondTimer = null;
-            this.minorTimer = null;
-            this.majorTimer = null;
+            this.minorIntervalTimer = null;
+            this.majorIntervalTimer = null;
             this.reader = null;
         }
-
-        public void OnMajorInterval(object sender, ElapsedEventArgs e)
-        {
-            logger.Debug("Got Major interval");
-            // There might be some minor drift, this will snap to the correct interval
-            DateTime time = RoundToNearest(startTime, e.SignalTime, majorInterval);
-            logger.Debug("Snapping Major interval to {0}", time);
-            OnMajorInterval(time);
-        }
-        public Task OnMajorInterval(DateTime time)
+        
+        public Task OnMajorInterval(DateTime time, DateTime nextInterval)
         {
             return Task.Run(async () =>
             {
                 try
                 {
                     DateTime mesurementSpanStart = time - majorInterval;
-                    nextMajor = time + majorInterval;
-                    logger.Trace("Fetching major reading, next fetch is at {0}.", nextMajor);
+                    logger.Trace("Fetching major reading, next fetch is at {0}.", nextInterval);
                     DateTime start = DateTime.Now;
                     var reading = await this.reader.GetMajorReading(majorIntervalStarted);
                     if (reading == null || reading.LAeq < 0)
@@ -212,7 +211,11 @@ namespace AudioView.Common.Engine
                         foreach (var listener in this.listeners)
                         {
                             start = DateTime.Now;
-                            listener.NextMajor(nextMajor);
+                            // Remote will give null
+                            if (nextInterval == null)
+                                listener.NextMajor(time + majorInterval);
+                            else
+                                listener.NextMajor(nextInterval);
                             listener.OnMajor(time, mesurementSpanStart, reading);
                             end = DateTime.Now;
                             logger.Debug("On Minor listener \"{0}\" took {1} ms.", listener.GetType(),
@@ -231,23 +234,14 @@ namespace AudioView.Common.Engine
             });
         }
 
-        public void OnMinorInterval(object sender, ElapsedEventArgs e)
-        {
-            logger.Debug("Got Minor interval");
-            // There might be some minor drift, this will snap to the correct interval
-            DateTime time = RoundToNearest(startTime, e.SignalTime, minorInterval);
-            logger.Debug("Snapping Minor interval to {0}", time);
-            OnMinorInterval(time);
-        }
-        public Task OnMinorInterval(DateTime time)
+        public Task OnMinorInterval(DateTime time, DateTime nextInterval)
         {
             return Task.Run(async () =>
             {
                 try
                 {
                     DateTime mesurementSpanStart = time - minorInterval;
-                    nextMinor = time + minorInterval;
-                    logger.Trace("Fetching minor reading, next fetch is at {0}.", nextMinor);
+                    logger.Trace("Fetching minor reading, next fetch is at {0}.", nextInterval);
                     DateTime start = DateTime.Now;
                     var reading = await this.reader.GetMinorReading(minorIntervalStarted);
                     if (reading == null || reading.LAeq < 0)
@@ -263,7 +257,7 @@ namespace AudioView.Common.Engine
                         foreach (var listener in this.listeners)
                         {
                             start = DateTime.Now;
-                            listener.NextMinor(nextMinor);
+                            listener.NextMinor(nextInterval);
                             listener.OnMinor(time, mesurementSpanStart, reading);
                             end = DateTime.Now;
                             logger.Debug("On Minor listener \"{0}\" took {1} ms.", listener.GetType(), (end - start).TotalMilliseconds);
@@ -348,34 +342,7 @@ namespace AudioView.Common.Engine
                 }
             });
         }
-
-        private DateTime GetNextFullMinute()
-        {
-            var nextFullMin = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0)
-                            .AddMinutes(1);
-            return nextFullMin;
-        }
-
-        private DateTime GetNextInterval(TimeSpan interval)
-        {
-            var next = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour,
-                0, 0);
-            while (next < DateTime.Now)
-            {
-                next += interval;
-            }
-            return next;
-        }
-
-        private Task WaitUntil(DateTime dateTime)
-        {
-            var waitTime = dateTime - DateTime.Now;
-
-            logger.Debug("Engine will start in " + waitTime);
-            EngineStartDelayedEvent?.Invoke(waitTime);
-            return Task.Delay(waitTime);
-        }
-
+        
         protected DateTime RoundToNearest(DateTime start, DateTime dt, TimeSpan span)
         {
             long ticks = dt.Ticks - start.Ticks;
@@ -395,7 +362,5 @@ namespace AudioView.Common.Engine
         }
 
         public event ConnectionStatusUpdateDeligate ConnectionStatusEvent;
-        public event EngineStartDelayedDeligate EngineStartDelayedEvent;
-        public event EngineStartedDeligate EngineStartedEvent;
     }
 }
