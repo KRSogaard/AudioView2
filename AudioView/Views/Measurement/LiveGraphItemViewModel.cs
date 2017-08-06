@@ -34,6 +34,12 @@ namespace AudioView.Views.Measurement
             }
             Name = name;
         }
+        public LiveGraphItemViewModel(MeasurementViewModel parent, string displayName, string methodName)
+        {
+            this.parent = parent;
+            this.methodName = methodName;
+            Name = displayName;
+        }
 
         private string _name;
         public string Name

@@ -87,7 +87,7 @@
             EndAngle="360" 
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch" 
-            Fill="{StaticResource AccentColorBrush4}" 
+            Fill="{DynamicResource AccentColorBrush4}" 
             Stretch="None" />
         <ed:Arc 
             Visibility="{Binding ShowArch, Converter={StaticResource BoolToVisibilityConverter}}"
@@ -97,7 +97,7 @@
             EndAngle="{Binding Angle}" 
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch" 
-            Fill="{StaticResource AccentColorBrush}" 
+            Fill="{DynamicResource AccentColorBrush}" 
             Stretch="None" />
         
         <Grid Margin="20,20,20,20">

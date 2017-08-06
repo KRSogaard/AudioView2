@@ -31,13 +31,16 @@
                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
                 MinHeight="100" MinWidth="100"
                 TimeSpan="{Binding MinorSpan}"
+                AxisBrush="{DynamicResource GrayBrush1}"
+                BarLabelBrush="{DynamicResource GrayBrush1}"
                 ReadingBoundMin="{Binding Settings.GraphLowerBound}"
                 ReadingBoundMax="{Binding Settings.GraphUpperBound}"
                 ReadingLimit="{Binding Settings.MinorDBLimit}"
+                LimitOffset="{Binding MinorGraphViewModel.LimitOffset}"
                 BarSize="{Binding Settings.MinorInterval}"
                 LineValues="{Binding MinorGraphViewModel.LineValues}"
                 BarValues="{Binding MinorGraphViewModel.BarValues}"
-                LineValuesPenColor="{StaticResource HighlightBrush}"
+                LineValuesPenColor="{DynamicResource HighlightBrush}"
                 LineValuesPenSize="2.0" />
         <CountDown:AudioViewCountDown 
              Grid.Column="2"
@@ -45,8 +48,8 @@
             HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
             DataContext="{Binding MinorClock}"
             Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}"
-            BarBrush="{StaticResource LabelTextBrush}"
-            BarOverBrush="{StaticResource ValidationSummaryColor5}" />
+            BarBrush="{DynamicResource LabelTextBrush}"
+            BarOverBrush="{DynamicResource ValidationSummaryColor5}" />
 
         <TextBlock Grid.Column="0" Grid.Row="2" Foreground="{Binding TextColor}" FontSize="32" Text="Major interval" HorizontalAlignment="Stretch" TextAlignment="Center" >
             <TextBlock.LayoutTransform>
@@ -57,6 +60,8 @@
                               HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
                               MinHeight="100" MinWidth="100"
                               TimeSpan="{Binding MajorSpan}"
+                              AxisBrush="{DynamicResource GrayBrush1}"
+                              BarLabelBrush="{DynamicResource GrayBrush1}"
                               ReadingBoundMin="{Binding Settings.GraphLowerBound}"
                               ReadingBoundMax="{Binding Settings.GraphUpperBound}"
                               ReadingLimit="{Binding Settings.MajorDBLimit}"
@@ -68,7 +73,7 @@
             HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
             DataContext="{Binding MajorClock}"
             Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}"
-            BarBrush="{StaticResource LabelTextBrush}"
-            BarOverBrush="{StaticResource ValidationSummaryColor5}" />
+            BarBrush="{DynamicResource LabelTextBrush}"
+            BarOverBrush="{DynamicResource ValidationSummaryColor5}" />
     </Grid>
 </UserControl>

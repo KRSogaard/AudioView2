@@ -72,7 +72,7 @@ namespace AudioView.UserControls.CountDown
 
         public void NoValue()
         {
-            Value = "N/A";
+            Value = "-";
             Unit = "";
             Measurement = "";
         }

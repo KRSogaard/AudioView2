@@ -8,6 +8,7 @@ namespace AudioView.UserControls.CountDown.ClockItems
 {
     public class LatestIntervalClockItem : ClockItem
     {
+        private double currentValue = 0;
         public override string Name => "Previous LAeq";
         public override void SetValues(MeasurementItemViewModel viewModel, ClockItemData data)
         {
@@ -16,9 +17,18 @@ namespace AudioView.UserControls.CountDown.ClockItems
                 viewModel.NoValue();
                 return;
             }
-            viewModel.Value = ((int)Math.Ceiling(data.LastInterval.LAeq)).ToString();
+            currentValue = Math.Round(data.LastInterval.LAeq, 0);
+            if (currentValue < 0)
+                viewModel.Value = "-";
+            else
+                viewModel.Value = ((int)currentValue).ToString();
             viewModel.Unit = "dB";
             viewModel.Measurement = "LAeq";
+        }
+
+        public override bool IsReadingOverLimit(double limit)
+        {
+            return currentValue >= limit;
         }
     }
 }

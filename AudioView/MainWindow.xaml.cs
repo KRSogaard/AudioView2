@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,18 +22,18 @@ namespace AudioView
 
         public MainWindow()
         {
-            DateTime uatShutdown = new DateTime(2017, 06, 30, 23, 59, 59);
-            if (DateTime.Now > uatShutdown)
-            {
-                MessageBox.Show("Access to this User Acceptance Testing version of AudioView 2, expired " +
-                                uatShutdown + ".", "User Acceptance Testing", MessageBoxButton.OK, MessageBoxImage.Error);
-                Application.Current.Shutdown();
-            }
-            else
-            {
-                MessageBox.Show("This is a special version of AudioView 2 meant for User Acceptance Testing, access will expire after " +
-                                uatShutdown + ".", "User Acceptance Testing", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
+            //DateTime uatShutdown = new DateTime(2017, 06, 30, 23, 59, 59);
+            //if (DateTime.Now > uatShutdown)
+            //{
+            //    MessageBox.Show("Access to this User Acceptance Testing version of AudioView 2, expired " +
+            //                    uatShutdown + ".", "User Acceptance Testing", MessageBoxButton.OK, MessageBoxImage.Error);
+            //    Application.Current.Shutdown();
+            //}
+            //else
+            //{
+            //    MessageBox.Show("This is a special version of AudioView 2 meant for User Acceptance Testing, access will expire after " +
+            //                    uatShutdown + ".", "User Acceptance Testing", MessageBoxButton.OK, MessageBoxImage.Information);
+            //}
 
             InitializeComponent();
             var model = new MainViewModel();
@@ -63,6 +64,15 @@ namespace AudioView
         private void login()
         {
             ((MainViewModel)DataContext).OnLogIn(username.Text, password.Password);
+        }
+
+        private void OnClosing(object sender, CancelEventArgs e)
+        {
+            MessageBoxResult result = MessageBox.Show("Are you sure you want to close AudioView?", "Close AudioView", MessageBoxButton.YesNo);
+            if (result != MessageBoxResult.Yes)
+            {
+                e.Cancel = true;
+            }
         }
     }
 }

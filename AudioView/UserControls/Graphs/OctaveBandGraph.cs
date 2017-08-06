@@ -10,13 +10,30 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
+using NLog;
 
 namespace AudioView.UserControls.Graphs
 {
+    public class OctaveBandGraphValue
+    {
+        public string Key;
+        public double Value;
+        public bool OverLimit;
+
+        public OctaveBandGraphValue(string key, double value, double adjust, double limit)
+        {
+            Key = key;
+            Value = value;
+            OverLimit = value >= limit + adjust;
+        }
+    }
+
     public class OctaveBandGraph : UserControl
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+        
         private static readonly int LeftMargin = 40; //px
-        private static readonly int buttomMargin = 10; //px
+        private static readonly int buttomMargin = 40; //px
         private static readonly int buttomTextMargin = 5; //px
         private static readonly double axisFontSize = 12;
         private static readonly Typeface FontTypeFace = new Typeface("Arial");
@@ -40,18 +57,11 @@ namespace AudioView.UserControls.Graphs
                     null,
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
-        public static readonly DependencyProperty ReadingLimitProperty =
-            DependencyProperty.Register(
-            "ReadingLimit", typeof(double), typeof(OctaveBandGraph),
-            new FrameworkPropertyMetadata(
-                90.0,
-                FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-
         public static readonly DependencyProperty BarValuesProperty =
             DependencyProperty.Register(
-                "BarValues", typeof (ObservableCollection<double>), typeof (OctaveBandGraph),
+                "BarValues", typeof (ObservableCollection<OctaveBandGraphValue>), typeof (OctaveBandGraph),
                 new FrameworkPropertyMetadata(
-                    new ObservableCollection<double>(),
+                    new ObservableCollection<OctaveBandGraphValue>(),
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
 
@@ -83,15 +93,15 @@ namespace AudioView.UserControls.Graphs
                     new SolidColorBrush(Colors.Crimson),
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
-        public static readonly DependencyProperty AxisPenProperty =
-            DependencyProperty.Register(
-            "AxisPen", typeof(Pen), typeof(OctaveBandGraph),
-            new FrameworkPropertyMetadata(
-                new Pen(new SolidColorBrush(Colors.WhiteSmoke), AxisLinePenSize)
-                {
-                    DashStyle = AxisLineDashStyle
-                },
-                FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+        //public static readonly DependencyProperty AxisPenProperty =
+        //    DependencyProperty.Register(
+        //    "AxisPen", typeof(Pen), typeof(OctaveBandGraph),
+        //    new FrameworkPropertyMetadata(
+        //        new Pen(new SolidColorBrush(Colors.WhiteSmoke), AxisLinePenSize)
+        //        {
+        //            DashStyle = AxisLineDashStyle
+        //        },
+        //        FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
         public static readonly DependencyProperty AxisBrushProperty =
             DependencyProperty.Register(
             "AxisBrush", typeof(SolidColorBrush), typeof(OctaveBandGraph),
@@ -100,21 +110,24 @@ namespace AudioView.UserControls.Graphs
                 FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
         public static readonly DependencyProperty DisplayAxisProperty =
             DependencyProperty.Register(
-            "DisplayAxis", typeof(bool), typeof(OctaveBandGraph),
-            new FrameworkPropertyMetadata(
-                false,
-                FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+                "DisplayAxis", typeof(bool), typeof(OctaveBandGraph),
+                new FrameworkPropertyMetadata(
+                    false,
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+        public static readonly DependencyProperty DisplayXAxisProperty =
+            DependencyProperty.Register(
+                "DisplayXAxis", typeof(bool), typeof(OctaveBandGraph),
+                new FrameworkPropertyMetadata(
+                    false,
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
         #endregion
 
         #region Peroperties
-        public double ReadingLimit
+
+
+        public ObservableCollection<OctaveBandGraphValue> BarValues
         {
-            get { return (double)GetValue(ReadingLimitProperty); }
-            set { SetValue(ReadingLimitProperty, value); }
-        }
-        public ObservableCollection<double> BarValues
-        {
-            get { return (ObservableCollection<double>) GetValue(BarValuesProperty); }
+            get { return (ObservableCollection<OctaveBandGraphValue>) GetValue(BarValuesProperty); }
             set { SetValue(BarValuesProperty, value); }
         }
 
@@ -156,8 +169,11 @@ namespace AudioView.UserControls.Graphs
 
         public Pen AxisPen
         {
-            get { return (Pen)GetValue(AxisPenProperty); }
-            set { SetValue(AxisPenProperty, value); }
+            get { return new Pen(AxisBrush, AxisLinePenSize)
+                {
+                    DashStyle = AxisLineDashStyle
+                };
+            }
         }
         public SolidColorBrush AxisBrush
         {
@@ -168,6 +184,11 @@ namespace AudioView.UserControls.Graphs
         {
             get { return (bool)GetValue(DisplayAxisProperty); }
             set { SetValue(DisplayAxisProperty, value); }
+        }
+        public bool DisplayXAxis
+        {
+            get { return (bool)GetValue(DisplayXAxisProperty); }
+            set { SetValue(DisplayXAxisProperty, value); }
         }
         #endregion
 
@@ -180,12 +201,12 @@ namespace AudioView.UserControls.Graphs
             {
                 if (e.OldValue != null)
                 {
-                    ((ObservableCollection<double>) e.OldValue)
+                    ((ObservableCollection<OctaveBandGraphValue>) e.OldValue)
                         .CollectionChanged -= OnBarsCollectionChanged;
                 }
                 if (e.NewValue != null)
                 {
-                    ((ObservableCollection<double>) e.NewValue)
+                    ((ObservableCollection<OctaveBandGraphValue>) e.NewValue)
                         .CollectionChanged += OnBarsCollectionChanged;
                 }
             }
@@ -247,16 +268,14 @@ namespace AudioView.UserControls.Graphs
 
             double yOffset = 0;
 
+            workingWidth = this.ActualWidth;
+            workingHeight = this.ActualHeight;
+
             if (DisplayAxis)
             {
                 workingWidth = this.ActualWidth - LeftMargin;
                 workingHeight = this.ActualHeight - buttomMargin;
                 yOffset = buttomMargin;
-            }
-            else
-            {
-                workingWidth = this.ActualWidth;
-                workingHeight = this.ActualHeight;
             }
 
             double spacePrBar = workingWidth / (double)this.BarValues.Count;
@@ -278,12 +297,23 @@ namespace AudioView.UserControls.Graphs
             foreach (var barValue in BarValues)
             {
                 x1 += borderWith;
-                var y = getY(barValue);
+                var y = getY(barValue.Value);
                 var barHeight = Math.Max(0, workingHeight - y);
-                drawingContext.DrawRectangle(barValue >= ReadingLimit ? BarOverFillBrush : BarFillBrush,
-                                            barValue >= ReadingLimit ? BarOverBorderPen : BarBorderPen,
+                drawingContext.DrawRectangle(barValue.OverLimit ? BarOverFillBrush : BarFillBrush,
+                                            barValue.OverLimit ? BarOverBorderPen : BarBorderPen,
                                             new Rect(new Point(x1, this.ActualHeight - barHeight - yOffset),
                                                      new Size(spacePrBar, barHeight)));
+
+                if (DisplayAxis)
+                {
+                    var text = new FormattedText(barValue.Key, CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
+                        FontTypeFace, axisFontSize, AxisBrush);
+                    drawingContext.DrawText(text,
+                        new Point(x1 + (spacePrBar / 2) - (text.Width / 2),
+                            this.ActualHeight - buttomMargin + buttomTextMargin));
+                    logger.Info($"Start text on Y at: {this.ActualHeight} - {buttomMargin} + {buttomTextMargin} = " + (this.ActualHeight - buttomMargin + buttomTextMargin));
+                }
+
                 x1 += spacePrBar + borderWith;
             }
         }
@@ -309,6 +339,8 @@ namespace AudioView.UserControls.Graphs
                 max = (double)ReadingBoundMax;
             }
 
+            logger.Info("Bounds: " + min + " -> " + max);
+
             if (ReadingBoundMin == null || ReadingBoundMax == null)
             {
                 double newMin = double.MaxValue;
@@ -316,13 +348,13 @@ namespace AudioView.UserControls.Graphs
 
                 foreach (var barValue in BarValues)
                 {
-                    if (barValue < newMin)
+                    if (barValue.Value < newMin)
                     {
-                        newMin = barValue;
+                        newMin = barValue.Value;
                     }
-                    if (barValue > newMax)
+                    if (barValue.Value > newMax)
                     {
-                        newMax = barValue;
+                        newMax = barValue.Value;
                     }
                 }
 

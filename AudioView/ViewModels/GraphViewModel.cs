@@ -23,6 +23,7 @@ namespace AudioView.ViewModels
         private ObservableCollection<V> lineValues;
         private int sizeToClearLine = 0;
         private int sizeToClearBars = 0;
+        private double limitOffset;
 
         public GraphViewModel(string displayValue, ReadingsStorage lineHistory, ReadingsStorage barHistory,
             TimeSpan span,
@@ -51,6 +52,11 @@ namespace AudioView.ViewModels
         {
             get { return lineValues; }
             set { SetProperty(ref lineValues, value); }
+        }
+        public double LimitOffset
+        {
+            get { return limitOffset; }
+            set { SetProperty(ref limitOffset, value); }
         }
 
         public void OnLineReading()
@@ -105,9 +111,11 @@ namespace AudioView.ViewModels
             list.Add(new V(latest.Item1, latest.Item2.GetValue(displayValue)));
         }
 
-        public void ChangeDisplayItem(string displayItem)
+        public void ChangeDisplayItem(string displayItem, double limitOffset)
         {
             this.displayValue = displayItem;
+            LimitOffset = limitOffset;
+
             if (displayBars)
             {
                 ChangeDisplayItem(barHistory, barValues);

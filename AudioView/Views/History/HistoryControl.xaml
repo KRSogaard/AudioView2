@@ -22,7 +22,7 @@
             </StackPanel>
         </Grid>
         <TabControl x:Name="contentTabControl" SelectedIndex="{Binding SelectedTab}" Visibility="Hidden">
-            <TabItem Header="Selection">
+            <TabItem Header="Search">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -30,7 +30,7 @@
                     </Grid.RowDefinitions>
                     <Expander Header="{Binding SearchHeader}" IsExpanded="True">
                         <StackPanel>
-                        <Label Content="Recording Date:" />
+                        <Label Content="Measurement Date:" />
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="Between" />
                                 <DatePicker 
@@ -53,6 +53,7 @@
                         </StackPanel>
                     </Expander>
                     <DataGrid
+                        x:Name="DisplayGrid"
                         Grid.Row="1"
                         Margin="0,5,0,0"
                         ItemsSource="{Binding SearchResults, Mode=OneWay}"
@@ -64,24 +65,25 @@
                             <DataGridTextColumn Header="Number"
                                     Binding="{Binding ProjectNumber, Mode=OneWay}" />
                             <DataGridTextColumn Header="Date"
-                                    Binding="{Binding Date, Mode=OneWay}" />
-                                <DataGridTextColumn Header="Minor dB limit"
-                                    Binding="{Binding MinorDBLimit, Mode=OneWay}" />
-                                <DataGridTextColumn Header="Minor Interval"
-                                    Binding="{Binding MinorInterval, Mode=OneWay}" />
-                                <DataGridTextColumn Header="Major dB limit"
-                                    Binding="{Binding MajorDBLimit, Mode=OneWay}" />
-                                <DataGridTextColumn Header="Major Interval"
-                                    Binding="{Binding MajorInterval, Mode=OneWay}" />
-                                <DataGridTextColumn Header="Measurements"
-                                    Binding="{Binding MeasurementsCount, Mode=OneWay}" />
-                                <DataGridTemplateColumn Header="Download">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Button Command="{Binding DownloadCSV}">Export CSV</Button>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
+                                    Binding="{Binding Date, Mode=OneWay}">
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Minor dB limit"
+                                Binding="{Binding MinorDBLimit, Mode=OneWay}" />
+                            <DataGridTextColumn Header="Minor Interval"
+                                Binding="{Binding MinorInterval, Mode=OneWay}" />
+                            <DataGridTextColumn Header="Major dB limit"
+                                Binding="{Binding MajorDBLimit, Mode=OneWay}" />
+                            <DataGridTextColumn Header="Major Interval"
+                                Binding="{Binding MajorInterval, Mode=OneWay}" />
+                            <DataGridTextColumn Header="Measurements"
+                                Binding="{Binding MeasurementsCount, Mode=OneWay}" />
+                            <DataGridTemplateColumn Header="Download">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Command="{Binding DownloadCSV}">Export CSV</Button>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                         </DataGrid.Columns>
                         </DataGrid>
                         <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{StaticResource ControlBackgroundBrush}" Visibility="{Binding IsSearching, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}" Opacity="0.75">
@@ -89,7 +91,7 @@
                         </Border>
                     </Grid>
             </TabItem>
-            <TabItem Header="Data" IsEnabled="{Binding CanSeeDetails}"  Visibility="{Binding CanSeeDetails, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
+            <TabItem Header="Table" IsEnabled="{Binding CanSeeDetails}"  Visibility="{Binding CanSeeDetails, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
                 <local:HistoryDataView  DataContext="{Binding SelectedSearch}" />
             </TabItem>
             <TabItem Header="Graph" IsEnabled="{Binding CanSeeDetails}" Visibility="{Binding CanSeeDetails, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">

@@ -40,7 +40,7 @@
 
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}">
         <CountDown:AudioViewCountDown DataContext="{Binding}"
-            BarBrush="{StaticResource LabelTextBrush}"
-            BarOverBrush="{StaticResource ValidationSummaryColor5}" />
+            BarBrush="{DynamicResource LabelTextBrush}"
+            BarOverBrush="{DynamicResource ValidationSummaryColor5}" />
     </Grid>
 </Controls:MetroWindow>

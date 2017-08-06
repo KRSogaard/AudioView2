@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using AudioView.Common.Engine;
 using AudioView.UserControls.CountDown;
+using AudioView.UserControls.Graphs;
 using Prism.Commands;
 using Prism.Mvvm;
 
@@ -24,7 +25,7 @@ namespace AudioView.ViewModels
             get { return majorSpan; }
             set { SetProperty(ref majorSpan, value); }
         }
-        public ObservableCollection<double> OctaveValues
+        public ObservableCollection<OctaveBandGraphValue> OctaveValues
         {
             get { return octaveValues; }
             set { SetProperty(ref octaveValues, value); }
@@ -54,20 +55,6 @@ namespace AudioView.ViewModels
         {
             get { return majorClockViewModel; }
             set { SetProperty(ref majorClockViewModel, value); }
-        }
-        
-
-        private ICommand _octaveBandPopUp;
-        public ICommand OctaveBandPopUp
-        {
-            get
-            {
-                if (_octaveBandPopUp == null)
-                {
-                    _octaveBandPopUp = new DelegateCommand(OnOctaveBandPopUp);
-                }
-                return _octaveBandPopUp;
-            }
         }
 
         private ICommand _displayReadingsTabel;

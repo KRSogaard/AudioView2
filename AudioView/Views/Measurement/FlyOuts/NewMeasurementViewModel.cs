@@ -49,14 +49,25 @@ namespace AudioView.ViewModels
             MinorIntervalHours = 0.ToString();
 
             GraphBoundUpper = 120.ToString();
-            GraphBoundLower = 60.ToString();
+            GraphBoundLower = 40.ToString();
 
             MinorDBLimit = 98.ToString();
             MajorDBLimit = 95.ToString();
             ClockItems = ClockItemsFactory.AllClockItems;
 
-            MinorClockMainItem = ClockItems.FirstOrDefault(x => x.GetType() == typeof(BuildingReadingClockItem));
-            MinorClockSecondaryItem = ClockItems.FirstOrDefault(x => x.GetType() == typeof(InactiveClockItem));
+#if DEBUG
+            MajorIntervalSeconds = 0.ToString();
+            MinorIntervalSeconds = 30.ToString();
+            MajorIntervalMinutes = 1.ToString();
+            MinorIntervalMinutes = 0.ToString();
+            MajorIntervalHours = 0.ToString();
+            MinorIntervalHours = 0.ToString();
+            MinorDBLimit = 70.ToString();
+            MajorDBLimit = 65.ToString();
+#endif
+
+            MinorClockMainItem = ClockItems.FirstOrDefault(x => x.GetType() == typeof(LatestIntervalClockItem));
+            MinorClockSecondaryItem = ClockItems.FirstOrDefault(x => x.GetType() == typeof(LiveLAegClockItem));
             MajorClockMainItem = ClockItems.FirstOrDefault(x => x.GetType() == typeof(BuildingReadingClockItem));
             MajorClockSecondaryItem = ClockItems.FirstOrDefault(x => x.GetType() == typeof(InactiveClockItem));
 

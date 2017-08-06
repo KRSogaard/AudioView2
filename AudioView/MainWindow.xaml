@@ -12,7 +12,8 @@
         x:Class="AudioView.MainWindow"
         Title="AudioView" 
         MinHeight="600" 
-        MinWidth="800">
+        MinWidth="800"
+        Closing="OnClosing">
     <Controls:MetroWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -50,7 +51,7 @@
                 <Label>Access to the database requires authorization, please log in to continue.</Label>
                 <Label Visibility="{Binding LogInFailed, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}" Foreground="Red">The provided username and password was not accepted.</Label>
                 <Label Visibility="{Binding LogInExpired, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}" Foreground="Red">Access for the provided user has expired.</Label>
-                <Label Foreground="{StaticResource ControlsValidationBrush}" x:Name="loginFailedLabel" Visibility="Collapsed">Log-in failed.</Label>
+                <Label Foreground="{DynamicResource ControlsValidationBrush}" x:Name="loginFailedLabel" Visibility="Collapsed">Log-in failed.</Label>
                 <Label>Username:</Label>
                 <TextBox x:Name="username" KeyDown="Username_OnKeyDown" />
 
@@ -65,7 +66,7 @@
         <Border
                 HorizontalAlignment="Stretch" 
                 VerticalAlignment="Stretch" 
-                Background="{StaticResource ControlBackgroundBrush}" 
+                Background="{DynamicResource ControlBackgroundBrush}" 
                 Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}" 
                 Opacity="0.75">
             <Controls:ProgressRing Width="90" Height="90" IsActive="True" />
@@ -77,7 +78,7 @@
             <TabItem Header="Measurements">
                 <measurement:MeasurementsView DataContext="{Binding MeasurementsViewModel}" />
             </TabItem>
-            <TabItem Header="History">
+            <TabItem Header="Projects">
                 <UserControls:HistoryControl DataContext="{Binding HistoryViewModel}" />
             </TabItem>
         </TabControl>

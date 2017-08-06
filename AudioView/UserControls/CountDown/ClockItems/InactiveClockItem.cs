@@ -15,5 +15,10 @@ namespace AudioView.UserControls.CountDown.ClockItems
         {
             viewModel.Clear();
         }
+
+        public override bool IsReadingOverLimit(double limit)
+        {
+            return false;
+        }
     }
 }

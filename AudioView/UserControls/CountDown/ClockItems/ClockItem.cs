@@ -12,5 +12,7 @@ namespace AudioView.UserControls.CountDown
         {
             return Name;
         }
+
+        public abstract bool IsReadingOverLimit(double limit);
     }
 }

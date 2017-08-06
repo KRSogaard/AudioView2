@@ -88,6 +88,8 @@ namespace AudioView.ViewModels
                 ThemeManager.Accents.Where(x=>x.Name ==  Accent).First(), 
                 ThemeManager.AppThemes.Where(x => x.Name == Theme).First());
             SaveSettings();
+
+            AudioViewSettings.Instance.AutoSaveLocation = AutoSaveLocation;
         }
 
         private void SaveSettings()

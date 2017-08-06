@@ -16,10 +16,12 @@ using AudioView.Common.Engine;
 using AudioView.Common.Export;
 using AudioView.Common.Listeners;
 using AudioView.UserControls.CountDown;
+using AudioView.UserControls.Graphs;
 using AudioView.Views.History;
 using AudioView.Views.Measurement;
 using AudioView.Views.PopOuts;
 using GalaSoft.MvvmLight.Threading;
+using MahApps.Metro;
 using MahApps.Metro.Controls;
 using Microsoft.Win32;
 using NLog;
@@ -47,7 +49,7 @@ namespace AudioView.ViewModels
         private ObservableCollection<Tuple<DateTime, double>> barMinorValues;
         private ObservableCollection<Tuple<DateTime, double>> barMajorValues;
         private ObservableCollection<Tuple<DateTime, double>> lineValues;
-        private ObservableCollection<double> octaveValues;
+        private ObservableCollection<OctaveBandGraphValue> octaveValues;
         private ReadingsStorage readingHistory;
         private ReadingsStorage minorIntervalHistory;
         private ReadingsStorage majorIntervalHistory;
@@ -63,7 +65,7 @@ namespace AudioView.ViewModels
         {
             MinorReadings = new ConcurrentQueue<Tuple<DateTime, ReadingData>>();
             MajorReadings = new ConcurrentQueue<Tuple<DateTime, ReadingData>>();
-            OctaveValues = new ObservableCollection<double>();
+            OctaveValues = new ObservableCollection<OctaveBandGraphValue>();
             MinorSpan = TimeSpan.FromTicks(settings.MinorInterval.Ticks * 15);
             MajorSpan = TimeSpan.FromTicks(settings.MajorInterval.Ticks * 15);
             readingHistory = new ReadingsStorage(MajorSpan);
@@ -187,7 +189,7 @@ namespace AudioView.ViewModels
         {
             get { return settings.IsLocal; }
         }
-        
+
         public void NewLiveReadingsPopUp(bool isMajor, Type mainClockItemId, Type secondayClockItemId)
         {
             var window = new LiveReadingWindow()
@@ -232,6 +234,7 @@ namespace AudioView.ViewModels
             popOutWindows.AddLast(window);
             window.DataContext = this;
             var model = new LiveGraphWindowViewModel(methodName);
+            model.Settings = Settings;
             model.Title = Title;
             this.engine.RegisterListener(model);
             window.DataContext = model;
@@ -245,7 +248,7 @@ namespace AudioView.ViewModels
             window.Show();
         }
 
-        public void NewOctaveBandPopUp(OctaveBandWindowViewModel.OctaveBand band)
+        public void NewOctaveBandPopUp(OctaveBandWindowViewModel.OctaveBand band, bool building)
         {
             var window = new OctaveBandWindow()
             {
@@ -256,7 +259,7 @@ namespace AudioView.ViewModels
             window.SetResourceReference(MetroWindow.BorderBrushProperty, "AccentColorBrush");
 
             popOutWindows.AddLast(window);
-            var model = new OctaveBandWindowViewModel(settings, band);
+            var model = new OctaveBandWindowViewModel(settings, band, building);
             model.Title = Title;
             if (band == OctaveBandWindowViewModel.OctaveBand.OneOne)
             {
@@ -320,26 +323,6 @@ namespace AudioView.ViewModels
                 if (MajorClock != null)
                     MajorClock.IsEnabled = value;
             }
-        }
-
-        private void OnOctaveBandPopUp()
-        {
-            var window = new OctaveBandWindow()
-            {
-                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                BorderThickness = new Thickness(1),
-                GlowBrush = null
-            };
-            window.SetResourceReference(MetroWindow.BorderBrushProperty, "AccentColorBrush");
-            popOutWindows.AddLast(window);
-            window.DataContext = this;
-            window.Closed += (sender, args) =>
-            {
-                window.DataContext = null;
-                popOutWindows.Remove(window);
-                window = null;
-            };
-            window.Show();
         }
 
         private void OnDisplayReadingsTabel()
@@ -422,12 +405,12 @@ namespace AudioView.ViewModels
                 if (_liveGraphReadings == null)
                 {
                     _liveGraphReadings = new ObservableCollection<LiveGraphItemViewModel>();
-                    foreach (var method in typeof(ReadingData).GetMethods().Where(
-                        x => x.IsPublic &&
-                        x.ReturnType == typeof(double)))
-                    {
-                        _liveGraphReadings.Add(new LiveGraphItemViewModel(this, method));
-                    }
+                    _liveGraphReadings.Add(new LiveGraphItemViewModel(this, "LAeq, 1s", "LAeq"));
+                    _liveGraphReadings.Add(new LiveGraphItemViewModel(this, "LCeq, 1s", "LCeq"));
+                    _liveGraphReadings.Add(new LiveGraphItemViewModel(this, "LAMax", "LAMax"));
+                    _liveGraphReadings.Add(new LiveGraphItemViewModel(this, "LAMin", "LAMin"));
+                    _liveGraphReadings.Add(new LiveGraphItemViewModel(this, "LZMax", "LZMax"));
+                    _liveGraphReadings.Add(new LiveGraphItemViewModel(this, "LZMin", "LZMin"));
                 }
                 return _liveGraphReadings;
             }
@@ -454,7 +437,7 @@ namespace AudioView.ViewModels
         {
             return Task.Run(() =>
             {
-                MinorReadings.Enqueue(new Tuple<DateTime, ReadingData>(time, data));
+                MinorReadings.Enqueue(new Tuple<DateTime, ReadingData>(starTime, data));
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
                     minorIntervalHistory.Add(starTime, data);
@@ -467,7 +450,7 @@ namespace AudioView.ViewModels
         {
             return Task.Run(() =>
             {
-                MajorReadings.Enqueue(new Tuple<DateTime, ReadingData>(time, data));
+                MajorReadings.Enqueue(new Tuple<DateTime, ReadingData>(starTime, data));
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
                     majorIntervalHistory.Add(starTime, data);
@@ -487,19 +470,14 @@ namespace AudioView.ViewModels
 
                     // Add data for the octave bar
                     OctaveValues.Clear();
-
-                    ReadingData avgData = ReadingData.Average(readingHistory.GetSince(lastMinorInterval));
-                    OctaveValues.Add(avgData.LAeqOctaveBandOneOne.Hz16);
-                    OctaveValues.Add(avgData.LAeqOctaveBandOneOne.Hz31_5);
-                    OctaveValues.Add(avgData.LAeqOctaveBandOneOne.Hz63);
-                    OctaveValues.Add(avgData.LAeqOctaveBandOneOne.Hz125);
-                    OctaveValues.Add(avgData.LAeqOctaveBandOneOne.Hz250);
-                    OctaveValues.Add(avgData.LAeqOctaveBandOneOne.Hz500);
-                    OctaveValues.Add(avgData.LAeqOctaveBandOneOne.Hz1000);
-                    OctaveValues.Add(avgData.LAeqOctaveBandOneOne.Hz2000);
-                    OctaveValues.Add(avgData.LAeqOctaveBandOneOne.Hz4000);
-                    OctaveValues.Add(avgData.LAeqOctaveBandOneOne.Hz8000);
-                    OctaveValues.Add(avgData.LAeqOctaveBandOneOne.Hz16000);
+                    
+                    if (minorData != null)
+                    {
+                        foreach (var obp in DecibelHelper.GetOneOneOctaveBand())
+                        {
+                            OctaveValues.Add(new OctaveBandGraphValue(obp.Display, minorData.GetValue("1-1-" + obp.Method), obp.LimitAjust, settings.MinorDBLimit));
+                        }
+                    }
                 });
             });
         }
@@ -535,7 +513,10 @@ namespace AudioView.ViewModels
 
         public void OnMinorGraphSettingsChanged(string value)
         {
-            minorGraphViewModel.ChangeDisplayItem(value);
+            minorGraphViewModel.ChangeDisplayItem(value, DecibelHelper.GetLimitOffSet(value));
+            majorGraphViewModel.ChangeDisplayItem(value, DecibelHelper.GetLimitOffSet(value));
         }
+
+        
     }
 }

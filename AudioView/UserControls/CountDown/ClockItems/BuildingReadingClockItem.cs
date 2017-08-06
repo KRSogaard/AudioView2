@@ -3,13 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NLog;
 
 namespace AudioView.UserControls.CountDown.ClockItems
 {
     public class BuildingReadingClockItem : ClockItem
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         // When a new building starts will there be no measurments for a second, which will result in N/A, just display the last measurment in that case.
-        private String lastValue;
+        private String lastValue = "-";
+
+        private double currentValue = 0;
 
         public override string Name => "Building LAeq";
         public override void SetValues(MeasurementItemViewModel viewModel, ClockItemData data)
@@ -25,7 +30,11 @@ namespace AudioView.UserControls.CountDown.ClockItems
             // If we have a value populate it
             if (data.LastBuilding != null)
             {
-                value = ((int)Math.Round(data.LastBuilding.LAeq)).ToString();
+                currentValue = Math.Round(data.LastBuilding.LAeq);
+                if (Double.IsNaN(data.LastBuilding.LAeq) || currentValue < 0)
+                    value = "-";
+                else
+                    value = ((int)currentValue).ToString();
             }
 
 
@@ -33,6 +42,11 @@ namespace AudioView.UserControls.CountDown.ClockItems
             viewModel.Unit = "dB";
             viewModel.Measurement = "LAeq";
             lastValue = value;
+        }
+
+        public override bool IsReadingOverLimit(double limit)
+        {
+            return currentValue >= limit;
         }
     }
 }

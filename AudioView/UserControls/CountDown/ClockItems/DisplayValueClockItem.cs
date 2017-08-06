@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AudioView.Common;
+using NLog;
 
 namespace AudioView.UserControls.CountDown.ClockItems
 {
     public class DisplayValueClockItem : ClockItem
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private double colorByValue = 0;
         private string displayValue;
 
         public DisplayValueClockItem(string displayValue)
@@ -23,7 +27,13 @@ namespace AudioView.UserControls.CountDown.ClockItems
                 viewModel.NoValue();
                 return;
             }
-            viewModel.Value = data.LastReading.GetValue(displayValue).ToString("0.0");
+
+            // Use building LAeq to color by for Octave values
+            colorByValue = data.LastReading.GetValue(displayValue);
+            if (colorByValue <= 0)
+                viewModel.Value = "-";
+            else
+                viewModel.Value = colorByValue.ToString("0.0");
             viewModel.Unit = "dB";
             viewModel.Measurement = GetMeasurement();
         }
@@ -48,6 +58,12 @@ namespace AudioView.UserControls.CountDown.ClockItems
             }
 
             return key;
+        }
+
+        public override bool IsReadingOverLimit(double limit)
+        {
+            double limitOffset = DecibelHelper.GetLimitOffSet(displayValue);
+            return colorByValue >= limitOffset + limit;
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using AudioView.Common;
 using AudioView.Common.Engine;
@@ -162,7 +163,7 @@ namespace AudioView.Views.Measurement
                 {
                     _octaveBandOneOnePopUp = new DelegateCommand(() =>
                     {
-                        SelectedMeasurement.NewOctaveBandPopUp(OctaveBandWindowViewModel.OctaveBand.OneOne);
+                        SelectedMeasurement.NewOctaveBandPopUp(OctaveBandWindowViewModel.OctaveBand.OneOne, false);
                     }, () =>
                     {
                         return SelectedMeasurement != null;
@@ -181,13 +182,51 @@ namespace AudioView.Views.Measurement
                 {
                     _octaveBandOneThirdPopUp = new DelegateCommand(() =>
                     {
-                        SelectedMeasurement.NewOctaveBandPopUp(OctaveBandWindowViewModel.OctaveBand.OneThird);
+                        SelectedMeasurement.NewOctaveBandPopUp(OctaveBandWindowViewModel.OctaveBand.OneThird, false);
                     }, () =>
                     {
                         return SelectedMeasurement != null;
                     }).ObservesProperty(() => SelectedMeasurement);
                 }
                 return _octaveBandOneThirdPopUp;
+            }
+        }
+
+        private ICommand _octaveBandOneOneBuildingPopUp;
+        public ICommand OctaveBandOneOneBuildingPopUp
+        {
+            get
+            {
+                if (_octaveBandOneOneBuildingPopUp == null)
+                {
+                    _octaveBandOneOneBuildingPopUp = new DelegateCommand(() =>
+                    {
+                        SelectedMeasurement.NewOctaveBandPopUp(OctaveBandWindowViewModel.OctaveBand.OneOne, true);
+                    }, () =>
+                    {
+                        return SelectedMeasurement != null;
+                    }).ObservesProperty(() => SelectedMeasurement);
+                }
+                return _octaveBandOneOneBuildingPopUp;
+            }
+        }
+
+        private ICommand _octaveBandOneThirdBuildingPopUp;
+        public ICommand OctaveBandOneThirdBuildingPopUp
+        {
+            get
+            {
+                if (_octaveBandOneThirdBuildingPopUp == null)
+                {
+                    _octaveBandOneThirdBuildingPopUp = new DelegateCommand(() =>
+                    {
+                        SelectedMeasurement.NewOctaveBandPopUp(OctaveBandWindowViewModel.OctaveBand.OneThird, true);
+                    }, () =>
+                    {
+                        return SelectedMeasurement != null;
+                    }).ObservesProperty(() => SelectedMeasurement);
+                }
+                return _octaveBandOneThirdBuildingPopUp;
             }
         }
 
@@ -295,9 +334,13 @@ namespace AudioView.Views.Measurement
                 {
                     _closeMeasurementCommand = new DelegateCommand(() =>
                     {
-                        SelectedMeasurement.Close();
-                        Measurements.Remove(SelectedMeasurement);
-                        SelectedMeasurement = Measurements.FirstOrDefault();
+                        MessageBoxResult result = MessageBox.Show("Are you sure you want to close the Measurement?", "Close Measurement", MessageBoxButton.YesNo);
+                        if (result == MessageBoxResult.Yes)
+                        {
+                            SelectedMeasurement.Close();
+                            Measurements.Remove(SelectedMeasurement);
+                            SelectedMeasurement = Measurements.FirstOrDefault();
+                        }
                     });
                 }
                 return _closeMeasurementCommand;

@@ -45,9 +45,9 @@
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <graphs:OctaveBandGraph
                     MinHeight="150"
-                    ReadingBoundMin="{Binding Settings.GraphLowerBound}"
+                    ReadingBoundMin="0"
                     ReadingBoundMax="{Binding Settings.GraphUpperBound}"
-                    ReadingLimit="{Binding Settings.MinorDBLimit}"
+                    AxisBrush="{StaticResource GrayBrush1}"
                     DisplayAxis="True"
                     BarValues="{Binding OctaveValues}" />
     </Grid>

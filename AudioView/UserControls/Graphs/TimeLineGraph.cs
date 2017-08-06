@@ -8,11 +8,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
+using NLog;
 
 namespace AudioView.UserControls.Graphs
 {
     public partial class TimeLineGraph : UserControl
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
         private static string timeTextFormat = "HH:mm";
 
         #region Settings
@@ -31,10 +33,16 @@ namespace AudioView.UserControls.Graphs
         #region Binding Stuff
         public static readonly DependencyProperty ReadingLimitProperty =
             DependencyProperty.Register(
-            "ReadingLimit", typeof(double), typeof(TimeLineGraph),
-            new FrameworkPropertyMetadata(
-                90.0,
-                FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+                "ReadingLimit", typeof(double), typeof(TimeLineGraph),
+                new FrameworkPropertyMetadata(
+                    90.0,
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+        public static readonly DependencyProperty LimitOffsetProperty =
+            DependencyProperty.Register(
+                "LimitOffset", typeof(double), typeof(TimeLineGraph),
+                new FrameworkPropertyMetadata(
+                    90.0,
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
         public static readonly DependencyProperty ReadingBoundMaxProperty =
             DependencyProperty.Register(
             "ReadingBoundMax", typeof(int?), typeof(TimeLineGraph),
@@ -123,20 +131,20 @@ namespace AudioView.UserControls.Graphs
             new FrameworkPropertyMetadata(
                 new SolidColorBrush(Colors.WhiteSmoke),
                 FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-        public static readonly DependencyProperty AxisPenProperty =
-            DependencyProperty.Register(
-            "AxisPen", typeof(Pen), typeof(TimeLineGraph),
-            new FrameworkPropertyMetadata(
-                new Pen(new SolidColorBrush(Colors.WhiteSmoke), axisLinePenSize)
-                {
-                    DashStyle = axisLineDashStyle
-                },
-                FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+        //public static readonly DependencyProperty AxisPenProperty =
+        //    DependencyProperty.Register(
+        //    "AxisPen", typeof(Pen), typeof(TimeLineGraph),
+        //    new FrameworkPropertyMetadata(
+        //        new Pen(new SolidColorBrush(Colors.WhiteSmoke), axisLinePenSize)
+        //        {
+        //            DashStyle = axisLineDashStyle
+        //        },
+        //        FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
         public static readonly DependencyProperty AxisBrushProperty =
             DependencyProperty.Register(
             "AxisBrush", typeof(SolidColorBrush), typeof(TimeLineGraph),
             new FrameworkPropertyMetadata(
-                new SolidColorBrush(Colors.WhiteSmoke),
+                new SolidColorBrush(Colors.Chartreuse),
                 FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
         public static readonly DependencyProperty LimitPenProperty =
             DependencyProperty.Register(
@@ -210,6 +218,12 @@ namespace AudioView.UserControls.Graphs
             get { return (double)GetValue(ReadingLimitProperty); }
             set { SetValue(ReadingLimitProperty, value); }
         }
+        public double LimitOffset
+        {
+            get { return (double)GetValue(LimitOffsetProperty); }
+            set { SetValue(LimitOffsetProperty, value); }
+        }
+        
         public DateTime? TimeEnd
         {
             get { return (DateTime?)GetValue(TimeEndProperty); }
@@ -289,8 +303,13 @@ namespace AudioView.UserControls.Graphs
         }
         public Pen AxisPen
         {
-            get { return (Pen)GetValue(AxisPenProperty); }
-            set { SetValue(AxisPenProperty, value); }
+            get
+            {
+                return new Pen(AxisBrush, axisLinePenSize)
+                {
+                    DashStyle = axisLineDashStyle
+                };
+            }
         }
         public Pen LimitPen
         {
@@ -362,7 +381,7 @@ namespace AudioView.UserControls.Graphs
             {
                 max = (double)ReadingBoundMax;
             }
-
+            
             if (ReadingBoundMin == null || ReadingBoundMax == null)
             {
                 if ((BarValues == null || BarValues.Count == 0) && 
@@ -487,10 +506,10 @@ namespace AudioView.UserControls.Graphs
         private void drawBar(DrawingContext drawingContext, string text, Point location, double barWidth, Point barLocation, double reading)
         {
             var barHeight = Math.Max(0, workingHeight - barLocation.Y);
-            drawingContext.DrawRectangle(reading >= ReadingLimit ? BarOverFillBrush : BarFillBrush,
-                                        reading >= ReadingLimit ? BarOverBorderPen : BarBorderPen,
-                                        new Rect(new Point(barLocation.X, barLocation.Y),
-                                                    new Size(barWidth, barHeight)));
+            drawingContext.DrawRectangle(isOverLimit(reading) ? BarOverFillBrush : BarFillBrush,
+                                         isOverLimit(reading) ? BarOverBorderPen : BarBorderPen,
+                                         new Rect(new Point(barLocation.X, barLocation.Y),
+                                                  new Size(barWidth, barHeight)));
 
             var _text = new FormattedText(text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
                 fontTypeFace,
@@ -586,6 +605,11 @@ namespace AudioView.UserControls.Graphs
         {
             var v = rightTime - time;
             return workingWidth - v.TotalMilliseconds * xValuePrMs;
+        }
+
+        private bool isOverLimit(double reading)
+        {
+            return reading >= (ReadingLimit + LimitOffset);
         }
     }
 }

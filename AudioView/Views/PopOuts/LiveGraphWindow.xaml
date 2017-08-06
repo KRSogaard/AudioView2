@@ -49,6 +49,8 @@
                               HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
                               MinHeight="100" MinWidth="100"
                               TimeSpan="{Binding MinorSpan}"
+                              AxisBrush="{StaticResource GrayBrush1}"
+                              BarLabelBrush="{StaticResource GrayBrush1}"
                               ReadingBoundMin="{Binding Settings.GraphLowerBound}"
                               ReadingBoundMax="{Binding Settings.GraphUpperBound}"
                               ReadingLimit="{Binding Settings.MinorDBLimit}"

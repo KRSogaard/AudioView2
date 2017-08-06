@@ -10,9 +10,9 @@
     <Grid>
         <graphs:OctaveBandGraph
                     MinHeight="150"
-                    ReadingBoundMin="{Binding Settings.GraphLowerBound}"
+                    ReadingBoundMin="0"
+                    AxisBrush="{StaticResource GrayBrush1}"
                     ReadingBoundMax="{Binding Settings.GraphUpperBound}"
-                    ReadingLimit="{Binding Settings.MinorDBLimit}"
                     BarValues="{Binding OctaveValues}" />
     </Grid>
 </Window>

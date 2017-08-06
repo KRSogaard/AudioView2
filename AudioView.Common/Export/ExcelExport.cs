@@ -83,7 +83,8 @@ namespace AudioView.Common.Export
             {
                 worksheet.Cell(index, 1).Value = r.Time.ToString("dd/MM/yyyy");
                 addRightBottomBorder(worksheet.Cell(index, 1));
-                worksheet.Cell(index, 2).Value = r.Time.ToString("HH:mm");
+                string vale = r.Time.ToString("HH:mm:ss");
+                worksheet.Cell(index, 2).Value = r.Time.ToString("HH:mm:ss");
                 addRightBottomBorder(worksheet.Cell(index, 2));
                 worksheet.Cell(index, 3).Value = oneDig(r.Data.LAeq);
                 addRightBottomBorder(worksheet.Cell(index, 3));
@@ -135,7 +136,7 @@ namespace AudioView.Common.Export
 
                 worksheet.Cell("A" + index).Value = r.Time.ToString("dd/MM/yy");
                 addRightBottomBorder(worksheet.Cell("A" + index));
-                worksheet.Cell("B" + index).Value = r.Time.ToString("HH:mm");
+                worksheet.Cell("B" + index).Value = r.Time.ToString("HH:mm:ss");
                 addRightBottomBorder(worksheet.Cell("B" + index));
                 worksheet.Cell("C" + index).Value = Math.Round(r.Data.LAeq, 1).ToString();
                 addRightBottomBorder(worksheet.Cell("C" + index));
@@ -167,7 +168,7 @@ namespace AudioView.Common.Export
 
                 worksheet.Cell("A" + index).Value = r.Time.ToString("dd/MM/yy");
                 addRightBottomBorder(worksheet.Cell("A" + index));
-                worksheet.Cell("B" + index).Value = r.Time.ToString("HH:mm");
+                worksheet.Cell("B" + index).Value = r.Time.ToString("HH:mm:ss");
                 addRightBottomBorder(worksheet.Cell("B" + index));
                 worksheet.Cell("C" + index).Value = Math.Round(r.Data.LAeq, 1).ToString();
                 addBottomBorder(worksheet.Cell("C" + index));

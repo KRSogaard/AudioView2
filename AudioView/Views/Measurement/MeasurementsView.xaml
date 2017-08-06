@@ -33,8 +33,8 @@
 						VerticalAlignment="Stretch"
 						HorizontalAlignment="Left">
             <MenuItem Header="New measurement" Command="{Binding NewMeasurementCommand}" />
-            <MenuItem Header="Change Settings" Command="{Binding ChangeSettingsCommand}" IsEnabled="{Binding MeasurementSelected}" />
-            <MenuItem Header="Graph Settings" IsEnabled="{Binding MeasurementSelected}"
+            <MenuItem Header="Measurement Settings" Command="{Binding ChangeSettingsCommand}" IsEnabled="{Binding MeasurementSelected}" />
+            <MenuItem Header="Graph Parameter" IsEnabled="{Binding MeasurementSelected}"
                       ItemsSource="{Binding GraphMenuItems}">
                 <MenuItem Header="LAeq" Tag="LAeq" Click="GraphSettingsMenuItem_OnClick" />
                 <MenuItem Header="LCeq" Tag="LCeq" Click="GraphSettingsMenuItem_OnClick" />
@@ -94,29 +94,30 @@
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="Pop-Outs" IsEnabled="{Binding MeasurementSelected}">
-                <MenuItem Header="Readings">
-                    <MenuItem Header="Live"  Command="{Binding ReadingsPopUpLive}" />
-                    <MenuItem Header="Latest Major"  Command="{Binding ReadingsPopUpLatestMajor}" />
-                    <MenuItem Header="Latest Minor"  Command="{Binding ReadingsPopUpLatestMinor}" />
-                    <MenuItem Header="Latest Building Major"  Command="{Binding ReadingsPopUpLatestBuildingMajor}" />
-                    <MenuItem Header="Latest Building Minor"  Command="{Binding ReadingsPopUpLatestBuildingMinor}" />
+                <MenuItem Header="Measurements">
+                    <MenuItem Header="LAeq, 1s"  Command="{Binding ReadingsPopUpLive}" />
+                    <MenuItem Header="Previous Major LAeq"  Command="{Binding ReadingsPopUpLatestMajor}" />
+                    <MenuItem Header="Previous Minor LAeq"  Command="{Binding ReadingsPopUpLatestMinor}" />
+                    <MenuItem Header="Building Major LAeq"  Command="{Binding ReadingsPopUpLatestBuildingMajor}" />
+                    <MenuItem Header="Building Minor LAeq"  Command="{Binding ReadingsPopUpLatestBuildingMinor}" />
                 </MenuItem>
-                <MenuItem Header="Live Graph" ItemsSource="{Binding SelectedMeasurement.LiveGraphReadings}">
+                <MenuItem Header="Scrolling Graph" ItemsSource="{Binding SelectedMeasurement.LiveGraphReadings}">
                     <MenuItem.ItemTemplate>
                         <DataTemplate>
                             <MenuItem Header="{Binding Name}" Command="{Binding Show}"></MenuItem>
                         </DataTemplate>
                     </MenuItem.ItemTemplate>
                 </MenuItem>
-                <MenuItem Header="Octave Bands">
+                <MenuItem Header="RTA">
                     <MenuItem Header="1/1"  Command="{Binding OctaveBandOneOnePopUp}" />
                     <MenuItem Header="1/3"  Command="{Binding OctaveBandOneThirdPopUp}" />
+                    <MenuItem Header="1/1 Time weighted"  Command="{Binding OctaveBandOneOneBuildingPopUp}" />
+                    <MenuItem Header="1/3 Time weighted"  Command="{Binding OctaveBandOneThirdBuildingPopUp}" />
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="Reading tabel" Command="{Binding SelectedMeasurement.DisplayReadingsTabel}" />
-                <MenuItem Header="Reading graph" Command="{Binding SelectedMeasurement.DisplayReadingsGraph}" />
+                <MenuItem Header="Time history table" Command="{Binding SelectedMeasurement.DisplayReadingsTabel}" />
+                <MenuItem Header="Time history graph" Command="{Binding SelectedMeasurement.DisplayReadingsGraph}" />
                 <Separator />
-                <MenuItem Header="RTA Octave Band"  Command="{Binding SelectedMeasurement.OctaveBandPopUp}" />
             </MenuItem>
             <MenuItem Header="Export Excel" IsEnabled="{Binding MeasurementSelected}" Command="{Binding SelectedMeasurement.DownloadAsCSV}"/>
             <MenuItem Header="Close measurement" IsEnabled="{Binding MeasurementSelected}" Command="{Binding CloseMeasurementCommand}"/>
@@ -133,9 +134,8 @@
 
                 <graphs:OctaveBandGraph
                     MinHeight="150"
-                    ReadingBoundMin="{Binding Settings.GraphLowerBound}"
+                    ReadingBoundMin="0"
                     ReadingBoundMax="{Binding Settings.GraphUpperBound}"
-                    ReadingLimit="{Binding Settings.MinorDBLimit}"
                     BarValues="{Binding OctaveValues}" />
 
                 <Label FontSize="24" FontWeight="ExtraBold" Content="{Binding Title}" />

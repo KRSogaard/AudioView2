@@ -5,12 +5,14 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using AudioView.Annotations;
 using AudioView.Common.Data;
 using AudioView.Common.Engine;
 using AudioView.UserControls.CountDown.ClockItems;
+using AudioView.UserControls.Graphs;
 using NLog;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -27,6 +29,10 @@ namespace AudioView.UserControls.CountDown
         private bool isPopOut;
         private MeasurementItemViewModel mainItemViewModel;
         private MeasurementItemViewModel secondaryItemViewModel;
+
+        public SolidColorBrush BarBrush { get; set; }
+        public SolidColorBrush BarOverBrush { get; set; }
+
 
         public AudioViewCountDownViewModel(bool isMajor, TimeSpan interval, int limitDb, Type mainItem, Type secondItem, bool isPopOut = false)
         {
@@ -55,9 +61,6 @@ namespace AudioView.UserControls.CountDown
         public ReadingData LastBuildingInterval { get; set; }
         public ReadingData LastInterval { get; set; }
 
-        public SolidColorBrush BarBrush { get; set; }
-        public SolidColorBrush BarOverBrush { get; set; }
-
         public string DisplayValue { get; set; }
 
         public ObservableCollection<ClockSelectionViewModel> ClockSelections { get; set; }
@@ -82,9 +85,9 @@ namespace AudioView.UserControls.CountDown
                 SetProperty(ref _textColor, BarBrush, nameof(TextColor));
                 return;
             }
-
-            double buildingValue = LastBuildingInterval?.LAeq ?? 0;
-            SetProperty(ref _textColor, buildingValue >= limitDb ? BarOverBrush : BarBrush, nameof(TextColor));
+            
+            SetProperty(ref _textColor, mainItem.IsReadingOverLimit(limitDb) ? BarOverBrush : BarBrush, nameof(TextColor));
+            SetProperty(ref _textColorSecondary, secondItem.IsReadingOverLimit(limitDb) ? BarOverBrush : BarBrush, nameof(TextColorSecondary));
         }
 
         private void UpdateValues()
@@ -100,7 +103,7 @@ namespace AudioView.UserControls.CountDown
             secondItem.SetValues(secondaryItemViewModel, data);
 
             mainItemViewModel.TextColor = TextColor;
-            secondaryItemViewModel.TextColor = TextColor;
+            secondaryItemViewModel.TextColor = TextColorSecondary;
         }
 
         public bool ShowArch
@@ -138,9 +141,12 @@ namespace AudioView.UserControls.CountDown
         {
             get { return secondaryItemViewModel; }
         }
-       
+
         private Brush _textColor;
         public Brush TextColor => _textColor;
+
+        private Brush _textColorSecondary;
+        public Brush TextColorSecondary => _textColorSecondary;
 
         public void OnNext(DateTime time)
         {

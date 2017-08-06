@@ -19,7 +19,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <TextBlock Grid.Column="0" Grid.Row="0" Foreground="{StaticResource GrayBrush3}" FontSize="{StaticResource HeaderFontSize}" Text="Minor interval"  HorizontalAlignment="Stretch" TextAlignment="Center">
+        <TextBlock Grid.Column="0" Grid.Row="0" Foreground="{DynamicResource GrayBrush3}" FontSize="{StaticResource HeaderFontSize}" Text="Minor interval"  HorizontalAlignment="Stretch" TextAlignment="Center">
             <TextBlock.LayoutTransform>
                 <RotateTransform Angle="-90" />
             </TextBlock.LayoutTransform>
@@ -32,10 +32,10 @@
                               ReadingLimit="{Binding Project.MinorDBLimit}"
                               BarSize="{Binding Project.MinorInterval}"
                               BarValues="{Binding MinorGraphValues}"
-                              LineValuesPenColor="{StaticResource HighlightBrush}"
+                              LineValuesPenColor="{DynamicResource HighlightBrush}"
                               LineValuesPenSize="2.0" />
 
-        <TextBlock Grid.Column="0" Grid.Row="1" Foreground="{StaticResource GrayBrush3}" FontSize="{StaticResource HeaderFontSize}" Text="Major interval"  HorizontalAlignment="Stretch" TextAlignment="Center">
+        <TextBlock Grid.Column="0" Grid.Row="1" Foreground="{DynamicResource GrayBrush3}" FontSize="{StaticResource HeaderFontSize}" Text="Major interval"  HorizontalAlignment="Stretch" TextAlignment="Center">
             <TextBlock.LayoutTransform>
                 <RotateTransform Angle="-90" />
             </TextBlock.LayoutTransform>
@@ -48,7 +48,7 @@
                               ReadingLimit="{Binding Project.MajorDBLimit}"
                               BarSize="{Binding Project.MajorInterval}"
                               BarValues="{Binding MajorGraphValues}"
-                              LineValuesPenColor="{StaticResource HighlightBrush}"
+                              LineValuesPenColor="{DynamicResource HighlightBrush}"
                               LineValuesPenSize="2.0" />
 
         <Grid Grid.Row="2" Grid.ColumnSpan="2">
@@ -72,8 +72,8 @@
             <Label Margin="5" Grid.Row="1" HorizontalContentAlignment="Left" Grid.Column="0" Content="{Binding LeftBoundText}"/>
             <Label Margin="5" Grid.Row="1" HorizontalContentAlignment="Right" Grid.Column="1" Content="{Binding RightBoundText}"/>
         </Grid>
-        
-        <Border Grid.RowSpan="3" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{StaticResource ControlBackgroundBrush}" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}" Opacity="0.75">
+
+        <Border Grid.RowSpan="3" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{DynamicResource ControlBackgroundBrush}" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}" Opacity="0.75">
             <controls:ProgressRing Width="90" Height="90" IsActive="True" />
         </Border>
     </Grid>

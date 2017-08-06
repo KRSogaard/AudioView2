@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Animation;
+using AudioView.Common;
 using AudioView.Common.Data;
 using AudioView.Common.Engine;
 using AudioView.UserControls.CountDown;
@@ -29,6 +30,13 @@ namespace AudioView.Views.PopOuts
         {
             get { return _title; }
             set { SetProperty(ref _title, value); }
+        }
+
+        public MeasurementSettings _settings;
+        public MeasurementSettings Settings
+        {
+            get { return _settings; }
+            set { SetProperty(ref _settings, value); }
         }
 
         private ObservableCollection<Tuple<DateTime, double>> _lineValues;

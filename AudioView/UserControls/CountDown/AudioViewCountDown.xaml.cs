@@ -16,9 +16,6 @@ namespace AudioView.UserControls.CountDown
         private static Logger logger = LogManager.GetCurrentClassLogger();
         private DispatcherTimer timer;
         
-        public SolidColorBrush BarBrush { get; set; }
-        public SolidColorBrush BarOverBrush { get; set; }
-
         public AudioViewCountDown()
         {
             InitializeComponent();
@@ -61,8 +58,6 @@ namespace AudioView.UserControls.CountDown
 
             model.BarBrush = BarBrush;
             model.BarOverBrush = BarOverBrush;
-            //var end = DateTime.Now;
-            //logger.Warn("Clock Render time: " + (start - end).TotalMilliseconds);
         }
 
         private void GraphSettingsMenuItem_OnClick(object sender, RoutedEventArgs e)
@@ -70,6 +65,31 @@ namespace AudioView.UserControls.CountDown
             var model = (AudioViewCountDownViewModel)this.DataContext;
             string tag = ((MenuItem) sender).Tag.ToString();
             model.ChangeMainDisplayItem(new DisplayValueClockItem(tag));
+        }
+
+        public static readonly DependencyProperty BarBrushProperty =
+            DependencyProperty.Register(
+                "BarBrush", typeof(SolidColorBrush), typeof(AudioViewCountDown),
+                new FrameworkPropertyMetadata(
+                    new SolidColorBrush(Colors.White),
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+        public static readonly DependencyProperty BarOverBrushProperty =
+            DependencyProperty.Register(
+                "BarOverBrush", typeof(SolidColorBrush), typeof(AudioViewCountDown),
+                new FrameworkPropertyMetadata(
+                    new SolidColorBrush(Colors.Red),
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        public SolidColorBrush BarBrush
+        {
+            get { return (SolidColorBrush)GetValue(BarBrushProperty); }
+            set { SetValue(BarBrushProperty, value); }
+        }
+
+        public SolidColorBrush BarOverBrush
+        {
+            get { return (SolidColorBrush)GetValue(BarOverBrushProperty); }
+            set { SetValue(BarOverBrushProperty, value); }
         }
     }
 }

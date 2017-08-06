@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:local="clr-namespace:AudioView.UserControls"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" 
              d:DesignHeight="900" d:DesignWidth="300">
     <Grid>
@@ -65,17 +66,17 @@
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
 
-                                    <TextBox Grid.Column="0" Text="{Binding MinorIntervalHours}" />
+                                    <xctk:IntegerUpDown Grid.Column="0" Value="{Binding MinorIntervalHours}" Increment="1" Maximum="24" Minimum="0" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
                                     <Label Grid.Column="1" Content=":" />
-                                    <TextBox Grid.Column="2" Text="{Binding MinorIntervalMinutes}" />
+                                    <xctk:IntegerUpDown Grid.Column="2" Value="{Binding MinorIntervalMinutes}" Increment="1" Maximum="59" Minimum="0" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
                                     <Label Grid.Column="3" Content=":" />
-                                    <TextBox Grid.Column="4" Text="{Binding MinorIntervalSeconds}" />
+                                    <xctk:IntegerUpDown Grid.Column="4" Value="{Binding MinorIntervalSeconds}" Increment="1" Maximum="59" Minimum="0" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
                                 </Grid>
 
-                                <Label Content="Minor dB Trigger:" />
+                                <Label Content="Minor dB Limit:" />
                                 <TextBox Text="{Binding MinorDBLimit}" Margin="0,0,0,5" />
 
-                                <Label Content="MaJor Interval:" />
+                                <Label Content="Major Interval:" />
                                 <Grid Margin="0,0,0,5">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
@@ -85,14 +86,14 @@
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
 
-                                    <TextBox Grid.Column="0" Text="{Binding MajorIntervalHours}" />
+                                    <xctk:IntegerUpDown Grid.Column="0" Value="{Binding MajorIntervalHours}" Increment="1" Maximum="24" Minimum="0" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
                                     <Label Grid.Column="1" Content=":" />
-                                    <TextBox Grid.Column="2" Text="{Binding MajorIntervalMinutes}" />
+                                    <xctk:IntegerUpDown Grid.Column="2" Value="{Binding MajorIntervalMinutes}" Increment="1" Maximum="59" Minimum="0" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
                                     <Label Grid.Column="3" Content=":" />
-                                    <TextBox Grid.Column="4" Text="{Binding MajorIntervalSeconds}" />
+                                    <xctk:IntegerUpDown Grid.Column="4" Value="{Binding MajorIntervalSeconds}" Increment="1" Maximum="59" Minimum="0" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
                                 </Grid>
                             
-                                <Label Content="Major dB Trigger:" />
+                                <Label Content="Major dB Limit:" />
                                 <TextBox Text="{Binding MajorDBLimit}" Margin="0,0,0,5" />
                             
                                 <Label Content="Listen Port: (For remote connections)" />
@@ -110,7 +111,7 @@
                                 <Label Content="Port:" />
                                 <ListBox Height="100" ItemsSource="{Binding LocalDevices}" SelectedItem="{Binding SelectedLocalDevice}" />
                             </StackPanel>
-                            <Border Background="{StaticResource ControlBackgroundBrush}" Opacity="0.50" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
+                            <Border Background="{DynamicResource ControlBackgroundBrush}" Opacity="0.50" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
                                 <Controls:ProgressRing Width="90" Height="90" IsActive="True" />
                             </Border>
                         </Grid>
@@ -126,7 +127,7 @@
                             <TextBox Text="{Binding RemotePort, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True}" Margin="0,0,0,5" />
                             <Button Content="Test Connection" Command="{Binding StartTest}" Margin="0,5" />
                         </StackPanel>
-                        <Border Background="{StaticResource ControlBackgroundBrush}" Opacity="0.50" Visibility="{Binding IsTesting, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
+                        <Border Background="{DynamicResource ControlBackgroundBrush}" Opacity="0.50" Visibility="{Binding IsTesting, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
                             <Controls:ProgressRing Width="90" Height="90" IsActive="True" />
                         </Border>
                     </Grid>
