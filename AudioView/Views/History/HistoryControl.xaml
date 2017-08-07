@@ -11,6 +11,7 @@
         <Grid x:Name="LogInGrid">
             <StackPanel Width="450" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <Label>Access to the database requires authorization, please log in to continue.</Label>
+                <Label x:Name="ExpiredLable" Visibility="Hidden" Foreground="Red">Access for the provided user has expired.</Label>
                 <Label Foreground="{StaticResource ControlsValidationBrush}" x:Name="loginFailedLabel" Visibility="Collapsed">Log-in failed.</Label>
                 <Label>Username:</Label>
                 <TextBox x:Name="username" />
@@ -65,7 +66,7 @@
                             <DataGridTextColumn Header="Number"
                                     Binding="{Binding ProjectNumber, Mode=OneWay}" />
                             <DataGridTextColumn Header="Date"
-                                    Binding="{Binding Date, Mode=OneWay}">
+                                    Binding="{Binding Date, StringFormat='f', Mode=OneWay}">
                             </DataGridTextColumn>
                             <DataGridTextColumn Header="Minor dB limit"
                                 Binding="{Binding MinorDBLimit, Mode=OneWay}" />
@@ -80,7 +81,7 @@
                             <DataGridTemplateColumn Header="Download">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button Command="{Binding DownloadCSV}">Export CSV</Button>
+                                        <Button Command="{Binding DownloadExcel}">Export Excel</Button>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>

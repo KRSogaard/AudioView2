@@ -35,22 +35,26 @@ namespace AudioView.Web.Models
         [Display(Name = "Confirm Password")]
         [Compare("Password")]
         public string PasswordRepeat { get; set; }
+        
+        [Display(Name = "Expires")]
+        public string Expires { get; set; }
     }
 
     public class EditModel
     {
         [Display(Name = "User name")]
         public string UserName { get; set; }
-
-        [Required]
+        
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
         public string Password { get; set; }
-
-        [Required]
+        
         [DataType(DataType.Password)]
         [Display(Name = "Confirm Password")]
         [Compare("Password")]
         public string PasswordRepeat { get; set; }
+        
+        [Display(Name = "Expires")]
+        public string Expires { get; set; }
     }
 }

@@ -14,6 +14,7 @@ namespace AudioView.Common.Services
         Task<User> GetUser(string username);
         Task CreateUser(User user, string password);
         Task UpdatePassword(string username, string newPassword);
+        Task UpdateExpires(string username, DateTime? expires);
         Task DeleteUser(string username);
     }
 }

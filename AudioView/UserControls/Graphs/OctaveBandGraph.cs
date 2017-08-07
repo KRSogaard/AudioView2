@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
+using AudioView.Common;
 using NLog;
 
 namespace AudioView.UserControls.Graphs
@@ -294,6 +295,14 @@ namespace AudioView.UserControls.Graphs
                 x1 += LeftMargin;
             }
 
+            int each = 1;
+            int currentTextIndex = 2;
+            if (ActualWidth < 1000)
+            {
+                each = 3;
+            }
+
+
             foreach (var barValue in BarValues)
             {
                 x1 += borderWith;
@@ -304,16 +313,17 @@ namespace AudioView.UserControls.Graphs
                                             new Rect(new Point(x1, this.ActualHeight - barHeight - yOffset),
                                                      new Size(spacePrBar, barHeight)));
 
-                if (DisplayAxis)
+                if (DisplayAxis && currentTextIndex % each == 0)
                 {
-                    var text = new FormattedText(barValue.Key, CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
+                    var text = new FormattedText(DecibelHelper.HzToSlim(barValue.Key), CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
                         FontTypeFace, axisFontSize, AxisBrush);
-                    drawingContext.DrawText(text,
-                        new Point(x1 + (spacePrBar / 2) - (text.Width / 2),
-                            this.ActualHeight - buttomMargin + buttomTextMargin));
-                    logger.Info($"Start text on Y at: {this.ActualHeight} - {buttomMargin} + {buttomTextMargin} = " + (this.ActualHeight - buttomMargin + buttomTextMargin));
-                }
 
+                    double text_x = x1 + (spacePrBar / 2) - (text.Width / 2);
+                    double text_y = this.ActualHeight - buttomMargin + buttomTextMargin;
+                    
+                    drawingContext.DrawText(text, new Point(text_x, text_y));
+                }
+                currentTextIndex++;
                 x1 += spacePrBar + borderWith;
             }
         }
@@ -338,8 +348,6 @@ namespace AudioView.UserControls.Graphs
             {
                 max = (double)ReadingBoundMax;
             }
-
-            logger.Info("Bounds: " + min + " -> " + max);
 
             if (ReadingBoundMin == null || ReadingBoundMax == null)
             {

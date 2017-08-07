@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using AudioView.Common.Data;
+using AudioView.Common.Export;
 using AudioView.Common.Services;
 using GalaSoft.MvvmLight.Threading;
 using Microsoft.Win32;
@@ -37,14 +38,22 @@ namespace AudioView.ViewModels
             get { return project.Name; }
         }
 
-        public string ProjectNumber
+        public int ProjectNumber
         {
-            get { return project.Number; }
+            get
+            {
+                int tryInt;
+                if (!int.TryParse(project.Number, out tryInt))
+                {
+                    return 0;
+                }
+                return tryInt;
+            }
         }
 
-        public string Date
+        public DateTime Date
         {
-            get { return project.Created.ToString("f"); }
+            get { return project.Created; }
         }
 
         public string MinorDBLimit
@@ -72,9 +81,9 @@ namespace AudioView.ViewModels
             get { return project; }
         }
 
-        public string MeasurementsCount
+        public int MeasurementsCount
         {
-            get { return project.Readings.ToString(); }
+            get { return project.Readings; }
         }
 
         private bool _isLoading;
@@ -321,20 +330,20 @@ namespace AudioView.ViewModels
             ReadingsMinor.Remove(historyReadingViewModel);
         }
 
-        private ICommand _downloadCSV;
-        public ICommand DownloadCSV
+        private ICommand _downloadExcel;
+        public ICommand DownloadExcel
         {
             get
             {
-                if (_downloadCSV == null)
+                if (_downloadExcel == null)
                 {
-                    _downloadCSV = new DelegateCommand(async () =>
+                    _downloadExcel = new DelegateCommand(async () =>
                     {
                         try
                         {
                             SaveFileDialog saveFileDialog = new SaveFileDialog();
-                            saveFileDialog.FileName = ProjectName + ".csv";
-                            saveFileDialog.Filter = "CSV file (*.csv)|*.csv";
+                            saveFileDialog.FileName = ProjectName + ".xlsx";
+                            saveFileDialog.Filter = "Excel file (*.xlsx)|*.xlsx";
                             if (saveFileDialog.ShowDialog() == true)
                             {
                                 await LoadReadings();
@@ -342,7 +351,8 @@ namespace AudioView.ViewModels
                                     .Union(ReadingsMinor.Select(x => x.Reading))
                                     .ToList();
                                 var ordered = readingToSave.OrderBy(x => x.Time).ToList();
-                                File.WriteAllText(saveFileDialog.FileName, Reading.CSV(ordered));
+                                var excel = new ExcelExport(project, ordered);
+                                excel.writeFile(saveFileDialog.FileName);
                             }
                         }
                         catch (Exception exp)
@@ -351,7 +361,7 @@ namespace AudioView.ViewModels
                         }
                     });
                 }
-                return _downloadCSV;
+                return _downloadExcel;
             }
         }
 

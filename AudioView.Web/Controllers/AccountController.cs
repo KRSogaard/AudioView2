@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -26,6 +27,34 @@ namespace AudioView.Web.Controllers
         [AuthFilter]
         public async Task<ActionResult> Index()
         {
+            var currentUserName = HttpContext.Session[SessionName];
+            if (currentUserName == null)
+            {
+                return new RedirectToRouteResult(new RouteValueDictionary
+                {
+                    { "controller", "Account" },
+                    { "action", "LogIn" }
+                });
+            }
+            var currentUser = await userService.GetUser((string)currentUserName);
+            if (currentUser == null)
+            {
+                return new RedirectToRouteResult(new RouteValueDictionary
+                {
+                    { "controller", "Account" },
+                    { "action", "LogIn" }
+                });
+            }
+            if (currentUser.Expires != null)
+            {
+                FlashHelper.Add("A limited account dose not have access to manage user.", FlashType.Error);
+                return new RedirectToRouteResult(new RouteValueDictionary
+                {
+                    { "controller", "Home" },
+                    { "action", "Index" }
+                });
+            }
+
             var users = await userService.GetUsers();
             return View(users);
         }
@@ -43,7 +72,17 @@ namespace AudioView.Web.Controllers
                 var user = await userService.Validate(model.UserName, model.Password);
                 if (user != null)
                 {
-                    HttpContext.Session.Add(SessionName, user.Id);
+                    if (user.Expires != null && user.Expires <= DateTime.Now)
+                    {
+                        FlashHelper.Add("Account has expired.", FlashType.Error);
+                        return new RedirectToRouteResult(new RouteValueDictionary
+                        {
+                            { "controller", "Home" },
+                            { "action", "Index" }
+                        });
+                    }
+
+                    HttpContext.Session.Add(SessionName, user.UserName);
                     return new RedirectToRouteResult(new RouteValueDictionary
                     {
                         { "controller", "Home" },
@@ -82,6 +121,28 @@ namespace AudioView.Web.Controllers
                     Id = Guid.NewGuid(),
                     UserName = model.UserName
                 };
+                if (model.Expires != null)
+                {
+                    DateTime? expires = null;
+                    DateTime tryDate;
+                    if (DateTime.TryParseExact(model.Expires.Trim() + " 00:00:00", "dd/MM/yyyy hh:mm:ss",
+                        CultureInfo.InvariantCulture,
+                        DateTimeStyles.AssumeLocal, out tryDate))
+                    {
+                        expires = tryDate;
+                    }
+                    else
+                    {
+                        FlashHelper.Add(
+                            string.Format("\"{0}\" was not reconiced as a date of the format dd/mm/yyyy.", model.Expires),
+                            FlashType.Error);
+                        return new RedirectToRouteResult(new RouteValueDictionary(){
+                            { "controller", "Account" },
+                            { "action", "Index" }
+                        });
+                    }
+                    userObject.Expires = expires;
+                }
                 await userService.CreateUser(userObject, model.Password);
 
                 FlashHelper.Add(string.Format("User with the username {0} have been created.", model.UserName), FlashType.Success);
@@ -107,7 +168,8 @@ namespace AudioView.Web.Controllers
             }
             var model = new EditModel()
             {
-                UserName = user.UserName
+                UserName = user.UserName,
+                Expires = user.Expires?.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) ?? ""
             };
             return View(model);
         }
@@ -118,7 +180,34 @@ namespace AudioView.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                await userService.UpdatePassword(username, model.Password);
+                DateTime? expires = null;
+                if (model.Expires != null)
+                {
+                    DateTime tryDate;
+                    if (DateTime.TryParseExact(model.Expires.Trim() + " 00:00:00", "dd/MM/yyyy hh:mm:ss",
+                        CultureInfo.InvariantCulture,
+                        DateTimeStyles.AssumeLocal, out tryDate))
+                    {
+                        expires = tryDate;
+                    }
+                    else
+                    {
+                        FlashHelper.Add(
+                            string.Format("\"{0}\" was not reconiced as a date of the format dd/mm/yyyy.", model.Expires),
+                            FlashType.Error);
+                        return new RedirectToRouteResult(new RouteValueDictionary(){
+                            { "controller", "Account" },
+                            { "action", "Index" }
+                        });
+                    }
+                }
+
+                if (!String.IsNullOrWhiteSpace(model.Password) && !String.IsNullOrWhiteSpace(model.PasswordRepeat) &&
+                    model.Password == model.PasswordRepeat)
+                {
+                    await userService.UpdatePassword(username, model.Password);
+                }
+                await userService.UpdateExpires(username, expires);
                 FlashHelper.Add(string.Format("{0}'s password have been changed.", model.UserName), FlashType.Success);
                 return new RedirectToRouteResult(new RouteValueDictionary(){
                         { "controller", "Account" },

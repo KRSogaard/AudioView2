@@ -28,6 +28,9 @@ namespace AudioView.Common.Export
             try
             {
                 workbook = new XLWorkbook();
+                workbook.Style.Font.FontName = "Arial";
+                workbook.Style.Font.FontSize = 11;
+
                 createCoverWorksheet(workbook.Worksheets.Add("COVER"));
                 createMinorIntervalWorkheet(workbook.Worksheets.Add("Minor Interval Data"));
                 createMajorIntervalWorkheet(workbook.Worksheets.Add("Major Interval Data"));
@@ -42,43 +45,69 @@ namespace AudioView.Common.Export
 
         private void createAllDataWorkheet(IXLWorksheet worksheet)
         {
-            worksheet.Column("A").Width = 30;
-            worksheet.Column("B").Width = 30;
-            worksheet.Column("C").Width = 30;
+            worksheet.Row(1).Style.Alignment.WrapText = true;
+            worksheet.Row(1).Height = 15;
+            worksheet.Row(1).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+            worksheet.Row(1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            worksheet.Row(1).Style.Font.Bold = true;
 
-            worksheet.Cell(1, 1).Value = "DATE";
-            addRightBottomBorder(worksheet.Cell(1, 1));
-            worksheet.Cell(1, 2).Value = "TIME";
-            addRightBottomBorder(worksheet.Cell(1, 2));
-            worksheet.Cell(1, 3).Value = "LAeq";
-            addRightBottomBorder(worksheet.Cell(1, 3));
-            worksheet.Cell(1, 4).Value = "LAMax";
-            addRightBottomBorder(worksheet.Cell(1, 4));
-            worksheet.Cell(1, 5).Value = "LAMin";
-            addRightBottomBorder(worksheet.Cell(1, 5));
-            worksheet.Cell(1, 6).Value = "LZMax";
-            addRightBottomBorder(worksheet.Cell(1, 6));
-            worksheet.Cell(1, 7).Value = "LZMin";
-            addRightBottomBorder(worksheet.Cell(1, 7));
+            worksheet.Row(2).Style.Alignment.WrapText = true;
+            worksheet.Row(2).Height = 31;
+            worksheet.Row(2).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+            worksheet.Row(2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            worksheet.Row(2).Style.Font.Bold = true;
 
-            int col = 8;
+            worksheet.Column("A").Width = 13;
+            worksheet.Column("B").Width = 13;
+            worksheet.Column("C").Width = 13;
+
+            worksheet.Cell(2, 1).Value = "DATE";
+            addRightBottomBorder(worksheet.Cell(2, 1));
+            worksheet.Cell(2, 2).Value = "TIME";
+            addRightBottomBorder(worksheet.Cell(2, 2));
+            worksheet.Cell(2, 3).Value = "DURATION";
+            addRightBottomBorder(worksheet.Cell(2, 3));
+            worksheet.Cell(2, 4).Value = "LAeq";
+            addRightBottomBorder(worksheet.Cell(2, 4));
+            worksheet.Cell(2, 5).Value = "LAMax";
+            addRightBottomBorder(worksheet.Cell(2, 5));
+            worksheet.Cell(2, 6).Value = "LAMin";
+            addRightBottomBorder(worksheet.Cell(2, 6));
+            worksheet.Cell(2, 7).Value = "LZMax";
+            addRightBottomBorder(worksheet.Cell(2, 7));
+            worksheet.Cell(2, 8).Value = "LZMin";
+            addRightBottomBorder(worksheet.Cell(2, 8));
+
+            int oneThirdStart = 9;
+            int col = oneThirdStart;
             Type oneThird = typeof(ReadingData.OctaveBandOneThird);
             foreach (var propertyInfo in oneThird.GetProperties())
             {
-                worksheet.Cell(1, col).Value = "1/3 " + propertyInfo.Name.Replace("_", ".").Replace("Hz", "") + " Hz";
-                addRightBottomBorder(worksheet.Cell(1, col));
+                worksheet.Cell(2, col).Value = propertyInfo.Name.Replace("_", ".").Replace("Hz", "") + "Hz";
+                addRightBottomBorder(worksheet.Cell(2, col));
 
                 col++;
             }
+            worksheet.Cell(1, oneThirdStart).Value = "1/3 Octave Band LZeq,t";
+            worksheet.Range(worksheet.Cell(1, oneThirdStart), worksheet.Cell(1, col - 1)).Merge();
+
+
+            int oneOneStart = col;
             Type oneOne = typeof(ReadingData.OctaveBandOneOne);
             foreach (var propertyInfo in oneOne.GetProperties())
             {
-                worksheet.Cell(1, col).Value = "1/1 " + propertyInfo.Name.Replace("_", ".").Replace("Hz", "") + " Hz";
-                addRightBottomBorder(worksheet.Cell(1, col));
+                worksheet.Cell(2, col).Value = propertyInfo.Name.Replace("_", ".").Replace("Hz", "") + "Hz";
+                addRightBottomBorder(worksheet.Cell(2, col));
                 col++;
             }
+            worksheet.Cell(1, oneOneStart).Value = "1/1 Octave Band LZeq,t";
+            worksheet.Range(worksheet.Cell(1, oneOneStart), worksheet.Cell(1, col - 1)).Merge();
 
-            int index = 2;
+            worksheet.Row(1).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            worksheet.Row(1).Style.Border.BottomBorderColor = XLColor.Black;
+
+
+            int index = 3;
             foreach (var r in readings.OrderBy(x => x.Time))
             {
                 worksheet.Cell(index, 1).Value = r.Time.ToString("dd/MM/yyyy");
@@ -86,18 +115,20 @@ namespace AudioView.Common.Export
                 string vale = r.Time.ToString("HH:mm:ss");
                 worksheet.Cell(index, 2).Value = r.Time.ToString("HH:mm:ss");
                 addRightBottomBorder(worksheet.Cell(index, 2));
-                worksheet.Cell(index, 3).Value = oneDig(r.Data.LAeq);
+                worksheet.Cell(index, 3).Value = r.Major ? project.MajorInterval : project.MinorInterval;
                 addRightBottomBorder(worksheet.Cell(index, 3));
-                worksheet.Cell(index, 4).Value = oneDig(r.Data.LAMax);
+                worksheet.Cell(index, 4).Value = oneDig(r.Data.LAeq);
                 addRightBottomBorder(worksheet.Cell(index, 4));
-                worksheet.Cell(index, 5).Value = oneDig(r.Data.LAMin);
+                worksheet.Cell(index, 5).Value = oneDig(r.Data.LAMax);
                 addRightBottomBorder(worksheet.Cell(index, 5));
-                worksheet.Cell(index, 6).Value = oneDig(r.Data.LZMax);
+                worksheet.Cell(index, 6).Value = oneDig(r.Data.LAMin);
                 addRightBottomBorder(worksheet.Cell(index, 6));
-                worksheet.Cell(index, 7).Value = oneDig(r.Data.LZMin);
+                worksheet.Cell(index, 7).Value = oneDig(r.Data.LZMax);
                 addRightBottomBorder(worksheet.Cell(index, 7));
+                worksheet.Cell(index, 8).Value = oneDig(r.Data.LZMin);
+                addRightBottomBorder(worksheet.Cell(index, 8));
 
-                col = 8;
+                col = 9;
                 foreach (var propertyInfo in oneThird.GetProperties())
                 {
                     worksheet.Cell(index, col).Value = oneDig((Double)propertyInfo.GetValue(r.Data.LAeqOctaveBandOneThird));
@@ -112,21 +143,27 @@ namespace AudioView.Common.Export
                     col++;
                 }
 
+                worksheet.Row(index).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                 index++;
             }
         }
 
         private void createMajorIntervalWorkheet(IXLWorksheet worksheet)
         {
-            worksheet.Column("A").Width = 30;
-            worksheet.Column("B").Width = 30;
-            worksheet.Column("C").Width = 30;
+            worksheet.Column("A").Width = 20;
+            worksheet.Column("B").Width = 20;
+            worksheet.Column("C").Width = 20;
+
+            worksheet.Row(1).Height = 22.5;
+            worksheet.Row(1).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+            worksheet.Row(1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            worksheet.Row(1).Style.Font.Bold = true;
 
             worksheet.Cell("A1").Value = "DATE";
             addRightBottomBorder(worksheet.Cell("A1"));
             worksheet.Cell("B1").Value = "TIME";
             addRightBottomBorder(worksheet.Cell("B1"));
-            worksheet.Cell("C1").Value = "dB LAeq, xx min";
+            worksheet.Cell("C1").Value = "dB LAeq,t";
             addBottomBorder(worksheet.Cell("C1"));
 
             int index = 1;
@@ -140,6 +177,8 @@ namespace AudioView.Common.Export
                 addRightBottomBorder(worksheet.Cell("B" + index));
                 worksheet.Cell("C" + index).Value = Math.Round(r.Data.LAeq, 1).ToString();
                 addRightBottomBorder(worksheet.Cell("C" + index));
+
+                worksheet.Row(index).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
             }
         }
 
@@ -150,15 +189,22 @@ namespace AudioView.Common.Export
 
         private void createMinorIntervalWorkheet(IXLWorksheet worksheet)
         {
-            worksheet.Column("A").Width = 30;
-            worksheet.Column("B").Width = 30;
-            worksheet.Column("C").Width = 30;
+            worksheet.Column("A").Width = 20;
+            worksheet.Column("B").Width = 20;
+            worksheet.Column("C").Width = 20;
+
+            worksheet.Row(1).Height = 22.5;
+            worksheet.Row(1).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+            worksheet.Row(1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            worksheet.Row(1).Style.Font.Bold = true;
 
             worksheet.Cell("A1").Value = "DATE";
+
             addRightBottomBorder(worksheet.Cell("A1"));
             worksheet.Cell("B1").Value = "TIME";
+
             addRightBottomBorder(worksheet.Cell("B1"));
-            worksheet.Cell("C1").Value = "dB LAeq, xx min";
+            worksheet.Cell("C1").Value = "dB LAeq,t";
             addBottomBorder(worksheet.Cell("C1"));
 
             int index = 1;
@@ -172,47 +218,47 @@ namespace AudioView.Common.Export
                 addRightBottomBorder(worksheet.Cell("B" + index));
                 worksheet.Cell("C" + index).Value = Math.Round(r.Data.LAeq, 1).ToString();
                 addBottomBorder(worksheet.Cell("C" + index));
+
+                worksheet.Row(index).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
             }
         }
 
         private void createCoverWorksheet(IXLWorksheet worksheet)
         {
-            worksheet.Column("A").Width = 21;
+            worksheet.Column("A").Style.Font.Bold = true;
+            worksheet.Column("A").Style.Font.FontSize = 11;
+            worksheet.Column("A").Style.Font.FontName = "Arial";
+
+
+            worksheet.Column("A").Width = 35;
             worksheet.Column("B").Width = 26;
+            worksheet.Row(1).Height = 116;
             worksheet.Cell("A1").Value = "AUDIOVIEW EXPORT";
+            worksheet.Cell("A1").Style.Font.FontSize = 18;
+            worksheet.Cell("A1").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
             worksheet.Range("A1","B1").Merge();
-            addBottomBorder(worksheet.Cell("A1"));
-            addBottomBorder(worksheet.Cell("B1"));
 
+        
             worksheet.Cell("A2").Value = "PROJECT NAME";
-            addRightBottomBorder(worksheet.Cell("A2"));
-
             worksheet.Cell("B2").Value = project.Name;
-            addBottomBorder(worksheet.Cell("B2"));
             worksheet.Cell("A3").Value = "PROJECT NUMBER";
-            addRightBottomBorder(worksheet.Cell("A3"));
             worksheet.Cell("B3").Value = project.Number;
-            addBottomBorder(worksheet.Cell("B3"));
             worksheet.Cell("A4").Value = "DATE";
-            addRightBottomBorder(worksheet.Cell("A4"));
             worksheet.Cell("B4").Value = project.Created.ToString();
-            addBottomBorder(worksheet.Cell("B4"));
             worksheet.Cell("A5").Value = "MINOR INTERVAL PERIOD";
-            addRightBottomBorder(worksheet.Cell("A5"));
             worksheet.Cell("B5").Value = project.MinorInterval.ToString();
-            addBottomBorder(worksheet.Cell("B5"));
             worksheet.Cell("A6").Value = "MINOR INTERVAL LIMIT";
-            addRightBottomBorder(worksheet.Cell("A6"));
             worksheet.Cell("B6").Value = project.MinorDBLimit;
-            addBottomBorder(worksheet.Cell("B6"));
             worksheet.Cell("A7").Value = "MAJOR INTERVAL PERIOD";
-            addRightBottomBorder(worksheet.Cell("A7"));
             worksheet.Cell("B7").Value = project.MajorInterval.ToString();
-            addBottomBorder(worksheet.Cell("B7"));
             worksheet.Cell("A8").Value = "MAJOR INTERVAL LIMIT";
-            addRightBottomBorder(worksheet.Cell("A8"));
             worksheet.Cell("B8").Value = project.MajorDBLimit;
-            addBottomBorder(worksheet.Cell("B8"));
+
+            worksheet.Style.Fill.BackgroundColor = XLColor.White;
+            worksheet.Columns("A", "B").Style.Fill.BackgroundColor = XLColor.White;
+            worksheet.Rows(1, 8).Style.Fill.BackgroundColor = XLColor.White;
+            worksheet.Row(1).Style.Fill.BackgroundColor = XLColor.White;
+            worksheet.Column("B").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
         }
 
         private void addRightBottomBorder(IXLCell cell, XLBorderStyleValues border = XLBorderStyleValues.Thick, XLColor color = null)
@@ -232,9 +278,10 @@ namespace AudioView.Common.Export
                 color = XLColor.Black;
             }
 
-            cell.Style.Border.RightBorder = XLBorderStyleValues.Thick;
+            cell.Style.Border.RightBorder = XLBorderStyleValues.Thin;
             cell.Style.Border.RightBorderColor = XLColor.Black;
         }
+
         private void addBottomBorder(IXLCell cell, XLBorderStyleValues border = XLBorderStyleValues.Thick, XLColor color = null)
         {
             if (color == null)
@@ -242,7 +289,7 @@ namespace AudioView.Common.Export
                 color = XLColor.Black;
             }
 
-            cell.Style.Border.BottomBorder = XLBorderStyleValues.Thick;
+            cell.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
             cell.Style.Border.BottomBorderColor = XLColor.Black;
         }
 

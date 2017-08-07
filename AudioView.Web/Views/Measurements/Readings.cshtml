@@ -5,7 +5,7 @@
 }
 
 <h2>@Model.Project.Name - @Model.Project.Number</h2>
-@Html.ActionLink("Back to readings", "Index")
+@Html.ActionLink("Back to measurements", "Index")
 <hr/>
 
 <div class="form-horizontal">
@@ -21,7 +21,7 @@
     </div>
 
     <div class="form-group">
-        <label class="control-label col-md-2" style="padding-top: 0px;">Readings</label>
+        <label class="control-label col-md-2" style="padding-top: 0px;">Measurements</label>
         <div class="col-md-10">
             @Model.Project.Readings
         </div>
@@ -52,7 +52,7 @@
     <div class="form-group">
         <label class="control-label col-md-2" style="padding-top: 0px;"></label>
         <div class="col-md-10">
-            @Html.ActionLink("Download CSV", "Download", new { id = Model.Project.Id })
+            @Html.ActionLink("Download Excel", "Download", new { id = Model.Project.Id })
         </div>
     </div>
 
@@ -60,33 +60,34 @@
 
     <div class="row">
         <div class="col-md-12">
-            <a href="#Major">To Major readings.</a>
+            <a href="#Major">To Major interval table.</a>
         </div>
     </div>
 
     <div class="row">
         <div class="col-md-12">
-            <a href="#Minor">To Minor readings.</a>
+            <a href="#Minor">To Minor interval table.</a>
         </div>
     </div>
 
-    <h2>Major readings graph</h2>
+    <h2>Major interval graph</h2>
     <div id="chart_major_div"></div>
 
-    <h2>Minor readings graph</h2>
+    <h2>Minor interval graph</h2>
     <div id="chart_minor_div"></div>
 
-    <h2 id="Major">Major readings</h2>
+    <h2 id="Major">Major interval table</h2>
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
             <tr>
                 <th>Time</th>
-                <th>Laeq</th>
-                <th>LaMax</th>
-                <th>LaMin</th>
-                <th>LzMax</th>
-                <th>LzMin</th>
+                <th>LAeq</th>
+                <th>LCeq</th>
+                <th>LAMax</th>
+                <th>LAMin</th>
+                <th>LZMax</th>
+                <th>LZMin</th>
             </tr>
             </thead>
             <tbody>
@@ -95,6 +96,7 @@
                 <tr>
                     <td>@reading.Time</td>
                     <td>@Math.Round(reading.Data.LAeq, 1)</td>
+                    <td>@Math.Round(reading.Data.LCeq, 1)</td>
                     <td>@Math.Round(reading.Data.LAMax, 1)</td>
                     <td>@Math.Round(reading.Data.LAMin, 1)</td>
                     <td>@Math.Round(reading.Data.LZMax, 1)</td>
@@ -106,17 +108,18 @@
         <a href=javascript:void(0); onclick=gotoTop();>Back to Top</a>
     </div>
 
-    <h2 id="Minor">Minor readings</h2>
+    <h2 id="Minor">Minor interval table</h2>
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
             <tr>
                 <th>Time</th>
-                <th>Laeq</th>
-                <th>LaMax</th>
-                <th>LaMin</th>
-                <th>LzMax</th>
-                <th>LzMin</th>
+                <th>LAeq</th>
+                <th>LCeq</th>
+                <th>LAMax</th>
+                <th>LAMin</th>
+                <th>LZMax</th>
+                <th>LZMin</th>
             </tr>
             </thead>
             <tbody>
@@ -125,6 +128,7 @@
                 <tr>
                     <td>@reading.Time</td>
                     <td>@Math.Round(reading.Data.LAeq, 1)</td>
+                    <td>@Math.Round(reading.Data.LCeq, 1)</td>
                     <td>@Math.Round(reading.Data.LAMax, 1)</td>
                     <td>@Math.Round(reading.Data.LAMin, 1)</td>
                     <td>@Math.Round(reading.Data.LZMax, 1)</td>
@@ -158,7 +162,7 @@
 
             // Set chart options
             var options = {
-                'title': 'Minor readings',
+                'title': 'Minor interval',
                 'width': 930,
                 'height': 400,
                 'animation.startup': true,
@@ -182,7 +186,7 @@
 
             // Set chart options
             var options = {
-                'title': 'Major readings',
+                'title': 'Major interval',
                 'width': 930,
                 'height': 400,
                 'animation.startup': true,

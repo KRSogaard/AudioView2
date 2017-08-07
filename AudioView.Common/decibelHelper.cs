@@ -184,5 +184,25 @@ namespace AudioView.Common
             string noHz = methodName.Substring(2, methodName.Length - 2);
             return noHz.Replace("_", ".") + "Hz";
         }
+
+        public static string HzToSlim(string text)
+        {
+            if (text == null)
+            {
+                return text;
+            }
+            string temp = text.ToLower().Replace("hz", "").Trim();
+            double tryParse;
+            if (!double.TryParse(temp, out tryParse))
+            {
+                return text;
+            }
+
+            if (tryParse < 1000)
+            {
+                return tryParse.ToString();
+            }
+            return Math.Round(tryParse / 1000, 1).ToString() + "k";
+        }
     }
 }

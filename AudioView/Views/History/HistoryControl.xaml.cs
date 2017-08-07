@@ -30,12 +30,19 @@ namespace AudioView.UserControls
         {
             var service = new UserService();
             var user = await service.Validate(username.Text, password.Password);
+            if (user.Expires != null && user.Expires < DateTime.Now)
+            {
+                ExpiredLable.Visibility = Visibility.Visible;
+                user = null;
+            }
             if (user == null)
             {
+
                 loginFailedLabel.Visibility = Visibility.Visible;
             }
             else
             {
+                ExpiredLable.Visibility = Visibility.Hidden;
                 GlobalContainer.CurrentUser = user;
                 this.LogInGrid.Visibility = Visibility.Collapsed;
                 this.contentTabControl.Visibility = Visibility.Visible;

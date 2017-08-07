@@ -23,7 +23,7 @@ namespace AudioView.Views.History
 
         public string Title
         {
-            get { return "AudioView - Data Tabel - " + _title; }
+            get { return "AudioView - Time history table - " + _title; }
             set { _title = value; OnPropertyChanged(); }
         }
 

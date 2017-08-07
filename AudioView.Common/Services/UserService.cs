@@ -80,6 +80,18 @@ namespace AudioView.Common.Services
             }
         }
 
+        public async Task UpdateExpires(string username, DateTime? expires)
+        {
+            using (var audioViewEntities = new AudioViewEntities())
+            {
+                var user = await audioViewEntities.Users.FirstOrDefaultAsync(x => x.username.ToLower() == username.ToLower());
+                if (user == null)
+                    return;
+                user.expires = expires;
+                await audioViewEntities.SaveChangesAsync().ConfigureAwait(false);
+            }
+        }
+
         public async Task DeleteUser(string username)
         {
             using (var audioViewEntities = new AudioViewEntities())

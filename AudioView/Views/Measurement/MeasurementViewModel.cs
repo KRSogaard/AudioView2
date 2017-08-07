@@ -16,6 +16,7 @@ using AudioView.Common.Engine;
 using AudioView.Common.Export;
 using AudioView.Common.Listeners;
 using AudioView.UserControls.CountDown;
+using AudioView.UserControls.CountDown.ClockItems;
 using AudioView.UserControls.Graphs;
 using AudioView.Views.History;
 using AudioView.Views.Measurement;
@@ -200,12 +201,26 @@ namespace AudioView.ViewModels
             };
             window.SetResourceReference(MetroWindow.BorderBrushProperty, "AccentColorBrush");
 
+            var shouldShowArc = !(mainClockItemId == typeof(LiveLAegClockItem));
+
             popOutWindows.AddLast(window);
             var model = new LiveReadingViewModel(isMajor,
                 isMajor ?  settings.MajorInterval : settings.MinorInterval,
                 isMajor ? settings.MajorDBLimit : settings.MinorDBLimit,
                 mainClockItemId,
-                secondayClockItemId);
+                secondayClockItemId,
+                // Only the LAeq, 1 sek should not have the arcs
+                shouldShowArc);
+            var minor = minorIntervalHistory.GetLatests();
+            if (minor != null)
+            {
+                model.OnMinor(DateTime.Now, minor.Item1, minor.Item2);
+            }
+            var major = majorIntervalHistory.GetLatests();
+            if (major != null)
+            {
+                model.OnMajor(DateTime.Now, major.Item1, major.Item2);
+            }
             model.OnNext(isMajor ? MajorClock.NextReadingTime : MinorClock.NextReadingTime);
 
             model.Title = Title;

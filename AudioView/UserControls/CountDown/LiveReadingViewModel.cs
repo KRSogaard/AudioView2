@@ -49,8 +49,8 @@ namespace AudioView.ViewModels
             }
         }
 
-        public LiveReadingViewModel(bool isMajor, TimeSpan interval, int limitDb, Type mainItem, Type secondItem) : 
-            base(isMajor, interval, limitDb, mainItem, secondItem, true)
+        public LiveReadingViewModel(bool isMajor, TimeSpan interval, int limitDb, Type mainItem, Type secondItem, bool showArch) : 
+            base(isMajor, interval, limitDb, mainItem, secondItem, showArch)
         {
             _readingType = ClockItemsFactory.AllClockItems.Where(x => x.GetType() == mainItem).Select(x => x.Name).First();
             StayOnTop = false;

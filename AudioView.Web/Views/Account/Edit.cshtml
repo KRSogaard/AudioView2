@@ -40,13 +40,37 @@
         </div>
 
         <div class="form-group">
+            @Html.LabelFor(model => model.Expires, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Expires, new { htmlAttributes = new { @class = "form-control datefield" } })
+                @Html.ValidationMessageFor(model => model.Expires, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Save" class="btn btn-default" />
             </div>
         </div>
     </div>
 }
 
+
+
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.datefield').datepicker({
+                dateFormat: "dd/mm/yy",
+                showStatus: true,
+                showWeeks: true,
+                currentText: 'Now',
+                autoSize: true,
+                gotoCurrent: true,
+                showAnim: 'blind',
+                highlightWeek: true
+            });
+        });
+    </script>
 }

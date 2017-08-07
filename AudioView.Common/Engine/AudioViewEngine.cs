@@ -103,68 +103,76 @@ namespace AudioView.Common.Engine
         public void Start()
         {
             logger.Debug("Preparing engine to start.");
-            secondTimer.Start();
 
-            var minorTimerStart = minorIntervalTimer.Start((triggered, nextInterval) =>
+
+            if (!reader.IsTriggerMode())
             {
-                logger.Info("Minor interval triggered. Triggered: " + triggered + " Next: " + nextInterval);
-                nextMinor = nextInterval;
-                OnMinorInterval(triggered, nextInterval);
-            }, (triggered, nextInterval) =>
-            {
-                logger.Info("Minor interval Started. Triggered: " + triggered + " Next: " + nextInterval);
-                nextMinor = nextInterval;
-                minorIntervalStarted = triggered;
+                secondTimer.Start();
+
+                var minorTimerStart = minorIntervalTimer.Start((triggered, nextInterval) =>
+                {
+                    logger.Info("Minor interval triggered. Triggered: " + triggered + " Next: " + nextInterval);
+                    nextMinor = nextInterval;
+                    OnMinorInterval(triggered, nextInterval);
+                }, (triggered, nextInterval) =>
+                {
+                    logger.Info("Minor interval Started. Triggered: " + triggered + " Next: " + nextInterval);
+                    nextMinor = nextInterval;
+                    minorIntervalStarted = triggered;
+                    lock (this.listeners)
+                    {
+                        foreach (var listener in this.listeners)
+                        {
+                            logger.Debug("Informing " + listener.GetType().Name + " of next minor interval " +
+                                         nextInterval);
+                            listener.NextMinor(nextInterval);
+                        }
+                    }
+                });
+
+                logger.Debug("Minor interval will start at " + minorTimerStart);
+                nextMinor = minorTimerStart;
                 lock (this.listeners)
                 {
                     foreach (var listener in this.listeners)
                     {
-                        logger.Debug("Informing " + listener.GetType().Name + " of next minor interval " + nextInterval);
-                        listener.NextMinor(nextInterval);
+                        logger.Debug("Informing " + listener.GetType().Name + " of minor start time " +
+                                     minorTimerStart);
+                        listener.NextMinor(minorTimerStart);
                     }
                 }
-            });
 
-            logger.Debug("Minor interval will start at " + minorTimerStart);
-            nextMinor = minorTimerStart;
-            lock (this.listeners)
-            {
-                foreach (var listener in this.listeners)
+
+                var majorTimerStart = majorIntervalTimer.Start((triggered, nextInterval) =>
                 {
-                    logger.Debug("Informing " + listener.GetType().Name + " of minor start time " + minorTimerStart);
-                    listener.NextMinor(minorTimerStart);
-                }
-            }
+                    logger.Info("Major interval triggered. Triggered: " + triggered + " Next: " + nextInterval);
+                    nextMajor = nextInterval;
+                    OnMajorInterval(triggered, nextInterval);
+                }, (triggered, nextInterval) =>
+                {
+                    logger.Info("Major interval Started. Triggered: " + triggered + " Next: " + nextInterval);
+                    nextMajor = nextInterval;
+                    majorIntervalStarted = triggered;
+                    lock (this.listeners)
+                    {
+                        foreach (var listener in this.listeners)
+                        {
+                            logger.Debug("Informing " + listener.GetType().Name + " of next major interval " +
+                                         nextInterval);
+                            listener.NextMajor(nextInterval);
+                        }
+                    }
+                });
 
-
-            var majorTimerStart = majorIntervalTimer.Start((triggered, nextInterval) =>
-            {
-                logger.Info("Major interval triggered. Triggered: " + triggered + " Next: " + nextInterval);
-                nextMajor = nextInterval;
-                OnMajorInterval(triggered, nextInterval);
-            }, (triggered, nextInterval) =>
-            {
-                logger.Info("Major interval Started. Triggered: " + triggered + " Next: " + nextInterval);
-                nextMajor = nextInterval;
-                majorIntervalStarted = triggered;
+                logger.Debug("Major interval will start at " + majorTimerStart);
+                nextMajor = majorTimerStart;
                 lock (this.listeners)
                 {
                     foreach (var listener in this.listeners)
                     {
-                        logger.Debug("Informing " + listener.GetType().Name + " of next major interval " + nextInterval);
-                        listener.NextMajor(nextInterval);
+                        logger.Debug("Informing " + listener.GetType().Name + " of major start time.");
+                        listener.NextMajor(majorTimerStart);
                     }
-                }
-            });
-
-            logger.Debug("Major interval will start at " + majorTimerStart);
-            nextMajor = majorTimerStart;
-            lock (this.listeners)
-            {
-                foreach (var listener in this.listeners)
-                {
-                    logger.Debug("Informing " + listener.GetType().Name + " of major start time.");
-                    listener.NextMajor(majorTimerStart);
                 }
             }
         }

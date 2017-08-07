@@ -60,7 +60,7 @@ namespace AudioView.Views.PopOuts
         {
             return Task.Run(() =>
             {
-                double value = (double)typeof(ReadingData).GetMethod(displayItem).Invoke(data, new object[] { });
+                double value = data.GetValue(displayItem);
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
                     LineValues.Add(new Tuple<DateTime, double>(starTime, value));

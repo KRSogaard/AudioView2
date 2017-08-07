@@ -33,6 +33,7 @@
                               BarSize="{Binding Project.MinorInterval}"
                               BarValues="{Binding MinorGraphValues}"
                               LineValuesPenColor="{DynamicResource HighlightBrush}"
+                              AxisBrush="{DynamicResource GrayBrush1}"
                               LineValuesPenSize="2.0" />
 
         <TextBlock Grid.Column="0" Grid.Row="1" Foreground="{DynamicResource GrayBrush3}" FontSize="{StaticResource HeaderFontSize}" Text="Major interval"  HorizontalAlignment="Stretch" TextAlignment="Center">
@@ -49,6 +50,7 @@
                               BarSize="{Binding Project.MajorInterval}"
                               BarValues="{Binding MajorGraphValues}"
                               LineValuesPenColor="{DynamicResource HighlightBrush}"
+                              AxisBrush="{DynamicResource GrayBrush1}"
                               LineValuesPenSize="2.0" />
 
         <Grid Grid.Row="2" Grid.ColumnSpan="2">

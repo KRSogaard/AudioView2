@@ -26,7 +26,7 @@ namespace AudioView.UserControls.CountDown
         private ClockItem mainItem;
         private ClockItem secondItem;
         private int limitDb;
-        private bool isPopOut;
+        private bool showArch;
         private MeasurementItemViewModel mainItemViewModel;
         private MeasurementItemViewModel secondaryItemViewModel;
 
@@ -34,14 +34,14 @@ namespace AudioView.UserControls.CountDown
         public SolidColorBrush BarOverBrush { get; set; }
 
 
-        public AudioViewCountDownViewModel(bool isMajor, TimeSpan interval, int limitDb, Type mainItem, Type secondItem, bool isPopOut = false)
+        public AudioViewCountDownViewModel(bool isMajor, TimeSpan interval, int limitDb, Type mainItem, Type secondItem, bool showArch = true)
         {
             Interval = interval;
             this.isMajor = isMajor;
             this.limitDb = limitDb;
             this.mainItem = ClockItemsFactory.AllClockItems.First(x => x.GetType() == mainItem);
             this.secondItem = ClockItemsFactory.AllClockItems.First(x => x.GetType() == secondItem);
-            this.isPopOut = isPopOut;
+            this.showArch = showArch;
 
             mainItemViewModel = new MeasurementItemViewModel();
             secondaryItemViewModel = new MeasurementItemViewModel();
@@ -109,7 +109,7 @@ namespace AudioView.UserControls.CountDown
         public bool ShowArch
         {
             // They do not want the countdown on the pop outs
-            get { return !isPopOut; }
+            get { return showArch; }
         }
 
         private int _arcThickness;

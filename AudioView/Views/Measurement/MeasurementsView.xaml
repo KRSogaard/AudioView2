@@ -101,7 +101,7 @@
                     <MenuItem Header="Building Major LAeq"  Command="{Binding ReadingsPopUpLatestBuildingMajor}" />
                     <MenuItem Header="Building Minor LAeq"  Command="{Binding ReadingsPopUpLatestBuildingMinor}" />
                 </MenuItem>
-                <MenuItem Header="Scrolling Graph" ItemsSource="{Binding SelectedMeasurement.LiveGraphReadings}">
+                <MenuItem Header="Time trace graph" ItemsSource="{Binding SelectedMeasurement.LiveGraphReadings}">
                     <MenuItem.ItemTemplate>
                         <DataTemplate>
                             <MenuItem Header="{Binding Name}" Command="{Binding Show}"></MenuItem>
