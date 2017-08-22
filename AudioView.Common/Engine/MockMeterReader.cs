@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using AudioView.Common.Data;
@@ -10,19 +11,37 @@ namespace AudioView.Common.Engine
     public class MockMeterReader : IMeterReader
     {
         private Random rnd;
-        private int lastReading;
-        private List<Tuple<DateTime, double>> minor;
-        private List<Tuple<DateTime, double>> major;
+        private ReadingData lastReading;
+        private List<Tuple<DateTime, ReadingData>> minor;
+        private List<Tuple<DateTime, ReadingData>> major;
         private bool lastConnectionStatus;
         private TimeSpan minorInterval;
         private TimeSpan majorInterval;
 
         public MockMeterReader()
         {
-            this.minor = new List<Tuple<DateTime,double>>();
-            this.major = new List<Tuple<DateTime, double>>();
+            this.minor = new List<Tuple<DateTime, ReadingData>>();
+            this.major = new List<Tuple<DateTime, ReadingData>>();
             this.rnd = new Random();
-            this.lastReading = 50;
+            lastReading = new ReadingData()
+            {
+                LAeq = newRandom(60),
+                LCeq = newRandom(60),
+                LAMax = newRandom(60),
+                LAMin = newRandom(60),
+                LZMax = newRandom(60),
+                LZMin = newRandom(60)
+            };
+            foreach (var band in typeof(ReadingData.OctaveBandOneThird).GetProperties()
+                                    .Where(x => x.PropertyType == typeof(double)))
+            {
+                band.SetValue(lastReading.LAeqOctaveBandOneThird, newRandom(60));
+            }
+            foreach (var band in typeof(ReadingData.OctaveBandOneOne).GetProperties()
+                                    .Where(x => x.PropertyType == typeof(double)))
+            {
+                band.SetValue(lastReading.LAeqOctaveBandOneOne, newRandom(60));
+            }
         }
 
         public Task<ReadingData> GetSecondReading()
@@ -30,25 +49,56 @@ namespace AudioView.Common.Engine
             return Task.Run(() =>
             {
                 OnConnectionStatus(true);
-                var newReading = Math.Min(150, Math.Max(60, this.rnd.Next(this.lastReading - 5, this.lastReading + 7)));
-                this.lastReading = newReading;
+
+                var newReading = new ReadingData()
+                {
+                    LAeq = newRandom((int)this.lastReading.LZMin),
+                    LCeq = newRandom((int)this.lastReading.LCeq),
+                    LAMax = newRandom((int)this.lastReading.LAMax),
+                    LAMin = newRandom((int)this.lastReading.LAMin),
+                    LZMax = newRandom((int)this.lastReading.LZMax),
+                    LZMin = newRandom((int)this.lastReading.LZMin)
+                };
+                foreach (var band in typeof(ReadingData.OctaveBandOneThird).GetProperties()
+                                    .Where(x => x.PropertyType == typeof(double)))
+                {
+                    band.SetValue(newReading.LAeqOctaveBandOneThird, newRandom((double)band.GetValue(lastReading.LAeqOctaveBandOneThird)));
+                }
+                foreach (var band in typeof(ReadingData.OctaveBandOneOne).GetProperties()
+                                    .Where(x => x.PropertyType == typeof(double)))
+                {
+                    band.SetValue(newReading.LAeqOctaveBandOneOne, newRandom((double)band.GetValue(lastReading.LAeqOctaveBandOneOne)));
+                }
+
+                //newReading.LAeqOctaveBandOneThird.Hz1000 = 75.0;
+                //newReading.LAeqOctaveBandOneOne.Hz1000 = 75.0;
 
                 lock (minor)
                 {
-                    minor.Add(new Tuple<DateTime, double>(DateTime.Now, newReading));
+                    minor.Add(new Tuple<DateTime, ReadingData>(DateTime.Now, newReading));
                     minor.RemoveAll(x => x.Item1 < DateTime.Now - minorInterval);
                 }
                 lock (major)
                 {
-                    major.Add(new Tuple<DateTime, double>(DateTime.Now, newReading));
+                    major.Add(new Tuple<DateTime, ReadingData>(DateTime.Now, newReading));
                     major.RemoveAll(x => x.Item1 < DateTime.Now - majorInterval);
                 }
 
-                return new ReadingData()
-                {
-                    LAeq = newReading
-                };
+                lastReading = newReading;
+                return newReading;
             });
+        }
+
+        private double newRandom(double? currentValue)
+        {
+            if (currentValue == null)
+                return 60;
+
+            double max = Math.Min(150, (double)currentValue + 5.0);
+            double min = Math.Max(60, (double)currentValue - 5.0);
+            double diff = this.rnd.NextDouble() * (max - min);
+
+            return min + diff;
         }
 
         public Task<ReadingData> GetMinorReading(DateTime intervalStarted)
@@ -56,19 +106,7 @@ namespace AudioView.Common.Engine
             return Task.Run(() =>
             {
                 OnConnectionStatus(true);
-                double reading = 0;
-                int count = 0;
-                lock (minor)
-                {
-                    reading += minor.Select(x => x.Item2).Sum();
-                    count = minor.Count;
-                }
-                reading = (double)reading / (double)count;
-
-                return new ReadingData()
-                {
-                    LAeq = reading
-                };
+                return ReadingData.Average(minor.Select(x => x.Item2).ToList());
             });
         }
 
@@ -77,19 +115,7 @@ namespace AudioView.Common.Engine
             return Task.Run(() =>
             {
                 OnConnectionStatus(true);
-                double reading = 0;
-                int count = 0;
-                lock (major)
-                {
-                    reading += major.Select(x=>x.Item2).Sum();
-                    count = major.Count;
-                }
-                reading = (double)reading / (double)count;
-
-                return new ReadingData()
-                {
-                    LAeq = reading
-                };
+                return ReadingData.Average(major.Select(x => x.Item2).ToList());
             });
         }
 

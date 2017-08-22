@@ -308,11 +308,15 @@ namespace AudioView.UserControls.Graphs
                 x1 += borderWith;
                 var y = getY(barValue.Value);
                 var barHeight = Math.Max(0, workingHeight - y);
+                if (DisplayAxis)
+                {
+                    barHeight += buttomMargin;
+                }
                 drawingContext.DrawRectangle(barValue.OverLimit ? BarOverFillBrush : BarFillBrush,
                                             barValue.OverLimit ? BarOverBorderPen : BarBorderPen,
                                             new Rect(new Point(x1, this.ActualHeight - barHeight - yOffset),
                                                      new Size(spacePrBar, barHeight)));
-
+                
                 if (DisplayAxis && currentTextIndex % each == 0)
                 {
                     var text = new FormattedText(DecibelHelper.HzToSlim(barValue.Key), CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
