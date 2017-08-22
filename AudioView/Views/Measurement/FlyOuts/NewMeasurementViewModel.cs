@@ -502,6 +502,7 @@ namespace AudioView.ViewModels
                             DispatcherHelper.CheckBeginInvokeOnUI(() =>
                             {
                                 GotDevices(result.Result);
+                                //GotDevices(new List<string>() { "TEST" }); 
                             });
                         });
                     });
@@ -537,6 +538,7 @@ namespace AudioView.ViewModels
                                 settings.MajorInterval = remoteSettings.MajorInterval;
                                 settings.MinorInterval = remoteSettings.MinorInterval;
                             }
+                            //reader = new MockMeterReader();
 
                             newModel = new MeasurementViewModel(Guid.NewGuid(), settings, reader);
 
